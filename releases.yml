@@ -1,0 +1,14 @@
+releases:
+
+
+### PRE V5 ######################################################################
+
+- version_major: 1
+  version_minor: 0
+  version_patch: 0
+  version_pre: PRE
+  version_build: $TIMESTAMP$
+  description: |
+
+    - new auth service 
+

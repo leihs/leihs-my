@@ -1,0 +1,25 @@
+traits:
+  PostgreSQL: true
+
+scripts:
+
+  create-database:
+    body: |
+      #!/usr/bin/env bash
+      set -eux
+      createdb "$DATABASE_NAME"
+      psql -d "$DATABASE_NAME" -f database/db/structure.sql
+
+  test:
+    start_when:
+
+  delete-database:
+    body: |
+      #!/usr/bin/env bash
+      set -eux
+      dropdb "$DATABASE_NAME"
+    start_when:
+      shutdown server is in termial state:
+        script_key: shutdown-server
+        states: [aborted, defective, passed, failed, skipped]
+

@@ -1,0 +1,38 @@
+scripts:
+
+  run-server:
+    start_when:
+      uberjar has been built:
+        script_key: build-uberjar
+      database has been created:
+        script_key: create-database
+    body: java -jar target/leihs-my.jar run -s
+
+  server-is-running:
+    body: |
+      until curl --silent --fail -I \
+        -H 'Accept: application/json' \
+        http://localhost:${LEIHS_API_HTTP_PORT}/my/status;
+        do sleep 1;
+      done
+    start_when:
+      run server is executing:
+        script_key: run-server
+        states: [executing]
+
+  test:
+    start_when:
+      server is running:
+        script_key: server-is-running
+
+  shutdown-server:
+    body: |
+      until curl --silent --fail -X POST -I \
+        -H 'Accept: application/json' \
+        http://localhost:${LEIHS_API_HTTP_PORT}/my/shutdown;
+        do sleep 1;
+      done
+    start_when:
+      test is terminal:
+        script_key: test
+        states: [aborted, defective, passed, failed, skipped]

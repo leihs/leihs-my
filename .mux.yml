@@ -1,0 +1,35 @@
+name: LEIHS/v5/my
+windows:
+  2:
+    name: app
+    command: |
+      lein do clean, repl
+    post_command_send_keys: |
+      (-main "run")
+  3:
+    name: figwheel
+    command: |
+      # give lein clean from window 3 some time before we start figwheel
+      lein figwheel
+  5:
+    name: psql
+    command: |
+      psql -d leihs
+  6:
+    name: db
+    command: |
+      cd database
+  7:
+    name: test
+    command: |
+      export GITHUB_API_MOCK_PORT=8998
+      export RAILS_ENV=test
+  8:
+    name: log
+    command: |
+      mkdir -p log && echo " " > log/debug.log && tail -f log/debug.log
+  9:
+    name: sass
+    command: |
+      sass --watch resources/all/public/my/css/site.sass:resources/all/public/my/css/site.css
+
