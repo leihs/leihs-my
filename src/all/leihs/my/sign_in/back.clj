@@ -31,7 +31,7 @@
                       [:= :users.id
                        :authentication_systems_users.user_id])
       (sql/merge-join [:= :users.account_enabled true])
-      (sql/merge-where [:= :users.email (-> email (or "") str/lower-case)])
+      (sql/merge-where [:= (sql/raw "lower(users.email)") (-> email (or "") str/lower-case)])
       sql/format))
 
 (defn sign-in [{tx :tx {email :email} :query-params}]

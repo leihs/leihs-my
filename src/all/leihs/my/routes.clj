@@ -4,11 +4,14 @@
   (:require
     [leihs.core.anti-csrf.back :as anti-csrf]
     [leihs.core.ds :as ds]
+    [leihs.core.http-cache-buster :as cache-buster :refer [wrap-resource]]
+    [leihs.core.ring-exception :as ring-exception]
     [leihs.core.routing.back :as routing]
     [leihs.core.routing.dispatch-content-type :as dispatch-content-type]
-    [leihs.core.session :as session]
+    [leihs.core.auth.core :as auth]
     [leihs.core.shutdown :as shutdown]
 
+    [leihs.my.authorization :as authorization]
     [leihs.my.back.html :as html]
     [leihs.my.constants :as constants]
     [leihs.my.env :as env]
@@ -19,8 +22,9 @@
     [leihs.my.sign-in.back :as sign-in]
     [leihs.my.sign-in.password-authentication.back :as password-authentication]
     [leihs.my.sign-out.back :as sign-out]
-    [leihs.core.http-cache-buster :as cache-buster :refer [wrap-resource]]
-    [leihs.core.ring-exception :as ring-exception]
+    [leihs.my.user.api-token.back :as api-token]
+    [leihs.my.user.api-tokens.back :as api-tokens]
+    [leihs.my.user.auth-info.back :as auth-info]
 
     [compojure.core :as cpj]
     [ring.middleware.content-type :refer [wrap-content-type]]
@@ -39,9 +43,10 @@
 (declare redirect-to-root-handler)
 
 (def skip-authorization-handler-keys
-  #{:sign-in
+  #{:initial-admin
     :password-authentication
-    :initial-admin})
+    :shutdown
+    :sign-in})
 
 (def no-html-handler-keys
   #{:redirect-to-root
@@ -49,10 +54,9 @@
 
 (def resolve-table
   {
-;   :auth-info auth/routes
-;   :auth-password-sign-in auth/routes
-;   :auth-shib-sign-in auth/routes
-;   :sign-out auth/routes
+   :api-token api-token/routes
+   :api-tokens api-tokens/routes
+   :auth-info auth-info/ring-handler
    :initial-admin initial-admin/routes
    :not-found html/not-found-handler
    :password-authentication password-authentication/routes
@@ -60,7 +64,13 @@
    :shutdown shutdown/ring-handler
    :sign-in sign-in/routes
    :sign-out sign-out/routes
-   :status status/routes})
+   :status status/routes
+
+   ;   :auth-info auth/routes
+   ;   :auth-password-sign-in auth/routes
+   ;   :auth-shib-sign-in auth/routes
+   ;   :sign-out auth/routes
+   })
 
 
 
@@ -77,11 +87,11 @@
   (routing/init paths resolve-table)
   (I> wrap-handler-with-logging
       routing/dispatch-to-handler
-      ;(auth/wrap-authorize skip-authorization-handler-keys)
+      (authorization/wrap skip-authorization-handler-keys)
       (dispatch-content-type/wrap-dispatch-html no-html-handler-keys html/html-handler)
       initial-admin/wrap
       anti-csrf/wrap
-      session/wrap-authenticate
+      auth/wrap-authenticate
       ring.middleware.cookies/wrap-cookies
       routing/wrap-empty
       settings/wrap
@@ -108,5 +118,4 @@
 ;#### debug ###################################################################
 ;(logging-config/set-logger! :level :debug)
 ;(logging-config/set-logger! :level :info)
-;(debug/debug-ns 'cider-ci.utils.shutdown)
 ;(debug/debug-ns *ns*)

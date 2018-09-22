@@ -3,7 +3,6 @@
   (:require [leihs.core.core :refer [keyword str presence]])
   (:require
     [leihs.core.password-authentication.back :as password-authentication]
-    [leihs.core.session :as session]
     [leihs.core.sql :as sql]
 
     [leihs.my.back.html :as html]

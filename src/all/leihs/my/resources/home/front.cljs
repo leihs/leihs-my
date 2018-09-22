@@ -4,10 +4,9 @@
     [reagent.ratom :as ratom :refer [reaction]]
     [cljs.core.async.macros :refer [go]])
   (:require
+    [leihs.core.breadcrumbs :as breadcrumbs]
     [leihs.core.core :refer [keyword str presence]]
     [leihs.core.user.front :as user]
-
-    [leihs.my.front.breadcrumbs :as breadcrumbs]
 
     [accountant.core :as accountant]
     [cljs.core.async :as async]

@@ -39,31 +39,32 @@
                           (leaf "/" :requests)
                           (branch "/" (param :id)
                                   (leaf "" :request))))))
+(def api-tokens-paths
+  (branch "/api-tokens/"
+          (leaf "" :api-tokens)
+          (leaf "add" :api-token-add)
+          (branch ""
+                  (param :api-token-id)
+                  (leaf "" :api-token)
+                  (leaf "/delete" :api-token-delete)
+                  (leaf "/edit" :api-token-edit))))
 
+(def user-paths
+  (branch "/user/"
+          (param [#"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})|(me)|(:user-id)" :user-id])
+          (leaf "" :me-user)
+          (leaf "/auth-info" :auth-info)
+          api-tokens-paths))
 
 (def paths
   (branch ""
           leihs.core.paths/core-paths
           my-service-paths
-          (branch "/user/"
-                  (param [#"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})|(me)" :user-id])
-                  (leaf "" :user)
-                  (leaf "/auth-info" :auth-info)
-                  )))
+          user-paths
+          ))
 
 (reset! leihs.core.paths/paths* paths) 
 
-;(match-route paths "/procure")
-
-;(match-route paths "/user/6ba7b810-9dad-11d1-80b4-00c04fd430c8")
-;(match-route paths "/user/me")
-
-
 (def path leihs.core.paths/path)
 
-;(path :user {} {})
-
-;(path :auth-info {:user-id "6ba7b810-9dad-11d1-80b4-00c04fd430c8"})
-;(path :initial-admin)
-;(path :sign-in)
-
+;(path :api-tokens)

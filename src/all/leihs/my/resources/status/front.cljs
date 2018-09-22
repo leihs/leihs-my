@@ -5,13 +5,12 @@
     [cljs.core.async.macros :refer [go]])
   (:require
     [leihs.core.anti-csrf.front :as anti-csrf]
+    [leihs.core.breadcrumbs :as breadcrumbs]
     [leihs.core.core :refer [keyword str presence]]
     [leihs.core.requests.core :as requests]
     [leihs.core.routing.front :as routing]
 
-    [leihs.my.front.breadcrumbs :as breadcrumbs]
     [leihs.my.front.components :as components]
-    [leihs.my.front.icons :as icons]
     [leihs.my.front.shared :refer [humanize-datetime-component short-id gravatar-url]]
     [leihs.my.front.state :as state]
     [leihs.my.paths :as paths :refer [path]]
