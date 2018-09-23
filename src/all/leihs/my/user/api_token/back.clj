@@ -5,6 +5,7 @@
     [leihs.core.sql :as sql]
 
     [leihs.my.paths :refer [path]]
+    [leihs.my.user.shared :refer [wrap-me-id]]
 
     [clojure.set :refer [rename-keys]]
     [clojure.java.jdbc :as jdbc]
@@ -43,18 +44,6 @@
    :scope_admin_write
    :scope_read
    :scope_write])
-
-(defn wrap-me-id 
-  ([handler]
-   (fn [request]
-     (wrap-me-id handler request)))
-  ([handler request]
-   (logging/info handler request)
-   (handler
-     (if (= "me" (-> request :route-params :user-id))
-       (assoc-in request [:route-params :user-id]
-                 (-> request :authenticated-entity :user_id))
-       request))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

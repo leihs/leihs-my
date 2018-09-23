@@ -6,6 +6,7 @@
 
     [leihs.my.paths :as paths :refer [path]]
     [leihs.my.user.api-tokens.breadcrumbs :as api-tokens-breadcrumbs]
+    [leihs.my.user.password.breadcrumbs :as password-breadcrumbs]
     ))
 
 (defn page []
@@ -14,6 +15,7 @@
      [(breadcrumbs/leihs-li)
       (breadcrumbs/me-user-li)]
      [(api-tokens-breadcrumbs/api-tokens-li)
+      (password-breadcrumbs/password-li)
       ])
    [:h1 "me"]
    [:div

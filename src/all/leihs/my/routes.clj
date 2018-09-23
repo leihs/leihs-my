@@ -25,6 +25,7 @@
     [leihs.my.user.api-token.back :as api-token]
     [leihs.my.user.api-tokens.back :as api-tokens]
     [leihs.my.user.auth-info.back :as auth-info]
+    [leihs.my.user.password.back :as password]
 
     [compojure.core :as cpj]
     [ring.middleware.content-type :refer [wrap-content-type]]
@@ -46,7 +47,8 @@
   #{:initial-admin
     :password-authentication
     :shutdown
-    :sign-in})
+    :sign-in
+    :sign-out})
 
 (def no-html-handler-keys
   #{:redirect-to-root
@@ -60,6 +62,7 @@
    :initial-admin initial-admin/routes
    :not-found html/not-found-handler
    :password-authentication password-authentication/routes
+   :password leihs.my.user.password.back/routes
    :redirect-to-root redirect-to-root-handler
    :shutdown shutdown/ring-handler
    :sign-in sign-in/routes

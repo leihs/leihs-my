@@ -17,6 +17,7 @@
     [leihs.my.user.api-tokens.front :as api-tokens]
     [leihs.my.user.auth-info.front :as auth-info]
     [leihs.my.user.front :as user]
+    [leihs.my.user.password.front :as password]
 
     [cljsjs.js-yaml]
     [clojure.pprint :refer [pprint]]
@@ -34,6 +35,7 @@
    :home #'home/page
    :initial-admin #'initial-admin/page
    :me-user #'user/page
+   :password #'password/page
    :sign-in #'sign-in/page
    :status #'status/info-page
    })

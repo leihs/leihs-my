@@ -5,7 +5,8 @@
     [leihs.core.sql :as sql]
 
     [leihs.my.paths :refer [path]]
-    [leihs.my.user.api-token.back :as api-token :refer [wrap-me-id]]
+    [leihs.my.user.api-token.back :as api-token]
+    [leihs.my.user.shared :refer [wrap-me-id]]
 
     [clojure.java.jdbc :as jdbc]
     [compojure.core :as cpj]

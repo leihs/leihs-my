@@ -1,11 +1,12 @@
+*pem
 .lein-env
 .lein-failures
 .lein-repl-history
 .nrepl-port
+.rebel_readline_history
 /.sass-cache
 /log
 /target
 /tmp
 figwheel_server.log
 resources/all/public/auth/build-timestamp.txt
-*pem

@@ -1,9 +1,11 @@
 (ns leihs.my.initial-admin.back
   (:refer-clojure :exclude [str keyword])
-  (:require [leihs.core.core :refer [keyword str presence]])
   (:require
-    [leihs.my.paths :refer [path]]
+    [leihs.core.core :refer [keyword str presence]]
     [leihs.core.sql :as sql]
+
+    [leihs.my.paths :refer [path]]
+    [leihs.my.user.shared :refer [set-password]]
 
     [clojure.java.jdbc :as jdbc]
     [compojure.core :as cpj]
@@ -15,11 +17,6 @@
     [java.util UUID]
     ))
 
-(defn password-hash
-  ([password tx]
-   (->> ["SELECT crypt(?,gen_salt('bf',10)) AS pw_hash" password]
-        (jdbc/query tx)
-        first :pw_hash)))
 
 (defn some-admin? [tx]
   (->> ["SELECT true AS has_admin FROM users WHERE is_admin = true"]
@@ -33,13 +30,6 @@
 
 (defn insert-user [data tx]
   (first (jdbc/insert! tx :users data)))
-
-(defn insert-password [user data tx]
-  (->> {:user_id (:id user)
-        :authentication_system_id "password"
-        :data (password-hash (:password data) tx)}
-       (jdbc/insert! tx :authentication_systems_users)
-       first))
 
 (defn make-systemadmin [user tx]
   (->> {:user_id (:id user)}
@@ -56,7 +46,9 @@
       :body "A admin user already exists!"}
      (let [user (-> data prepare-data (insert-user tx))]
        (assert user)
-       (assert (insert-password user data tx))
+       (assert (set-password (:id user)
+                             (:password data)
+                             tx))
        (assert (make-systemadmin user tx))
        (redirect (path :home) :see-other)))))
 
