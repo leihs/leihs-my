@@ -288,7 +288,7 @@
           [:code.token_secret @token-secret*]]
          [:p
           "The full token-secret is shown here once and only once. "
-          "Only the 5 letters will be stored and shown as a identifier. " ]]
+          "Only the first 5 letters will be stored and shown as a identifier. " ]]
         [:div.modal-footer
          [:button.btn.btn-primary
           {:on-click #(accountant/navigate!

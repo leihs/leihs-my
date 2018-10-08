@@ -35,9 +35,9 @@ end
 
 RSpec.configure do |config|
   config.before :each  do
-    clean_db
+    clean_db unless YAML.load(ENV['SKIP_CLEAN_DB'].to_s) == true
   end
   config.after :suite do
-    clean_db
+    clean_db unless YAML.load(ENV['SKIP_CLEAN_DB'].to_s) == true
   end
 end
