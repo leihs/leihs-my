@@ -5,6 +5,7 @@
 .nrepl-port
 .rebel_readline_history
 /.sass-cache
+/bin/zhdk_agw_auth_system.rb
 /log
 /target
 /tmp

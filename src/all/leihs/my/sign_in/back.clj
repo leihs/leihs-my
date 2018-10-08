@@ -1,10 +1,10 @@
 (ns leihs.my.sign-in.back
   (:refer-clojure :exclude [str keyword])
-  (:require [leihs.core.core :refer [keyword str presence]])
   (:require
+    [leihs.core.core :refer [keyword str presence]]
+    [leihs.core.sql :as sql]
     [leihs.my.paths :refer [path]]
-    [leihs.core.sql :as sql]
-    [leihs.core.sql :as sql]
+    [leihs.my.sign-in.shared :refer [auth-system-base-query-for-uniqe-id]]
 
     [clojure.java.jdbc :as jdbc]
     [clojure.string :as str]
@@ -14,25 +14,18 @@
     [clojure.tools.logging :as logging]
     [logbug.debug :as debug]))
 
-
-
 (defn auth-system-query [email]
-  (-> (sql/select :authentication_systems.id
-                  :authentication_systems.type
-                  :authentication_systems.name
-                  :authentication_systems.description
-                  :authentication_systems.external_base_url)
-      (sql/from :authentication_systems)
-      (sql/merge-where [:= :authentication_systems.enabled true])
-      (sql/merge-join :authentication_systems_users
-                      [:= :authentication_systems_users.authentication_system_id
-                       :authentication_systems.id])
-      (sql/merge-join :users
-                      [:= :users.id
-                       :authentication_systems_users.user_id])
-      (sql/merge-join [:= :users.account_enabled true])
-      (sql/merge-where [:= (sql/raw "lower(users.email)") (-> email (or "") str/lower-case)])
+  (-> email
+      auth-system-base-query-for-uniqe-id
+      (sql/merge-select
+        :authentication_systems.id
+        :authentication_systems.type
+        :authentication_systems.name
+        :authentication_systems.description
+        :authentication_systems.external_url)
       sql/format))
+
+;(-> "admin@exmaple.com" auth-system-query)
 
 (defn sign-in [{tx :tx {email :email} :query-params}]
   {:body (->> email
@@ -46,4 +39,4 @@
 ;#### debug ###################################################################
 ;(logging-config/set-logger! :level :debug)
 ;(logging-config/set-logger! :level :info)
-;(debug/debug-ns *ns*)
+(debug/debug-ns *ns*)

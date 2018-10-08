@@ -33,7 +33,7 @@
 
 (defn make-systemadmin [user tx]
   (->> {:user_id (:id user)}
-       (jdbc/insert! tx :system_admins)
+       (jdbc/insert! tx :system_admin_users)
        first))
 
 (defn create-initial-admin

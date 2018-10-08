@@ -12,6 +12,7 @@
     [leihs.my.front.breadcrumbs :as breadcrumbs]
     [leihs.my.front.state :as state]
     [leihs.my.paths :as paths :refer [path]]
+    [leihs.my.sign-in.external-authentication.front :as external-authentication]
     [leihs.my.sign-in.password-authentication.front :as password-authentication]
 
     [accountant.core :as accountant]
@@ -65,7 +66,9 @@
   [:div.authentication-systems
    (for [authentication-system  @authentication-systems*]
      (case (:type authentication-system)
-       "password" [password-authentication/sign-in-component authentication-system]))])
+       "password" [password-authentication/sign-in-component authentication-system]
+       "external" [external-authentication/sign-in-component authentication-system]
+       ))])
 
 (defn debug-component []
   (when (:debug @state/global-state*)
@@ -77,8 +80,7 @@
 (defn page []
   [:div.sign-in-page
    [routing/hidden-state-component
-    {:did-change reset-and-fetch
-     :did-mount reset-and-fetch}]
+    {:did-change reset-and-fetch}]
    [:h1 "Sign in"]
    (cond
      (nil? @authentication-systems*) [:div.text-center

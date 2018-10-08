@@ -10,9 +10,9 @@ scripts:
 
   server-is-running:
     body: |
-      until curl --silent --fail -I \
+      until curl --fail -I \
         -H 'Accept: application/json' \
-        http://localhost:${LEIHS_API_HTTP_PORT}/my/status;
+         ${LEIHS_MY_HTTP_BASE_URL}/my/status;
         do sleep 1;
       done
     start_when:
@@ -29,7 +29,7 @@ scripts:
     body: |
       until curl --silent --fail -X POST -I \
         -H 'Accept: application/json' \
-        http://localhost:${LEIHS_API_HTTP_PORT}/my/shutdown;
+        http://localhost:${LEIHS_MY_HTTP_PORT}/my/shutdown;
         do sleep 1;
       done
     start_when:

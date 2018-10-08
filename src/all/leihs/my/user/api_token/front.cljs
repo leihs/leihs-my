@@ -391,11 +391,7 @@
 (defn edit-page []
   [:div.api-token
    [routing/hidden-state-component
-    {:will-mount (fn [] (reset! api-token-data* nil))
-     :did-change (fn [old diff new]
-                   (js/console.log (with-out-str (pprint  diff)))
-                   (fetch-token))
-     :did-mount fetch-token}]
+    {:did-change fetch-token}]
    (breadcrumbs/nav-component
      [(breadcrumbs/leihs-li)
       (breadcrumbs/me-user-li)
@@ -442,10 +438,7 @@
   [:div.api-token
    [routing/hidden-state-component
     {:will-mount (fn [] (reset! api-token-data* nil))
-     :did-change (fn [old diff new]
-                   (js/console.log (with-out-str (pprint  diff)))
-                   (fetch-token))
-     :did-mount fetch-token}]
+     :did-change fetch-token}]
    (breadcrumbs/nav-component
      [(breadcrumbs/leihs-li)
       (breadcrumbs/me-user-li)

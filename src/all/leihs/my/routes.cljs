@@ -12,6 +12,7 @@
     [leihs.my.paths :as paths :refer [path paths]]
     [leihs.my.resources.home.front :as home]
     [leihs.my.resources.status.front :as status]
+    [leihs.my.sign-in.external-authentication.front :as external-authentication]
     [leihs.my.sign-in.front :as sign-in]
     [leihs.my.user.api-token.front :as api-token]
     [leihs.my.user.api-tokens.front :as api-tokens]
@@ -32,6 +33,7 @@
    :api-token-edit #'api-token/edit-page
    :api-tokens #'api-tokens/page
    :auth-info #'auth-info/page
+   :external-authentication-sign-in #'external-authentication/sign-in-page
    :home #'home/page
    :initial-admin #'initial-admin/page
    :me-user #'user/page

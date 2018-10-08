@@ -51,7 +51,7 @@
         password* (reagent/atom "")
         disabled?* (reaction (-> @password* presence boolean not))]
     (fn []
-      [:div.password-authentication-system
+      [:div.password-authentication-system.my-4
        {:id (:id pws)}
        ; [:pre (with-out-str (pprint pws))]
        [:div.card
@@ -61,7 +61,7 @@
                    "")}
          [:h2 [:i.fas.fa-key] " Sign in with \"" (:name pws) "\""]]
         [:div.card-body
-         [:form.form.form-inline
+         [:form.form
           {:on-submit (fn [e] (.preventDefault e)
                         (reset! submit-password* @password*)
                         (authenticate))}
@@ -72,17 +72,19 @@
              :value (-> @routing/state* :query-params-raw :email)
              :read-only true
              :auto-complete :email}]]
-          [:div.form-group.mx-sm-2.mb-2
-           [:input#password
+          [:div.form-group
+           [:label "Password:"]
+           [:input#password.form-control
             {:type :password
              :auto-complete :current-password
              :value @password*
              :on-change #(reset! password* (-> % .-target .-value))}]]
-          [:button.btn.mb-2
-           {:disabled @disabled?*
-            :class (if (= 0 (:index pws))
-                     "btn-primary"
-                     "btn-secondary")
-            :type :submit}
-           "Sign in"]]]]])))
+          [:div.form-group.float-right
+           [:button.btn.mb-2
+            {:disabled @disabled?*
+             :class (if (= 0 (:index pws))
+                      "btn-primary"
+                      "btn-secondary")
+             :type :submit}
+            "Sign in"]]]]]])))
 

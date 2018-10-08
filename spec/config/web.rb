@@ -5,7 +5,7 @@ require 'faraday'
 require 'faraday_middleware'
 
 def base_url
-  @base_url ||= ENV['LEIHS_HTTP_BASE_URL'].presence || 'http://localhost:3220'
+  @base_url ||= ENV['LEIHS_MY_HTTP_BASE_URL'].presence || 'http://localhost:3220'
 end
 
 def port

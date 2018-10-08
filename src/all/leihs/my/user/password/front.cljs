@@ -85,28 +85,3 @@
        :disabled (not @form-data-valid*)}
       "Set password"]]
     [:div.clearfix]]])
-
-  ;   [routing/hidden-state-component
-  ;    {:will-mount user.shared/clean-and-fetch
-  ;     :did-change user.shared/clean-and-fetch
-  ;     }]
-  ;   (breadcrumbs/nav-component
-  ;     [(breadcrumbs/leihs-li)
-  ;      (breadcrumbs/admin-li)
-  ;      (breadcrumbs/users-li)
-  ;      (breadcrumbs/user-li @user.shared/user-id*)
-  ;      (breadcrumbs/user-password-li @user.shared/user-id*)][])
-  ;   [:div.row
-  ;    [:div.col-lg
-  ;     [:h1
-  ;      [:span " Set the Password for User "]
-  ;      [user.shared/user-name-component]]
-  ;     [user.shared/user-id-component]]]
-  ;   [:form.form.mt-2
-  ;    {:on-submit (fn [e]
-  ;                  (.preventDefault e)
-  ;                  (patch))}
-  ;    [:div {:style {:display :none}}
-  ;     [user.shared/field-component :email {:type :email}]]
-  ;    [user.shared/field-component :password {:type :password :autoComplete :new-password}]
-  ;    [patch-submit-component]]

@@ -3,6 +3,7 @@ windows:
   2:
     name: app
     command: |
+      export LEIHS_MY_HTTP_BASE_URL=http://localhost:3220
       lein do clean, repl
     post_command_send_keys: |
       (-main "run")
@@ -22,13 +23,19 @@ windows:
   7:
     name: test
     command: |
-      export GITHUB_API_MOCK_PORT=8998
+      export LEIHS_MY_HTTP_BASE_URL=http://localhost:3220
+      export TEST_AUTH_SYSTEM_PORT=3330
       export RAILS_ENV=test
   8:
     name: log
     command: |
       mkdir -p log && echo " " > log/debug.log && tail -f log/debug.log
-  9:
+  9: 
+    name: auth-sys
+    command: |
+      export TEST_AUTH_SYSTEM_PORT=3330
+      bundle exec ruby bin/test-auth-system.rb -p ${TEST_AUTHENTICATION_SYSTEM_PORT}
+  10:
     name: sass
     command: |
       sass --watch resources/all/public/my/css/site.sass:resources/all/public/my/css/site.css

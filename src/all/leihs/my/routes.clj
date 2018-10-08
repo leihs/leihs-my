@@ -20,6 +20,7 @@
     [leihs.my.resources.settings.back :as settings]
     [leihs.my.resources.status.back :as status]
     [leihs.my.sign-in.back :as sign-in]
+    [leihs.my.sign-in.external-authentication.back :as external-authentication]
     [leihs.my.sign-in.password-authentication.back :as password-authentication]
     [leihs.my.sign-out.back :as sign-out]
     [leihs.my.user.api-token.back :as api-token]
@@ -44,7 +45,9 @@
 (declare redirect-to-root-handler)
 
 (def skip-authorization-handler-keys
-  #{:initial-admin
+  #{:external-authentication-request
+    :external-authentication-sign-in
+    :initial-admin
     :password-authentication
     :shutdown
     :sign-in
@@ -55,14 +58,15 @@
     :not-found})
 
 (def resolve-table
-  {
-   :api-token api-token/routes
+  {:api-token api-token/routes
    :api-tokens api-tokens/routes
    :auth-info auth-info/ring-handler
    :initial-admin initial-admin/routes
    :not-found html/not-found-handler
    :password-authentication password-authentication/routes
    :password leihs.my.user.password.back/routes
+   :external-authentication-request external-authentication/routes
+   :external-authentication-sign-in external-authentication/routes
    :redirect-to-root redirect-to-root-handler
    :shutdown shutdown/ring-handler
    :sign-in sign-in/routes

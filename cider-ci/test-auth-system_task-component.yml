@@ -1,0 +1,50 @@
+scripts:
+
+  run_test-auth-system:
+    start_when:
+      bundled:
+        script_key: bundle-rspec-ruby
+      # the following is not a hard dependency, this ist just not fall
+      # into a timeout when building the uberjar taks very long
+      the uberjar is ready:
+        script_key: build-uberjar
+    timeout: 5 Minutes
+    body: |
+      #!/usr/bin/env bash
+      set -eux
+      export PATH=~/.rubies/$RUBY/bin:$PATH
+      bundle exec ruby bin/test-auth-system.rb -p ${TEST_AUTH_SYSTEM_PORT}
+
+  test-auth-system_is-serving:
+    timeout: 30 seconds
+    start_when:
+      the service is running:
+        script_key: run_test-auth-system
+        states: [executing]
+    body: |
+      #!/usr/bin/env bash
+      set -ux
+      until curl --silent --fail -I "http://localhost:${TEST_AUTH_SYSTEM_PORT}/status" ; do
+        sleep 1;
+      done
+
+  test:
+    # either passes in less than 20 seconds or not and then would run for minutes
+    start_when:
+      test-auth-system is serving:
+        script_key: test-auth-system_is-serving
+
+  shutdown_test-auth-system:
+    timeout: 3 Seconds
+    body: |
+      set -eux
+      kill -INT $(lsof -t -wni tcp:${TEST_AUTH_SYSTEM_PORT})
+      sleep 1
+    start_when:
+      test is terminal:
+        script_key: test
+        states: [aborted, defective, passed, failed, skipped]
+      we are serving:
+        script_key: test-auth-system_is-serving
+
+
