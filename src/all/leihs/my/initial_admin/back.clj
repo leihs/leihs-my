@@ -12,10 +12,7 @@
     [ring.util.response :refer [redirect]]
 
     [clojure.tools.logging :as logging]
-    [logbug.debug :as debug])
-  (:import
-    [java.util UUID]
-    ))
+    [logbug.debug :as debug]))
 
 
 (defn some-admin? [tx]
@@ -25,8 +22,7 @@
 (defn prepare-data [data]
   (-> data
       (select-keys [:email])
-      (assoc :is_admin true
-             :id (UUID/randomUUID))))
+      (assoc :is_admin true)))
 
 (defn insert-user [data tx]
   (first (jdbc/insert! tx :users data)))
@@ -43,7 +39,7 @@
   ([data tx]
    (if (some-admin? tx)
      {:status 403
-      :body "A admin user already exists!"}
+      :body "An admin user already exists!"}
      (let [user (-> data prepare-data (insert-user tx))]
        (assert user)
        (assert (set-password (:id user)
@@ -72,4 +68,4 @@
 ;(logging-config/set-logger! :level :debug)
 ;(logging-config/set-logger! :level :info)
 ;(debug/debug-ns 'cider-ci.utils.shutdown)
-;(debug/debug-ns *ns*)
+(debug/debug-ns *ns*)

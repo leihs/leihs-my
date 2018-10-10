@@ -13,13 +13,13 @@
           [logbug.catcher :as catcher]
           [logbug.debug :as debug]
           [logbug.thrown :as thrown]
-
           ])))
 
 (def external-handlers
   #{:borrow
     :lending
     :procurement
+    :admin
     })
 
 ;(re-matches
