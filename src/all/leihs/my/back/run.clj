@@ -25,7 +25,7 @@
     ))
 
 (def defaults
-  {:LEIHS_MY_HTTP_BASE_URL "http://localhost:3220"
+  {:LEIHS_MY_HTTP_BASE_URL "http://localhost:3240"
    :LEIHS_DATABASE_URL "jdbc:postgresql://leihs:leihs@localhost:5432/leihs?min-pool-size=1&max-pool-size=16"
    })
 

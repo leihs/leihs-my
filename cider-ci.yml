@@ -20,11 +20,11 @@ jobs:
           Leiningen 2: true
         ports:
           LEIHS_MY_HTTP_PORT:
-            min: 3200
-            max: 3300
+            min: 3240
+            max: 3249
           TEST_AUTH_SYSTEM_PORT:
-            min: 3200
-            max: 3300
+            min: 3240
+            max: 3249
         environment_variables:
           MY_DIR: '{{CIDER_CI_WORKING_DIR}}'
           DATABASE_NAME: leihs_api_{{CIDER_CI_TRIAL_ID}}
