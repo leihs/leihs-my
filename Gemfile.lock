@@ -197,7 +197,7 @@ DEPENDENCIES
   base32-crockford
   capybara
   exiftool_vendored
-  factory_bot (~> 4.0)
+  factory_bot
   faker
   faraday
   faraday_middleware
@@ -215,4 +215,4 @@ DEPENDENCIES
   uuidtools
 
 BUNDLED WITH
-   1.16.0
+   1.16.6

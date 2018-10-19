@@ -1,13 +1,9 @@
 eval_gemfile 'database/Gemfile'
 
-gem 'addressable'
 gem 'capybara'
-gem 'factory_bot', '~> 4.0'
-gem 'faker'
 gem 'faraday'
 gem 'faraday_middleware'
 gem 'haml'
 gem 'jwt'
-gem 'rspec'
 gem 'selenium-webdriver', '~> 2.53'
 gem 'sinatra'
