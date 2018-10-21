@@ -54,8 +54,8 @@
    [:div
     (when-not (nil? (-> @routing/state* :query-params-raw :email presence))
       [:div.alert.alert-danger
-       "Signing in with the provided email address is currently not possible! "
-       "Check the email address and try again. "
+       "Signing in with this account is currently not possible! "
+       "Check your email-address respectively login and try again. "
        "Contact your leihs administrator if the problem persists. "])]
    [sign-in/nav-email-continue-component path]])
 

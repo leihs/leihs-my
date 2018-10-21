@@ -27,16 +27,27 @@
   (-> (auth-system-base-query-for-uniqe-id user-unique-id authentication-system-id)
       (sql/merge-select 
         [(sql/call :row_to_json :authentication_systems) :authentication_system]
-        [(sql/call :row_to_json :users) :user]
-        [(sql/call :row_to_json :authentication_systems_users) :authentication_system_user])))
+        [(sql/call :row_to_json :users) :user])
+      sql/format))
 
 (defn authentication-system-user-data! 
   [user-unique-id authentication-system-id tx]
-  (-> (->> (auth-system-user-query user-unique-id authentication-system-id)
-           sql/format (jdbc/query tx) first)
-      (or (throw (ex-info
-                   "External authentication system not found or not enabled" 
-                   {:status 500})))))
+  (if-let [authentication_system_and_user 
+           (->> (auth-system-user-query 
+                  user-unique-id authentication-system-id)
+                (jdbc/query tx) first)]
+    (merge authentication_system_and_user
+           (->> (-> (sql/select :*)
+                    (sql/from :authentication_systems_users)
+                    (sql/merge-where [:= :authentication_systems_users.authentication_system_id 
+                                      (-> authentication_system_and_user :authentication_system :id)])
+                    (sql/merge-where [:= :authentication_systems_users.user_id
+                                      (-> authentication_system_and_user :user_id:id)])
+                    sql/format)
+                (jdbc/query tx) first))
+    (or (throw (ex-info
+                 "External authentication system not found or not enabled" 
+                 {:status 500})))))
 
 (defn prepare-key-str [s]
   (->> (-> s (clojure.string/split #"\n"))
@@ -166,4 +177,4 @@
 ;#### debug ###################################################################
 ;(logging-config/set-logger! :level :debug)
 ;(logging-config/set-logger! :level :info)
-(debug/debug-ns *ns*)
+;(debug/debug-ns *ns*)

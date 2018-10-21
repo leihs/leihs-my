@@ -10,17 +10,33 @@
     [clojure.tools.logging :as logging]
     [logbug.debug :as debug]))
 
+(def authentication-systems-users-sql-expr
+  [:or
+   [:exists
+    (-> (sql/select true)
+        (sql/from :authentication_systems_users)
+        (sql/merge-where [:= :authentication_systems_users.user_id :users.id])
+        (sql/merge-where [:= :authentication_systems.id 
+                          :authentication_systems_users.authentication_system_id]))]
+   [:exists
+    (-> (sql/select true)
+        (sql/from [:authentication_systems :asxs])
+        (sql/merge-where [:= :asxs.id :authentication_systems.id])
+        (sql/merge-join :authentication_systems_groups 
+                        [:and [:= :asxs.id :authentication_systems_groups.authentication_system_id]])
+        (sql/merge-join :groups_users [:and 
+                                       [:= :authentication_systems_groups.group_id :groups_users.group_id]
+                                       [:= :authentication_systems_groups.group_id :groups_users.group_id]
+                                       [:= :groups_users.user_id :users.id]]))]])
+
 (def auth-system-user-base-query
-  (-> (sql/from :authentication_systems)
+  (-> (sql/from :authentication_systems :users)
+      (sql/merge-where authentication-systems-users-sql-expr)
       (sql/merge-where [:= :authentication_systems.enabled true])
-      (sql/merge-join :authentication_systems_users
-                      [:= :authentication_systems_users.authentication_system_id
-                       :authentication_systems.id])
-      (sql/merge-join :users
-                      [:= :users.id
-                       :authentication_systems_users.user_id])
       (sql/merge-join [:= :users.account_enabled true])
       (sql/order-by [:authentication_systems.priority :desc] :authentication_systems.id)))
+
+;(-> auth-system-user-base-query sql/format)
 
 
 (defn auth-system-base-query-for-uniqe-id 
@@ -34,3 +50,8 @@
   ([user-unique-id authentication-system-id]
    (-> (auth-system-base-query-for-uniqe-id user-unique-id)
        (sql/merge-where [:= :authentication_systems.id authentication-system-id]))))
+
+;#### debug ###################################################################
+;(logging-config/set-logger! :level :debug)
+;(logging-config/set-logger! :level :info)
+;(debug/debug-ns *ns*)
