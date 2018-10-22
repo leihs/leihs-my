@@ -45,7 +45,7 @@ feature 'Password-Reset', type: :feature do
 
     scenario 'A user not beeing an admin can not reset an other users password' do
       sign_in_as @user1
-      visit "/user/#{@user2.id}/password"
+      visit "/my/user/#{@user2.id}/password"
       fill_in 'password', with: 'new password'
       click_on 'Set password'
 
@@ -59,7 +59,7 @@ feature 'Password-Reset', type: :feature do
     scenario 'An admin can reset an other users password' do
 
       sign_in_as @admin
-      visit "/user/#{@user2.id}/password"
+      visit "/my/user/#{@user2.id}/password"
       fill_in 'password', with: 'new password'
       click_on 'Set password'
 

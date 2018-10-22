@@ -30,7 +30,7 @@
 ;  "abc")
 
 (def my-service-paths
-  (branch "/my"
+  (branch ""
           (leaf "/status" :status)
           (leaf "/shutdown" :shutdown)
           (leaf "/initial-admin" :initial-admin)
@@ -60,9 +60,10 @@
 (def paths
   (branch ""
           leihs.core.paths/core-paths
-          my-service-paths
-          user-paths
-          ))
+          (branch "/my"
+                  my-service-paths
+                  user-paths
+                  )))
 
 (reset! leihs.core.paths/paths* paths) 
 
