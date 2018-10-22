@@ -21,11 +21,11 @@
     [reagent.core :as reagent]
     ))
 
-(defn request-authentication [authentication-system-id]
+(defn request-authentication [authentication-system]
   (defonce request-authentication-id* (atom nil))
   (let [resp-chan (async/chan)
         p1 {:url (path :external-authentication-request
-                       {:authentication-system-id authentication-system-id})
+                       {:authentication-system-id (:id authentication-system)})
             :method :post
             :json-params {:user-unique-id (-> @routing/state* :query-params-raw :email)}}
         p2 {:modal false
@@ -54,7 +54,7 @@
        [:form.form
         {:on-submit (fn [e] 
                       (.preventDefault e)
-                      (request-authentication (:id pws))
+                      (request-authentication pws)
                       )}
         [:div.form-group.float-right
          [:button.btn

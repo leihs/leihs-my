@@ -22,7 +22,20 @@
     ))
 
 
+(defn check-and-forward-to-singel-external [authentication-systems]
+  (let [first-authsystem (first authentication-systems)]
+    (if (and (= 1 (count authentication-systems))
+             (= "external" (:type first-authsystem)))
+      (external-authentication/request-authentication first-authsystem))))
+
 (defonce authentication-systems* (reagent/atom nil))
+
+(defn on-fetch-success [resp]
+  (let [authentication-systems (->> resp :body
+                                    (map-indexed
+                                      #(assoc %2 :index %1 :key (:id %2))))]
+    (check-and-forward-to-singel-external authentication-systems)
+    (reset! authentication-systems* authentication-systems)))
 
 (defn fetch-authentication-systems [& args]
   (defonce fetch-authentication-systems-id* (atom nil))
@@ -39,10 +52,7 @@
     (go (let [resp (<! resp-chan)]
           (when (= id @fetch-authentication-systems-id*)
             (case (:status resp)
-              200 (reset! authentication-systems*
-                          (->> resp :body
-                               (map-indexed
-                                 #(assoc %2 :index %1 :key (:id %2)))))
+              200 (on-fetch-success resp)
               (reset! authentication-systems* [])))))))
 
 (defn reset-and-fetch []
@@ -65,10 +75,10 @@
 (defn authentication-systems-component []
   [:div.authentication-systems
    (for [authentication-system  @authentication-systems*]
-     (case (:type authentication-system)
-       "password" [password-authentication/sign-in-component authentication-system]
-       "external" [external-authentication/sign-in-component authentication-system]
-       ))])
+     (let [component (case (:type authentication-system)
+                       "password" password-authentication/sign-in-component 
+                       "external" external-authentication/sign-in-component)]
+       [component authentication-system]))])
 
 (defn debug-component []
   (when (:debug @state/global-state*)
