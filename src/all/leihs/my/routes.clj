@@ -10,6 +10,7 @@
     [leihs.core.routing.dispatch-content-type :as dispatch-content-type]
     [leihs.core.auth.core :as auth]
     [leihs.core.shutdown :as shutdown]
+    [leihs.core.navbar.back :as navbar]
 
     [leihs.my.authorization :as authorization]
     [leihs.my.back.html :as html]
@@ -55,6 +56,7 @@
 
 (def no-html-handler-keys
   #{:redirect-to-root
+    :navbar
     :not-found})
 
 (def resolve-table
@@ -62,6 +64,7 @@
    :api-tokens api-tokens/routes
    :auth-info auth-info/ring-handler
    :initial-admin initial-admin/routes
+   :navbar navbar/handler
    :not-found html/not-found-handler
    :password-authentication password-authentication/routes
    :password leihs.my.user.password.back/routes

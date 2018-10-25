@@ -50,6 +50,20 @@
        ])]
    [user/navbar-user-nav]])
 
+(defn nav-bar-2 []
+  [:nav.navbar.navbar-expand.justify-content-between
+   {:class "navbar-light bg-info"}
+   [:a.navbar-brand {:href (path :home)} "leihs"]
+   [:div
+    (when @user/state*
+      [:ul.navbar-nav
+       [li-admin-navitem]
+       [li-navitem :borrow "Borrow"]
+       [li-navitem :lending "Lending"]
+       [li-navitem :procure "Procurement"]
+       ])]
+   [user/navbar-user-nav]])
+
 (defn version-component []
   [:span.navbar-text "Version "
    (let [major (:version_major @state/leihs-my-version*)
@@ -90,6 +104,7 @@
 (defn current-page []
   [:div
    [leihs.core.requests.modal/modal-component]
+   [nav-bar-2]
    [nav-bar]
    [:div
     (if-let [page (:page @routing/state*)]
