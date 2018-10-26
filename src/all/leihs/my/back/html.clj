@@ -4,7 +4,6 @@
   (:require
     [leihs.core.json :refer [to-json]]
 
-    [leihs.my.env :refer [env]]
     [leihs.core.http-cache-buster :as cache-buster :refer [wrap-resource]]
     [leihs.my.utils.release-info :as release-info]
     [leihs.core.sql :as sql]
@@ -12,6 +11,7 @@
 
     [clojure.java.jdbc :as jdbc]
     [hiccup.page :refer [include-js html5]]
+    [environ.core :refer [env]]
 
     [clojure.tools.logging :as logging]
     [logbug.catcher :as catcher]
@@ -35,8 +35,10 @@
            :content "width=device-width, initial-scale=1, shrink-to-fit=no"}]
    (include-site-css)
    (include-font-css)])
+
 (defn body-attributes [request]
-  {:data-user (some-> (:authenticated-entity request) to-json url/encode)
+  {:data-remote-navbar (env :remote-navbar)
+   :data-user (some-> (:authenticated-entity request) to-json url/encode)
    :data-leihs-my-version (url/encode (to-json release-info/leihs-my-version))
    :data-leihs-version (url/encode (to-json release-info/leihs-version))})
 
