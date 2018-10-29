@@ -49,6 +49,7 @@
   #{:external-authentication-request
     :external-authentication-sign-in
     :initial-admin
+    :navbar
     :password-authentication
     :shutdown
     :sign-in

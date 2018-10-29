@@ -20,6 +20,7 @@
     :lending
     :procurement
     :admin
+    :daily
     })
 
 ;(re-matches
