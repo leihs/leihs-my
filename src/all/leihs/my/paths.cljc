@@ -64,8 +64,7 @@
           (branch "/my"
                   (leaf "/navbar" :navbar)
                   my-service-paths
-                  user-paths
-                  )))
+                  user-paths)))
 
 (reset! leihs.core.paths/paths* paths) 
 

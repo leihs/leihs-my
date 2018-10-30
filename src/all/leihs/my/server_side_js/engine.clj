@@ -21,14 +21,7 @@
     {:generate   (fn [_] (create-js-engine))
      :controller (Pools/utilizationController 0.9 10000 10000)}))
 
-(defn- render-page [page-id]
+(defn invoke [func & args]
   (let [js-engine @(flow/acquire js-engine-pool js-engine-key)]
-    (try (.invokeFunction js-engine
-                          "render_page" ; function name
-                          (object-array ["foo" "bar"]) ; args
-                          )
+    (try (.invokeFunction js-engine func (object-array args))
          (finally (flow/release js-engine-pool js-engine-key js-engine)))))
-
-; (defn handler [_]
-;   {:headers {"Content-Type" "text/plain"}
-;    :body (html (render-page "home"))})

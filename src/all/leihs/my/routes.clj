@@ -10,7 +10,6 @@
     [leihs.core.routing.dispatch-content-type :as dispatch-content-type]
     [leihs.core.auth.core :as auth]
     [leihs.core.shutdown :as shutdown]
-    [leihs.core.remote-navbar.back :as remote-navbar]
 
     [leihs.my.authorization :as authorization]
     [leihs.my.back.html :as html]
@@ -18,6 +17,7 @@
     [leihs.my.env :as env]
     [leihs.my.initial-admin.back :as initial-admin]
     [leihs.my.paths :refer [path paths]]
+    [leihs.my.remote-navbar.back :as remote-navbar]
     [leihs.my.resources.settings.back :as settings]
     [leihs.my.resources.status.back :as status]
     [leihs.my.sign-in.back :as sign-in]
