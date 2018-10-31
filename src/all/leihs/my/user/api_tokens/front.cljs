@@ -9,11 +9,13 @@
     [leihs.core.routing.front :as routing]
     [leihs.core.breadcrumbs :as breadcrumbs]
 
+    [leihs.my.front.breadcrumbs :as my-breadcrumbs]
     [leihs.my.front.shared :refer [humanize-datetime-component]]
     [leihs.my.front.state :as state]
     [leihs.my.paths :as paths :refer [path]]
     [leihs.my.user.api-token.front :as api-token]
     [leihs.my.user.api-tokens.breadcrumbs :as api-tokens-breadcrumbs]
+    [leihs.my.user.shared :refer [me?*]]
 
     [cljs.pprint :refer [pprint]]
     [cljs.core.async :as async]
@@ -109,13 +111,18 @@
   [:div.account
    (breadcrumbs/nav-component
      [(breadcrumbs/leihs-li)
-      (breadcrumbs/me-user-li)
+      (my-breadcrumbs/user-li)
       (api-tokens-breadcrumbs/api-tokens-li)]
      [(api-tokens-breadcrumbs/api-token-add-li)])
    [:div
-    [routing/hidden-state-component {:did-update fetch-tokens
-                                     :did-mount fetch-tokens}]
-    [:h1 " API-Tokens "]
+    [routing/hidden-state-component {:did-change fetch-tokens}]
+    [:div
+     (if @me?*
+       [:h1 "My API-Tokens"]
+       (let [id (-> @routing/state* :route-params :user-id)]
+         [:div 
+          [:h1 "User's API-Tokens"]
+          [:p "user-id: " [:code id ]]]))]
     [api-tokens-component]
     [debug-component]
     ]])

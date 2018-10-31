@@ -4,6 +4,7 @@
     [leihs.core.core :refer [keyword str presence]]
     [leihs.core.paths]
 
+    [clojure.pprint :refer [pprint]]
     [bidi.bidi :refer [path-for match-route]]
     [bidi.verbose :refer [branch param leaf]]
 
@@ -52,7 +53,7 @@
 (def user-paths
   (branch "/user/"
           (param [#"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})|(me)|(:user-id)" :user-id])
-          (leaf "" :me-user)
+          (leaf "" :my-user)
           (leaf "/auth-info" :auth-info)
           (leaf "/password" :password)
           api-tokens-paths))
@@ -69,4 +70,5 @@
 
 (def path leihs.core.paths/path)
 
-;(path :api-tokens)
+;(path :user {:user-id "me"}{})
+;(path :my-user {:user-id "me"}{})

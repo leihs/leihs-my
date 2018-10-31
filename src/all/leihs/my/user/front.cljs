@@ -9,13 +9,13 @@
     [leihs.core.routing.front :as routing]
     [leihs.core.user.front :as user]
 
+    [leihs.my.front.breadcrumbs :as my-breadcrumbs]
+    [leihs.my.user.shared :refer [me?*]]
     [leihs.my.paths :as paths :refer [path]]
     [leihs.my.user.api-tokens.breadcrumbs :as api-tokens-breadcrumbs]
     [leihs.my.user.password.breadcrumbs :as password-breadcrumbs]))
 
-(def me?*
-  (reaction
-    (= "me" (-> @routing/state* :route-params :user-id))))
+
 
 (defn page []
   (let [user-id (if @me?*
@@ -24,7 +24,7 @@
     [:div.me
      (breadcrumbs/nav-component
        [(breadcrumbs/leihs-li)
-        (breadcrumbs/me-user-li)]
+        (my-breadcrumbs/user-li)]
        [(api-tokens-breadcrumbs/api-tokens-li)
         (password-breadcrumbs/password-li)
         (when (:is_admin @user/state*)
@@ -33,6 +33,9 @@
      [:div
       (if @me?*
         [:h1 "My leihs Home"]
-        [:h1 "User's " [:em (-> @routing/state* :route-params :user-id)] " leihs Home"])]
+        (let [id (-> @routing/state* :route-params :user-id)]
+          [:div 
+           [:h1 "User's Home"]
+           [:p "user-id: " [:code id ]]]))]
      [:div
       [:p "There will be some awesome information in the future here."]]]))

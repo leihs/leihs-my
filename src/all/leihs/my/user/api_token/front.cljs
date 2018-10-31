@@ -9,10 +9,12 @@
     [leihs.core.routing.front :as routing]
     [leihs.core.breadcrumbs :as breadcrumbs]
 
+    [leihs.my.front.breadcrumbs :as my-breadcrumbs]
     [leihs.my.front.shared :refer [humanize-datetime-component]]
     [leihs.my.front.state :as state]
     [leihs.my.paths :as paths :refer [path]]
     [leihs.my.user.api-tokens.breadcrumbs :as api-tokens-breadcrumbs]
+    [leihs.my.user.shared :refer [me?*]]
 
     [accountant.core :as accountant]
     [cljs.core.async :as async]
@@ -304,16 +306,19 @@
      :will-unmount #(reset! api-token-data* nil)}]
    (breadcrumbs/nav-component
      [(breadcrumbs/leihs-li)
-      (breadcrumbs/me-user-li)
+      (my-breadcrumbs/user-li)
       (api-tokens-breadcrumbs/api-tokens-li)
       (api-tokens-breadcrumbs/api-token-add-li)]
      [])
-   [:div.row
-    [:div.col-lg
-     [:h1
-      [:span " Add API-Token "]]
-     [form-component]
-     [debug-component]]]])
+   [:div
+    (if @me?*
+      [:h1 "Add My API-Token "]
+      (let [id (-> @routing/state* :route-params :user-id)]
+        [:div 
+         [:h1 "Add User's API-Token"]
+         [:p "user-id: " [:code id ]]]))
+    [form-component]
+    [debug-component]]])
 
 
 ;;; show page ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -345,15 +350,20 @@
      :did-mount fetch-token}]
    (breadcrumbs/nav-component
      [(breadcrumbs/leihs-li)
-      (breadcrumbs/me-user-li)
+      (my-breadcrumbs/user-li)
       (api-tokens-breadcrumbs/api-tokens-li)
       (api-tokens-breadcrumbs/api-token-li)] 
      [(api-tokens-breadcrumbs/api-token-delete-li)
       (api-tokens-breadcrumbs/api-token-edit-li)
       ])
-   [:h1 "API-Token "
-    (when-let [part (:token_part @api-token-data*)]
-      [:code part])]
+   [:div
+    (let [part (:token_part @api-token-data*)]
+      (if @me?*
+        [:h1 "My API-Token " [:code part]]
+        (let [id (-> @routing/state* :route-params :user-id)]
+          [:div 
+           [:h1 "User's API-Token" [:code part]]
+           [:p "user-id: " [:code id ]]])))]
    (if @api-token-data*
      [form-component]
      [:div.text-center
@@ -394,14 +404,19 @@
     {:did-change fetch-token}]
    (breadcrumbs/nav-component
      [(breadcrumbs/leihs-li)
-      (breadcrumbs/me-user-li)
+      (my-breadcrumbs/user-li)
       (api-tokens-breadcrumbs/api-tokens-li)
       (api-tokens-breadcrumbs/api-token-li)
       (api-tokens-breadcrumbs/api-token-edit-li)]
      [])
-   [:h1 " Edit API-Token "
-    (when-let [part (:token_part @api-token-data*)]
-      [:code part])]
+   [:div
+    (let [part (:token_part @api-token-data*)]
+      (if @me?*
+        [:h1 "Edit My API-Token " [:code part]]
+        (let [id (-> @routing/state* :route-params :user-id)]
+          [:div 
+           [:h1 "Edit User's API-Token" [:code part]]
+           [:p "user-id: " [:code id ]]])))]
    (if @api-token-data*
      [form-component]
      [:div.text-center
@@ -441,14 +456,18 @@
      :did-change fetch-token}]
    (breadcrumbs/nav-component
      [(breadcrumbs/leihs-li)
-      (breadcrumbs/me-user-li)
+      (my-breadcrumbs/user-li)
       (api-tokens-breadcrumbs/api-tokens-li)
       (api-tokens-breadcrumbs/api-token-li)
       (api-tokens-breadcrumbs/api-token-delete-li)]
      [])
-   [:h1 " Delete API-Token "
-    (when-let [part (:token_part @api-token-data*)]
-      [:code part])]
+   (let [part (:token_part @api-token-data*)]
+     (if @me?*
+       [:h1 "Delete My API-Token " [:code part]]
+       (let [id (-> @routing/state* :route-params :user-id)]
+         [:div 
+          [:h1 "Delete User's API-Token" [:code part]]
+          [:p "user-id: " [:code id ]]])))
    (if @api-token-data*
      [form-component]
      [:div.text-center
