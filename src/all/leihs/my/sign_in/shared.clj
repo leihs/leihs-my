@@ -17,7 +17,10 @@
         (sql/from :authentication_systems_users)
         (sql/merge-where [:= :authentication_systems_users.user_id :users.id])
         (sql/merge-where [:= :authentication_systems.id 
-                          :authentication_systems_users.authentication_system_id]))]
+                          :authentication_systems_users.authentication_system_id])
+        (sql/merge-where [:or 
+                          [:<> :authentication_systems.type "password"]
+                          [:= :users.password_sign_in_enabled true]]))]
    [:exists
     (-> (sql/select true)
         (sql/from [:authentication_systems :asxs])
