@@ -8,6 +8,7 @@
             [leihs.core.sql :as sql]
             [leihs.core.url.core :as url]
             [leihs.my.server-side-js.engine :as js-engine]
+            [leihs.core.anti-csrf.back :refer [anti-csrf-token]]
             [clojure.java.jdbc :as jdbc]
             [hiccup.page :refer [include-js html5]]
             [environ.core :refer [env]]
@@ -51,16 +52,19 @@
                  [:div.container-fluid
                   [:h1.text-danger "Error 404 - Not Found"]]])})
 
+(defn render-navbar
+  [request]
+  (let [csrf-token (anti-csrf-token request)]
+    (js-engine/render-react
+      "Navbar"
+      {:config {:appTitle "Leihs", :appColor "gray", :csrfToken csrf-token}})))
+
 (defn html-handler
   [request]
   {:headers {"Content-Type" "text/html"},
    :body (html5 (head)
                 [:body (body-attributes request)
-                 [:div
-                  [:div {}
-                   (js-engine/render-react "Navbar"
-                                           {:config {:appTitle "Matus",
-                                                     :appColor "blue"}})]
+                 [:div (render-navbar request)
                   [:div#app.container-fluid
                    [:div.alert.alert-warning [:h1 "Leihs My"]
                     [:p "This application requires Javascript."]]]]
