@@ -7,3 +7,6 @@
 [submodule "leihs-clj-shared"]
 	path = leihs-clj-shared
 	url = https://github.com/leihs/leihs-clj-shared.git
+[submodule "leihs-ui"]
+	path = leihs-ui
+	url = https://github.com/leihs/leihs-ui

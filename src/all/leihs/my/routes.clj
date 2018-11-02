@@ -120,6 +120,7 @@
         "public" {:allow-symlinks? true
                   :cache-bust-paths ["/my/css/site.css"
                                      "/my/css/site.min.css"
+                                     "/my/leihs-shared-bundle.js"
                                      "/my/js/app.js"]
                   :no-expire-paths [#".*font-awesome-[^\/]*\d\.\d\.\d\/.*"
                                        #".+_[0-9a-f]{40}\..+"]

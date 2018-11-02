@@ -114,5 +114,5 @@
     (try
       (.eval
         js-engine
-        (str "renderComponentToStaticMarkup('" name "', " (to-json props) ")"))
+        (str "renderComponentToString('" name "', " (to-json props) ")"))
       (finally (flow/release js-engine-pool js-engine-key js-engine)))))

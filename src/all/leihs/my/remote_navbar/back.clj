@@ -9,7 +9,7 @@
              [borrow-access? managed-inventory-pools]]
             [leihs.core.user.permissions.procure :as procure]))
 
-(defn- navbar-main-sections
+(defn- navbar-main-sections-html
   [tx auth-entity]
   (html
     [:h3 {:style "color: red"} "Remote Navbar"]
@@ -28,11 +28,16 @@
                           (:name %)])
              pools)]]))]))
 
+(defn- navbar-main-sections
+  [tx auth-entity]
+  [(if (borrow-access? tx auth-entity) {:title "Borrow", :href "/borrow"})])
+
 (defn handler
   [request]
   (let [tx (:tx request)
         auth-entity (:authenticated-entity request)
         html-arg (navbar-main-sections tx auth-entity)]
     {:headers {"Content-Type" "text/plain"},
-     :body (js-engine/render-react "Navbar" {:config {:appTitle "Matus"}})}))
-; (defn hand
+     :body (js-engine/render-react "Navbar"
+                                   {:config {:appTitle "Matus",
+                                             :appColor "orange"}})}))

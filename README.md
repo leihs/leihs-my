@@ -1,10 +1,6 @@
+# leihs-my (working title)
 
-leihs-my   (working title)
-============================================
-
-
-Development
------------
+## Development
 
 ## Run The Application
 
@@ -20,28 +16,19 @@ Inspect and set parameters
 
     (-main "run" "-h")
 
-
 ### Frontend
 
     lein figwheel
 
+## Compiled Stylesheets/JS Bundle
 
-## Compile Stylesheets
+    cp leihs-ui/dist/leihs-ui-server-side.js resources/all/public/server_side/bundle.js
 
-The Bootstrap sources require a relative recent version of SASS and the one
-provided with lein-sassy 1.0.8 (time of writing) does not suffice.
+    cp leihs-ui/bootstrap-theme-leihs/build/bootstrap-leihs.css resources/all/public/my/css/site.css
+    cp leihs-ui/dist/leihs-ui-client-side.js resources/all/public/my/leihs-shared-bundle.js
 
-    sass --watch resources/all/public/admin/css/site.sass:resources/all/public/admin/css/site.css
-
-Minified css saves only about 10% of the size. We deemed that not worth to mess
-with it. In production mode effective caching is enabled.
-
-
-Building and Testing
---------------------
+## Building and Testing
 
 ## Build
 
     lein do clean, uberjar
-
-
