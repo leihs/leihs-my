@@ -30,12 +30,14 @@
 
 (defn- sub-apps
   [tx auth-entity]
-  [{:borrow (borrow-access? tx auth-entity)}
-   {:admin (:is_admin auth-entity)}
-   {:procure (procure/any-access? tx auth-entity)}
-   {:manage (map #(hash-map :name (:name %)
-                            :href (path :daily {:inventory_pool_id (:id %)}))
-                 (managed-inventory-pools tx auth-entity))}])
+  (if auth-entity
+    [{:borrow (borrow-access? tx auth-entity)}
+     {:admin (:is_admin auth-entity)}
+     {:procure (procure/any-access? tx auth-entity)}
+     {:manage (map #(hash-map :name (:name %)
+                              :href (path :daily {:inventory_pool_id (:id %)}))
+                   (managed-inventory-pools tx auth-entity))}]
+    []))
 
 ; (defn- navbar-main-sections
 ;   [tx auth-entity]
