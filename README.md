@@ -32,3 +32,5 @@ Inspect and set parameters
 ## Build
 
     lein do clean, uberjar
+    # run:
+    java -jar target/leihs-my.jar run
