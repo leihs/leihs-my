@@ -6,6 +6,7 @@
              [wrap-resource]]
             [leihs.my.utils.release-info :as release-info]
             [leihs.core.sql :as sql]
+            [leihs.core.ds :as ds]
             [leihs.core.url.core :as url]
             [leihs.my.server-side-js.engine :as js-engine]
             [leihs.core.anti-csrf.back :refer [anti-csrf-token]]
@@ -56,6 +57,29 @@
                  [:div.container-fluid
                   [:h1.text-danger "Error 404 - Not Found"]]])})
 
+(defn- languages [tx]
+  (-> (sql/select :*)
+      (sql/from :languages)
+      (sql/where [:= :active true])
+      sql/format
+      (->> (jdbc/query tx))))
+
+(defn- auth-systems [tx]
+  (-> (sql/select :id
+                  :name
+                  :description
+                  :type
+                  :priority
+                  :shortcut_sign_in_enabled)
+      (sql/from :authentication_systems)
+      (sql/where [:= :enabled true])
+      sql/format
+      (->> (jdbc/query tx))))
+
+(comment
+  (auth-systems (ds/get-ds))
+  (languages (ds/get-ds)))
+
 (defn- sub-apps
   [tx auth-entity]
   (if auth-entity
@@ -76,7 +100,8 @@
                             {:config {:appTitle "Leihs",
                                       :appColor "gray",
                                       :csrfToken csrf-token,
-                                      :subApps (sub-apps tx auth-entity)}})))
+                                      :subApps (sub-apps tx auth-entity)
+                                      :locales (languages tx)}})))
 
 (defn html-handler
   [request]

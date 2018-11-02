@@ -12,4 +12,4 @@
      :body (js-engine/render-react
              "Navbar"
              {:config {:appTitle "TODO",
-                       :appColor "red"}})}))
+                       :appColor "red"}})})
