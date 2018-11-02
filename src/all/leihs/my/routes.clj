@@ -24,6 +24,7 @@
     [leihs.my.sign-in.external-authentication.back :as external-authentication]
     [leihs.my.sign-in.password-authentication.back :as password-authentication]
     [leihs.my.sign-out.back :as sign-out]
+    [leihs.my.user.back :as user]
     [leihs.my.user.api-token.back :as api-token]
     [leihs.my.user.api-tokens.back :as api-tokens]
     [leihs.my.user.auth-info.back :as auth-info]
@@ -66,9 +67,10 @@
    :auth-info auth-info/ring-handler
    :initial-admin initial-admin/routes
    :navbar remote-navbar/handler
+   :my-user user/routes
    :not-found html/not-found-handler
    :password-authentication password-authentication/routes
-   :password leihs.my.user.password.back/routes
+   :password password/routes
    :external-authentication-request external-authentication/routes
    :external-authentication-sign-in external-authentication/routes
    :redirect-to-root redirect-to-root-handler

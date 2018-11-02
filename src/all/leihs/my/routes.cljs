@@ -36,7 +36,7 @@
    :external-authentication-sign-in #'external-authentication/sign-in-page
    :home #'home/page
    :initial-admin #'initial-admin/page
-   :me-user #'user/page
+   :my-user #'user/page
    :password #'password/page
    :sign-in #'sign-in/page
    :status #'status/info-page
