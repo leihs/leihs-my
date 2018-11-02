@@ -9,6 +9,10 @@
             [leihs.core.url.core :as url]
             [leihs.my.server-side-js.engine :as js-engine]
             [leihs.core.anti-csrf.back :refer [anti-csrf-token]]
+            [leihs.core.user.permissions :refer
+             [borrow-access? managed-inventory-pools]]
+            [leihs.core.user.permissions.procure :as procure]
+            [leihs.my.paths :refer [path]]
             [clojure.java.jdbc :as jdbc]
             [hiccup.page :refer [include-js html5]]
             [environ.core :refer [env]]
@@ -52,12 +56,27 @@
                  [:div.container-fluid
                   [:h1.text-danger "Error 404 - Not Found"]]])})
 
+(defn- sub-apps
+  [tx auth-entity]
+  (if auth-entity
+    (merge {:borrow (borrow-access? tx auth-entity)}
+           {:admin (:is_admin auth-entity)}
+           {:procure (procure/any-access? tx auth-entity)}
+           {:manage (map #(hash-map :name (:name %)
+                                    :href (path :daily
+                                                {:inventory_pool_id (:id %)}))
+                      (managed-inventory-pools tx auth-entity))})))
+
 (defn render-navbar
   [request]
-  (let [csrf-token (anti-csrf-token request)]
-    (js-engine/render-react
-      "Navbar"
-      {:config {:appTitle "Leihs", :appColor "gray", :csrfToken csrf-token}})))
+  (let [csrf-token (anti-csrf-token request)
+        tx (:tx request)
+        auth-entity (:authenticated-entity request)]
+    (js-engine/render-react "Navbar"
+                            {:config {:appTitle "Leihs",
+                                      :appColor "gray",
+                                      :csrfToken csrf-token,
+                                      :subApps (sub-apps tx auth-entity)}})))
 
 (defn html-handler
   [request]
