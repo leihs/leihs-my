@@ -22,7 +22,7 @@ Inspect and set parameters
 
 ## Compiled Stylesheets/JS Bundle
 
-    sh prepare-shared-ui.sh
+    sh scripts/prepare-shared-ui.sh
 
 ## Building and Testing
 
