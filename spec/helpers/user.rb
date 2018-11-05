@@ -4,8 +4,10 @@ module Helpers
 
     def sign_in_as user
       visit '/'
-      fill_in 'email', with: user.email
-      click_on 'Continue'
+      within('.navbar-leihs form') do
+        fill_in 'user', with: user.email
+        click_button
+      end
       fill_in 'password', with: user.password
       click_on 'Sign in'
       expect(page).to have_content user.email

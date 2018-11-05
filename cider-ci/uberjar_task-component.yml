@@ -1,9 +1,13 @@
 scripts:
   build-uberjar:
+    timeout: 5 minutes
     exclusive_executor_resource: build-leihs-my-jar
     body: |
       #!/usr/bin/env bash
       set -eux
+
+      sh scripts/prepare-shared-ui.sh
+      
       export LEIN_SNAPSHOTS_IN_RELEASE=yes
       DIGEST=$(git log -n 1 HEAD --pretty=%T)
       LEIN_UBERJAR_FILE="/tmp/leihs-my_${DIGEST}.jar"
