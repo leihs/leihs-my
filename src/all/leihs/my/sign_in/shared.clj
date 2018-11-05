@@ -44,7 +44,7 @@
 ;(-> auth-system-user-base-query sql/format)
 
 
-(defn auth-system-base-query-for-uniqe-id 
+(defn auth-system-base-query-for-unique-id 
   ([unique-id]
    (-> auth-system-user-base-query 
        (sql/merge-where 
@@ -53,7 +53,7 @@
           [:= :users.login unique-id]
           [:= (sql/raw "lower(users.email)") (-> unique-id (or "") str/lower-case)]])))
   ([user-unique-id authentication-system-id]
-   (-> (auth-system-base-query-for-uniqe-id user-unique-id)
+   (-> (auth-system-base-query-for-unique-id user-unique-id)
        (sql/merge-where [:= :authentication_systems.id authentication-system-id]))))
 
 ;#### debug ###################################################################
