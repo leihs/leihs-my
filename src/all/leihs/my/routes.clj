@@ -18,6 +18,7 @@
     [leihs.my.initial-admin.back :as initial-admin]
     [leihs.my.paths :refer [path paths]]
     [leihs.my.remote-navbar.back :as remote-navbar]
+    [leihs.my.resources.home.back :as home]
     [leihs.my.resources.settings.back :as settings]
     [leihs.my.resources.status.back :as status]
     [leihs.my.sign-in.back :as sign-in]
@@ -68,6 +69,7 @@
   {:api-token api-token/routes
    :api-tokens api-tokens/routes
    :auth-info auth-info/ring-handler
+   :home home/routes
    :initial-admin initial-admin/routes
    :navbar remote-navbar/handler
    :my-user user/routes

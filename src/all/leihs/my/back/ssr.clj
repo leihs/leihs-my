@@ -8,20 +8,29 @@
             [leihs.core.sql :as sql]
             [leihs.core.ds :as ds]
             [leihs.core.url.core :as url]
+            [leihs.my.back.shared :refer [head]]
             [leihs.my.server-side-js.engine :as js-engine]
             [leihs.core.anti-csrf.back :refer [anti-csrf-token]]
             [leihs.core.user.permissions :refer
              [borrow-access? managed-inventory-pools]]
             [leihs.core.user.permissions.procure :as procure]
             [leihs.my.paths :refer [path]]
+
             [clojure.java.jdbc :as jdbc]
             [environ.core :refer [env]]
+            [hiccup.page :refer [include-js html5]]
             [clojure.tools.logging :as logging]
             [logbug.catcher :as catcher]
             [logbug.debug :as debug :refer [I>]]
             [logbug.thrown :as thrown]))
 
-
+(defn- render-page-base
+  [inner-html]
+  (html5 (head)
+         [:body 
+          [:noscript "This application requires Javascript."] inner-html
+          (hiccup.page/include-js (cache-buster/cache-busted-path
+                                    "/my/leihs-shared-bundle.js"))]))
 
 (defn- languages
   [tx]
@@ -54,6 +63,8 @@
                                                 {:inventory_pool_id (:id %)}))
                       (managed-inventory-pools tx auth-entity))})))
 
+
+
 (defn- user-info
   [auth-entity]
   (if auth-entity
@@ -80,17 +91,18 @@
   (js-engine/render-react "Navbar" (navbar-props request)))
 
 (defn render-root-page
-  [user-param request]
-  (js-engine/render-react "DebugProps" {:navbar (navbar-props request)}))
+  [request]
+  (render-page-base (js-engine/render-react "HomePage"
+                                            {:navbar (navbar-props request)})))
 
 (defn render-sign-in-page
   [user-param request]
   (let [tx (:tx request)
         auth-entity (:authenticated-entity request)]
-    (js-engine/render-react "DebugProps"
-                            {:navbar (navbar-props request),
-                             :authSystems (auth-systems tx),
-                             :authFlow {:user user-param}})))
+    (render-page-base (js-engine/render-react "DebugProps"
+                                              {:navbar (navbar-props request),
+                                               :authSystems (auth-systems tx),
+                                               :authFlow {:user user-param}}))))
 
 
 ;#### debug ###################################################################

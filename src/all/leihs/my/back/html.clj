@@ -4,7 +4,9 @@
   (:require [leihs.core.json :refer [to-json]]
             [leihs.core.http-cache-buster :as cache-buster :refer
              [wrap-resource]]
+             [leihs.my.back.shared :refer [head]]
             [leihs.my.utils.release-info :as release-info]
+            [leihs.my.back.shared :refer [head]]
             [leihs.core.sql :as sql]
             [leihs.core.ds :as ds]
             [leihs.core.url.core :as url]
@@ -23,23 +25,6 @@
             [logbug.debug :as debug :refer [I>]]
             [logbug.ring :refer [wrap-handler-with-logging]]
             [logbug.thrown :as thrown]))
-
-(defn include-site-css
-  []
-  (hiccup.page/include-css (cache-buster/cache-busted-path "/my/css/site.css")))
-
-(defn include-font-css
-  []
-  (hiccup.page/include-css
-    "/my/css/fontawesome-free-5.0.13/css/fontawesome-all.css"))
-
-(defn head
-  []
-  [:head [:meta {:charset "utf-8"}]
-   [:meta
-    {:name "viewport",
-     :content "width=device-width, initial-scale=1, shrink-to-fit=no"}]
-   (include-site-css) (include-font-css)])
 
 (defn body-attributes
   [request]
