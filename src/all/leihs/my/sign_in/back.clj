@@ -1,19 +1,16 @@
 (ns leihs.my.sign-in.back
   (:refer-clojure :exclude [str keyword])
-  (:require
-    [leihs.core.core :refer [keyword str presence]]
-    [leihs.core.sql :as sql]
-    [leihs.my.paths :refer [path]]
-    [leihs.my.sign-in.shared :refer [auth-system-base-query-for-unique-id]]
-    [leihs.core.password-authentication.back :refer [password-check-query]]
-    [leihs.core.auth.session :as session]
-    [leihs.my.back.ssr :as ssr]
-    [clojure.java.jdbc :as jdbc]
-    [clojure.string :as str]
-    [compojure.core :as cpj]
-    [ring.util.response :refer [redirect]]
-    [clojure.tools.logging :as logging]
-    [logbug.debug :as debug]))
+  (:require [clojure.java.jdbc :as jdbc]
+            [clojure.string :as str]
+            [compojure.core :as cpj]
+            [leihs.core.auth.session :as session]
+            [leihs.core.password-authentication.back :refer [password-check-query]]
+            [leihs.core.sql :as sql]
+            [leihs.my.back.ssr :as ssr]
+            [leihs.my.paths :refer [path]]
+            [leihs.my.sign-in.shared :refer [auth-system-base-query-for-unique-id]]
+            [leihs.my.utils.redirects :refer [redirect-target]]
+            [ring.util.response :refer [redirect]]))
 
 (defn auth-system-query
   [unique-id]
@@ -49,15 +46,12 @@
     :as request}]
 
   (if-let [user (->> [user-param password]
-                     (logging/spy)
                      (apply password-check-query)
-                     (logging/spy)
                      (jdbc/query tx)
                      first)]
-
     (let [user-session (session/create-user-session user request)]
       {:status 302,
-       :headers {"Location" "/"}
+       :headers {"Location" (redirect-target user)}
        :cookies {leihs.core.constants/USER_SESSION_COOKIE_NAME
                    {:value (:token user-session),
                     :http-only true,
