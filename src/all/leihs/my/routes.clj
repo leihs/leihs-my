@@ -49,6 +49,7 @@
 (def skip-authorization-handler-keys
   #{:external-authentication-request
     :external-authentication-sign-in
+    :home
     :initial-admin
     :navbar
     :password-authentication
@@ -57,10 +58,11 @@
     :sign-out})
 
 (def no-html-handler-keys
-  #{:redirect-to-root
+  #{:home
     :navbar
-    :sign-in
-    :not-found})
+    :not-found
+    :redirect-to-root
+    :sign-in})
 
 (def resolve-table
   {:api-token api-token/routes

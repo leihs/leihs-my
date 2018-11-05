@@ -17,13 +17,13 @@
           ])))
 
 (def external-handlers
-  #{:borrow
+  #{:admin
+    :borrow
+    :daily
+    :home
     :lending
     :procurement
-    :admin
-    :daily
-    :sign-in
-    })
+    :sign-in})
 
 ;(re-matches
 ;  #"^\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$|^$"
