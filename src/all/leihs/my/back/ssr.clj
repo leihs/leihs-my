@@ -80,13 +80,13 @@
   (js-engine/render-react "Navbar" (navbar-props request)))
 
 (defn render-sign-in-page
-  [request]
-  (let [csrf-token (anti-csrf-token request)
-        tx (:tx request)
+  [user-param request]
+  (let [tx (:tx request)
         auth-entity (:authenticated-entity request)]
     (js-engine/render-react "DebugProps"
                             {:navbar (navbar-props request),
-                             :authSystems (auth-systems tx)})))
+                             :authSystems (auth-systems tx),
+                             :authFlow {:user user-param}})))
 
 
 ;#### debug ###################################################################

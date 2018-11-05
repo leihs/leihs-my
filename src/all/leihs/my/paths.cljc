@@ -22,6 +22,7 @@
     :procurement
     :admin
     :daily
+    :sign-in
     })
 
 ;(re-matches
@@ -65,7 +66,7 @@
                   my-service-paths
                   user-paths)))
 
-(reset! leihs.core.paths/paths* paths) 
+(reset! leihs.core.paths/paths* paths)
 
 (def path leihs.core.paths/path)
 

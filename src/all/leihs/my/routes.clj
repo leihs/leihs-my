@@ -59,6 +59,7 @@
 (def no-html-handler-keys
   #{:redirect-to-root
     :navbar
+    :sign-in
     :not-found})
 
 (def resolve-table
