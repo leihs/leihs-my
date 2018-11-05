@@ -79,6 +79,10 @@
   [request]
   (js-engine/render-react "Navbar" (navbar-props request)))
 
+(defn render-root-page
+  [user-param request]
+  (js-engine/render-react "DebugProps" {:navbar (navbar-props request)}))
+
 (defn render-sign-in-page
   [user-param request]
   (let [tx (:tx request)
