@@ -8,6 +8,7 @@
             [leihs.core.sql :as sql]
             [leihs.core.ds :as ds]
             [leihs.core.url.core :as url]
+            [leihs.my.back.ssr :as ssr]
             [leihs.my.server-side-js.engine :as js-engine]
             [leihs.core.anti-csrf.back :refer [anti-csrf-token]]
             [leihs.core.user.permissions :refer
@@ -57,58 +58,14 @@
                  [:div.container-fluid
                   [:h1.text-danger "Error 404 - Not Found"]]])})
 
-(defn- languages [tx]
-  (-> (sql/select :*)
-      (sql/from :languages)
-      (sql/where [:= :active true])
-      sql/format
-      (->> (jdbc/query tx))))
 
-(defn- auth-systems [tx]
-  (-> (sql/select :id
-                  :name
-                  :description
-                  :type
-                  :priority
-                  :shortcut_sign_in_enabled)
-      (sql/from :authentication_systems)
-      (sql/where [:= :enabled true])
-      sql/format
-      (->> (jdbc/query tx))))
-
-(comment
-  (auth-systems (ds/get-ds))
-  (languages (ds/get-ds)))
-
-(defn- sub-apps
-  [tx auth-entity]
-  (if auth-entity
-    (merge {:borrow (borrow-access? tx auth-entity)}
-           {:admin (:is_admin auth-entity)}
-           {:procure (procure/any-access? tx auth-entity)}
-           {:manage (map #(hash-map :name (:name %)
-                                    :href (path :daily
-                                                {:inventory_pool_id (:id %)}))
-                      (managed-inventory-pools tx auth-entity))})))
-
-(defn render-navbar
-  [request]
-  (let [csrf-token (anti-csrf-token request)
-        tx (:tx request)
-        auth-entity (:authenticated-entity request)]
-    (js-engine/render-react "Navbar"
-                            {:config {:appTitle "Leihs",
-                                      :appColor "gray",
-                                      :csrfToken csrf-token,
-                                      :subApps (sub-apps tx auth-entity)
-                                      :locales (languages tx)}})))
 
 (defn html-handler
   [request]
   {:headers {"Content-Type" "text/html"},
    :body (html5 (head)
                 [:body (body-attributes request)
-                 [:div (render-navbar request)
+                 [:div (ssr/render-navbar request)
                   [:div#app.container-fluid
                    [:div.alert.alert-warning [:h1 "Leihs My"]
                     [:p "This application requires Javascript."]]]]
