@@ -19,7 +19,7 @@
             [clojure.java.jdbc :as jdbc]
             [environ.core :refer [env]]
             [hiccup.page :refer [include-js html5]]
-            [clojure.tools.logging :as logging]
+            [clojure.tools.logging :as log]
             [logbug.catcher :as catcher]
             [logbug.debug :as debug :refer [I>]]
             [logbug.thrown :as thrown]))
