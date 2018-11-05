@@ -27,7 +27,7 @@
 (defn- render-page-base
   [inner-html]
   (html5 (head)
-         [:body 
+         [:body
           [:noscript "This application requires Javascript."] inner-html
           (hiccup.page/include-js (cache-buster/cache-busted-path
                                     "/my/leihs-shared-bundle.js"))]))
@@ -63,8 +63,6 @@
                                                 {:inventory_pool_id (:id %)}))
                       (managed-inventory-pools tx auth-entity))})))
 
-
-
 (defn- user-info
   [auth-entity]
   (if auth-entity
@@ -72,7 +70,8 @@
             :firstname (:firstname auth-entity),
             :lastname (:lastname auth-entity),
             :login (:login auth-entity),
-            :email (:email auth-entity)}}))
+            :email (:email auth-entity)
+            :selectedLocale (:language_id auth-entity)}}))
 
 (defn- navbar-props
   [request]
@@ -96,13 +95,14 @@
                                             {:navbar (navbar-props request)})))
 
 (defn render-sign-in-page
-  [user-param request]
+  [user-param request flash]
   (let [tx (:tx request)
         auth-entity (:authenticated-entity request)]
-    (render-page-base (js-engine/render-react "DebugProps"
+    (render-page-base (js-engine/render-react "SignInPage"
                                               {:navbar (navbar-props request),
                                                :authSystems (auth-systems tx),
-                                               :authFlow {:user user-param}}))))
+                                               :authFlow {:user user-param}
+                                               :flash flash}))))
 
 
 ;#### debug ###################################################################
