@@ -15,4 +15,7 @@
          "', "
          (to-json props)
          ")")]
-    (:out (sh "node" "-p" js))))
+    (let [shell-result (sh "node" "-p" js)]
+      (if (= 0 (:exit shell-result))
+        (:out shell-result)
+        (throw (Exception. (:err shell-result)))))))
