@@ -18,4 +18,6 @@
     (let [shell-result (sh "node" "-p" js)]
       (if (= 0 (:exit shell-result))
         (:out shell-result)
-        (throw (Exception. (:err shell-result)))))))
+        (throw (ex-info "Render Error!"
+          {:status 500
+           :causes (:err shell-result)}))))))
