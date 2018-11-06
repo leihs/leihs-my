@@ -21,7 +21,7 @@
     :borrow
     :daily
     :home
-    :lending
+    :manage
     :procurement
     :sign-in})
 

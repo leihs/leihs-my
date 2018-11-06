@@ -51,7 +51,7 @@
                      first)]
     (let [user-session (session/create-user-session user request)]
       {:status 302,
-       :headers {"Location" (redirect-target user)}
+       :headers {"Location" (redirect-target tx user)}
        :cookies {leihs.core.constants/USER_SESSION_COOKIE_NAME
                    {:value (:token user-session),
                     :http-only true,

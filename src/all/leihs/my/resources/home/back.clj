@@ -9,9 +9,9 @@
 (defn home
   [request]
   (if-let [auth-entity (:authenticated-entity request)]
-    (-> auth-entity
-        redirect-target
-        redirect)
+    (->> auth-entity
+         (redirect-target (:tx request))
+         redirect)
     (ssr/render-root-page request)))
 
 (def routes
