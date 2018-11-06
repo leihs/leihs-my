@@ -27,7 +27,12 @@
 (defn insert-user [data tx]
   (first (jdbc/insert! tx :users data)))
 
-(defn make-systemadmin [user tx]
+(defn make-procurement-admin [user tx]
+  (->> {:user_id (:id user)}
+       (jdbc/insert! tx :procurement_admins)
+       first))
+
+(defn make-system-admin [user tx]
   (->> {:user_id (:id user)}
        (jdbc/insert! tx :system_admin_users)
        first))
@@ -45,7 +50,8 @@
        (assert (set-password (:id user)
                              (:password data)
                              tx))
-       (assert (make-systemadmin user tx))
+       (assert (make-system-admin user tx))
+       (assert (make-procurement-admin user tx))
        (redirect (path :home) :see-other)))))
 
 (def routes
