@@ -64,13 +64,13 @@
        (ssr/render-sign-in-page
          user-param
          request
-         {:flash
-            {:error
-               (clojure.string/join
-                 " \n"
-                 ["Password authentication failed!"
-                  "Check your password and try again."
-                  "Contact your leihs administrator if the problem persists."])}})}))
+         {:flashMessages [
+           {:level "error", :message
+             (clojure.string/join
+               " \n"
+               ["Password authentication failed!"
+                "Check your password and try again."
+                "Contact your leihs administrator if the problem persists."])}]})}))
 
 
 

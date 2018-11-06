@@ -15,7 +15,6 @@
              [borrow-access? managed-inventory-pools]]
             [leihs.core.user.permissions.procure :as procure]
             [leihs.my.paths :refer [path]]
-
             [clojure.java.jdbc :as jdbc]
             [environ.core :refer [env]]
             [hiccup.page :refer [include-js html5]]
