@@ -1,5 +1,13 @@
 (ns leihs.my.remote-navbar.back
-  (:require [leihs.my.back.ssr :refer [render-navbar]]))
+  (:require
+    [hiccup.core :refer [html]]
+    [hiccup.page :refer [include-js]]
+    [leihs.core.http-cache-buster :as cache-buster]
+    [leihs.my.back.ssr :refer [render-navbar]]))
 
 (defn handler [request]
-  {:body (render-navbar request)})
+  {:body (str (render-navbar request)
+              (-> "/my/leihs-shared-bundle.js"
+                  cache-buster/cache-busted-path
+                  include-js
+                  html))})
