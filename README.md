@@ -25,17 +25,9 @@ Inspect and set parameters
 
     lein figwheel
 
+## Compiled Stylesheets/JS Bundle
 
-## Compile Stylesheets
-
-The Bootstrap sources require a relative recent version of SASS and the one
-provided with lein-sassy 1.0.8 (time of writing) does not suffice.
-
-    sass --watch resources/all/public/admin/css/site.sass:resources/all/public/admin/css/site.css
-
-Minified css saves only about 10% of the size. We deemed that not worth to mess
-with it. In production mode effective caching is enabled.
-
+    sh scripts/prepare-shared-ui.sh
 
 Building and Testing
 --------------------
