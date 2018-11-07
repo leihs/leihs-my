@@ -18,6 +18,7 @@
     [clojure.java.jdbc :as jdbc]
     [clojure.string :as str]
     [compojure.core :as cpj]
+    [ring.util.response :refer [redirect]]
 
     [clj-logging-config.log4j :as logging-config]
     [clojure.tools.logging :as logging]
@@ -95,9 +96,9 @@
                         (-> data :authentication_system_user) 
                         authentication-system settings)
         token (jwt/sign claims priv-key {:alg :es256})]
-    {:status 200
-     :body {:token token
-            :url (:external_url authentication-system)}}))
+    (redirect (str (:external_url authentication-system)
+                   "?token="
+                   token))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

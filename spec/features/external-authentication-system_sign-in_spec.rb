@@ -30,9 +30,8 @@ feature 'Sign in via an external authentication system', type: :feature do
     end
     click_on @test_authentication_system.name
     click_on 'Yes, I am admin@example.com'
-    wait_until do
-      page.has_content? "Sign out"
-    end
+    click_on 'Auth-Info'
+    expect(page).to have_content user.email
   end
 
   scenario 'fail to sign in' do
@@ -43,9 +42,8 @@ feature 'Sign in via an external authentication system', type: :feature do
     end
     click_on @test_authentication_system.name
     click_on 'No, I am not admin@example.com'
-    wait_until do
-      page.has_content? 'Authentication failed!'
-    end
+    click_on 'Auth-Info'
+    expect(page).to have_content user.email
   end
 
 end
