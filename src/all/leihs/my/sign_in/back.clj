@@ -30,17 +30,31 @@
        auth-system-query
        (jdbc/query tx)))
 
+(def sign-in-error-flash
+  {:level "error",
+   :message (clojure.string/join
+              " \n"
+              ["Signing in with this account is currently not possible! "
+               "Check your email-address respectively login and try again. "
+               "Contact your leihs administrator if the problem persists. "])})
+
 (defn sign-in-get
   [{tx :tx, {user-param :user} :query-params, :as request}]
   (let [user-auth-systems (auth-systems tx user-param)]
     (if (empty? user-auth-systems)
-      (if (= (count user-auth-systems) 1)
-        (let [auth-system (first user-auth-systems)]
-          (if (= (:type auth-system) "external")
-            (redirect (:external_url auth-system))
-            (ssr/render-sign-in-page user-param request {})))
-        (ssr/render-sign-in-page user-param request {}))
-      (throw (Exception. "no auth system")))))
+      (ssr/render-sign-in-page user-param
+                               request
+                               {:flashMessages [sign-in-error-flash]})
+      (let [user-auth-systems-props {:authSystems user-auth-systems}
+            render-sign-in-page-fn #(ssr/render-sign-in-page user-param
+                                                             request
+                                                             user-auth-systems-props)]
+        (if (= (count user-auth-systems) 1)
+          (let [auth-system (first user-auth-systems)]
+            (if (= (:type auth-system) "external")
+              (redirect (:external_url auth-system))
+              (render-sign-in-page-fn)))
+          (render-sign-in-page-fn))))))
 
 (defn sign-in-post
   [{tx :tx,

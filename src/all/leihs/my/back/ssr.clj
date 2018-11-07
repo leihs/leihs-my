@@ -94,14 +94,16 @@
                                             {:navbar (navbar-props request)})))
 
 (defn render-sign-in-page
-  [user-param request flash]
-  (let [tx (:tx request)
-        auth-entity (:authenticated-entity request)]
-    (render-page-base (js-engine/render-react "SignInPage"
-                                              {:navbar (navbar-props request),
-                                               :authSystems (auth-systems tx),
-                                               :authFlow {:user user-param}
-                                               :flash flash}))))
+  ([user-param request]
+   (render-sign-in-page user-param request {}))
+  ([user-param request extra-props]
+   (let [tx (:tx request)
+         auth-entity (:authenticated-entity request)]
+     (render-page-base
+       (js-engine/render-react "SignInPage"
+                               (merge {:navbar (navbar-props request),
+                                       :authFlow {:user user-param}}
+                                      extra-props))))))
 
 
 ;#### debug ###################################################################
