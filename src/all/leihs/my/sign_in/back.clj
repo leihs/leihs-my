@@ -1,6 +1,7 @@
 (ns leihs.my.sign-in.back
   (:refer-clojure :exclude [str keyword])
-  (:require [clojure.java.jdbc :as jdbc]
+  (:require [clojure.tools.logging :as log]
+            [clojure.java.jdbc :as jdbc]
             [clojure.string :as str]
             [compojure.core :as cpj]
             [leihs.core.auth.session :as session]
@@ -32,12 +33,14 @@
 (defn sign-in-get
   [{tx :tx, {user-param :user} :query-params, :as request}]
   (let [user-auth-systems (auth-systems tx user-param)]
-    (if (= (count user-auth-systems) 1)
-      (let [auth-system (first user-auth-systems)]
-        (if (= (:type auth-system) "external")
-          (redirect (:external_url auth-system))
-          (ssr/render-sign-in-page user-param request {})))
-      (ssr/render-sign-in-page user-param request {}))))
+    (if (empty? user-auth-systems)
+      (if (= (count user-auth-systems) 1)
+        (let [auth-system (first user-auth-systems)]
+          (if (= (:type auth-system) "external")
+            (redirect (:external_url auth-system))
+            (ssr/render-sign-in-page user-param request {})))
+        (ssr/render-sign-in-page user-param request {}))
+      (throw (Exception. "no auth system")))))
 
 (defn sign-in-post
   [{tx :tx,

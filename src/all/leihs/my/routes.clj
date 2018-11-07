@@ -11,6 +11,7 @@
     [leihs.core.auth.core :as auth]
     [leihs.core.shutdown :as shutdown]
 
+    [clj-logging-config.log4j :as logging-config]
     [leihs.my.authorization :as authorization]
     [leihs.my.back.html :as html]
     [leihs.my.constants :as constants]
