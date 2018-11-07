@@ -8,8 +8,12 @@ module Helpers
         fill_in 'user', with: user.email
         click_button
       end
-      fill_in 'password', with: user.password
-      click_on 'Sign in'
+
+      within('form.form-signin') do
+        fill_in 'password', with: user.password
+        click_button
+      end
+
       expect(page).to have_content user.email
     end
 
