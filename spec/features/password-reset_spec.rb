@@ -13,14 +13,14 @@ feature 'Password-Reset', type: :feature do
     scenario 'A user can reset her password and sign in with it' do
       sign_in_as @user1
 
-      click_on_first @user1.email
+      visit '/my/user/me'
       click_on_first 'Password'
 
       fill_in 'password', with: "new password"
       click_on 'Set password'
 
 
-      click_on 'Sign out'
+      sign_out
 
       # user1 can not sign in with the old password anymore
       fill_in 'email', with: @user1.email
@@ -63,7 +63,7 @@ feature 'Password-Reset', type: :feature do
       fill_in 'password', with: 'new password'
       click_on 'Set password'
 
-      click_on 'Sign out'
+      sign_out
 
       fill_in 'email', with: @user2.email
       click_on 'Continue'

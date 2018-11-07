@@ -14,7 +14,17 @@ module Helpers
         click_button
       end
 
+      click_on 'Auth-Info'
       expect(page).to have_content user.email
+    end
+
+    def sign_out
+      within 'nav.navbar-leihs' do
+        find('.fa-user-circle').click
+        within '.dropdown-menu.show' do
+          click_on 'Logout'
+        end
+      end
     end
 
   end

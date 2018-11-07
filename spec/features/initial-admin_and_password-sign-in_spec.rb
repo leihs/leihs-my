@@ -14,15 +14,20 @@ feature 'Initial admin and password sign-in', type: :feature do
     click_on 'Create'
 
     # we sign-in as the admin
-    fill_in 'email', with: 'admin@example.com'
+    within('.navbar-leihs form') do
+      fill_in 'user', with: 'admin@example.com'
+      click_button
+    end
 
-    click_on 'Continue'
-    fill_in 'password', with: 'password'
-    click_on 'Sign in'
+    within('form.form-signin') do
+      fill_in 'password', with: 'password'
+      click_button
+    end
 
     # we are signed-in
     wait_until do
-      page.has_content? 'admin@example.com'
+      click_on 'Auth-Info'
+      expect(page).to have_content  'admin@example.com'
     end
 
     # we are still signed-in when we reload the page
@@ -32,7 +37,7 @@ feature 'Initial admin and password sign-in', type: :feature do
     end
 
     # sign-out
-    click_on 'Sign out'
+    sign_out
     expect(page).not_to have_content 'admin@example.com'
 
     # we are still signed-in when we reload the page

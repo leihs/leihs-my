@@ -11,7 +11,7 @@ feature 'API Tokens', type: :feature do
     end
 
     let :add_api_token do
-      click_on_first @admin.email
+      visit '/my/user/me'
       click_on_first 'API-Tokens'
       click_on_first 'Add API-Token'
       fill_in 'Description', with: "My first token"
