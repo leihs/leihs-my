@@ -4,11 +4,27 @@ module Helpers
 
     def sign_in_as user
       visit '/'
-      fill_in 'email', with: user.email
-      click_on 'Continue'
-      fill_in 'password', with: user.password
-      click_on 'Sign in'
+      within('.navbar-leihs form') do
+        fill_in 'user', with: user.email
+        click_button
+      end
+
+      within('form.form-signin') do
+        fill_in 'password', with: user.password
+        click_button
+      end
+
+      click_on 'Auth-Info'
       expect(page).to have_content user.email
+    end
+
+    def sign_out
+      within 'nav.navbar-leihs' do
+        find('.fa-user-circle').click
+        within '.dropdown-menu.show' do
+          click_on 'Logout'
+        end
+      end
     end
 
   end

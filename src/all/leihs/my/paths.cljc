@@ -17,11 +17,13 @@
           ])))
 
 (def external-handlers
-  #{:borrow
-    :lending
+  #{:admin
+    :borrow
+    :daily
+    :home
+    :manage
     :procurement
-    :admin
-    })
+    :sign-in})
 
 ;(re-matches
 ;  #"^\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$|^$"
@@ -60,11 +62,11 @@
   (branch ""
           leihs.core.paths/core-paths
           (branch "/my"
+                  (leaf "/navbar" :navbar)
                   my-service-paths
-                  user-paths
-                  )))
+                  user-paths)))
 
-(reset! leihs.core.paths/paths* paths) 
+(reset! leihs.core.paths/paths* paths)
 
 (def path leihs.core.paths/path)
 

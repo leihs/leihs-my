@@ -24,20 +24,23 @@ feature 'Sign in via an external authentication system', type: :feature do
 
   scenario 'sign in' do
     visit '/'
-    fill_in 'email', with: 'admin@example.com'
-    click_on 'Continue'
-    click_on 'Continue'
-    click_on 'Yes, I am admin@example.com'
-    wait_until do
-      page.has_content? "Sign out"
+    within('.navbar-leihs form') do
+      fill_in 'user', with: 'admin@example.com'
+      click_button
     end
+    click_on @test_authentication_system.name
+    click_on 'Yes, I am admin@example.com'
+    click_on 'Auth-Info'
+    expect(page).to have_content 'admin@example.com'
   end
 
   scenario 'fail to sign in' do
     visit '/'
-    fill_in 'email', with: 'admin@example.com'
-    click_on 'Continue'
-    click_on 'Continue'
+    within('.navbar-leihs form') do
+      fill_in 'user', with: 'admin@example.com'
+      click_button
+    end
+    click_on @test_authentication_system.name
     click_on 'No, I am not admin@example.com'
     wait_until do
       page.has_content? 'Authentication failed!'

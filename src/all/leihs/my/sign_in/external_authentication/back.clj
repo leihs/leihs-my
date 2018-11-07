@@ -10,7 +10,7 @@
     [leihs.my.paths :refer [path]]
     [leihs.my.sign-in.shared 
      :refer [auth-system-user-base-query 
-             auth-system-base-query-for-uniqe-id]]
+             auth-system-base-query-for-unique-id]]
 
     [buddy.core.keys :as keys]
     [buddy.sign.jwt :as jwt]
@@ -18,13 +18,14 @@
     [clojure.java.jdbc :as jdbc]
     [clojure.string :as str]
     [compojure.core :as cpj]
+    [ring.util.response :refer [redirect]]
 
     [clj-logging-config.log4j :as logging-config]
     [clojure.tools.logging :as logging]
     [logbug.debug :as debug]))
 
 (defn auth-system-user-query [user-unique-id authentication-system-id]
-  (-> (auth-system-base-query-for-uniqe-id user-unique-id authentication-system-id)
+  (-> (auth-system-base-query-for-unique-id user-unique-id authentication-system-id)
       (sql/merge-select 
         [(sql/call :row_to_json :authentication_systems) :authentication_system]
         [(sql/call :row_to_json :users) :user])
@@ -95,9 +96,9 @@
                         (-> data :authentication_system_user) 
                         authentication-system settings)
         token (jwt/sign claims priv-key {:alg :es256})]
-    {:status 200
-     :body {:token token
-            :url (:external_url authentication-system)}}))
+    (redirect (str (:external_url authentication-system)
+                   "?token="
+                   token))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -113,13 +114,13 @@
 (defn user-for-sign-in-token-query [sign-in-token authentication-system-id]
   (let [unique-ids [:email :login :org_id]
         unique-id (some sign-in-token unique-ids)
-        query (auth-system-base-query-for-uniqe-id unique-id authentication-system-id)
+        query (auth-system-base-query-for-unique-id unique-id authentication-system-id)
         aggregator-fn (fn [query k]
                         (if-let [v (k sign-in-token)]
                           (sql/merge-where query [:= (keyword (str "users." k)) v])
                           query))
         reducer (partial reduce aggregator-fn) ]
-    (-> (auth-system-base-query-for-uniqe-id unique-id authentication-system-id)
+    (-> (auth-system-base-query-for-unique-id unique-id authentication-system-id)
         (reducer unique-ids)
         (sql/merge-select :users.*)
         sql/format)))

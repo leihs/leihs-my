@@ -207,7 +207,7 @@ DEPENDENCIES
   pg
   pg_tasks!
   pry
-  rails (~> 5.0.0)
+  rails
   rspec
   selenium-webdriver (~> 2.53)
   sequel (~> 4.42, >= 4.42.1)

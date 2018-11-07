@@ -11,12 +11,15 @@
     [leihs.core.auth.core :as auth]
     [leihs.core.shutdown :as shutdown]
 
+    [clj-logging-config.log4j :as logging-config]
     [leihs.my.authorization :as authorization]
     [leihs.my.back.html :as html]
     [leihs.my.constants :as constants]
     [leihs.my.env :as env]
     [leihs.my.initial-admin.back :as initial-admin]
     [leihs.my.paths :refer [path paths]]
+    [leihs.my.remote-navbar.back :as remote-navbar]
+    [leihs.my.resources.home.back :as home]
     [leihs.my.resources.settings.back :as settings]
     [leihs.my.resources.status.back :as status]
     [leihs.my.sign-in.back :as sign-in]
@@ -48,21 +51,28 @@
 (def skip-authorization-handler-keys
   #{:external-authentication-request
     :external-authentication-sign-in
+    :home
     :initial-admin
+    :navbar
     :password-authentication
     :shutdown
     :sign-in
     :sign-out})
 
 (def no-html-handler-keys
-  #{:redirect-to-root
-    :not-found})
+  #{:home
+    :navbar
+    :not-found
+    :redirect-to-root
+    :sign-in})
 
 (def resolve-table
   {:api-token api-token/routes
    :api-tokens api-tokens/routes
    :auth-info auth-info/ring-handler
+   :home home/routes
    :initial-admin initial-admin/routes
+   :navbar remote-navbar/handler
    :my-user user/routes
    :not-found html/not-found-handler
    :password-authentication password-authentication/routes
@@ -118,6 +128,7 @@
         "public" {:allow-symlinks? true
                   :cache-bust-paths ["/my/css/site.css"
                                      "/my/css/site.min.css"
+                                     "/my/leihs-shared-bundle.js"
                                      "/my/js/app.js"]
                   :no-expire-paths [#".*font-awesome-[^\/]*\d\.\d\.\d\/.*"
                                        #".+_[0-9a-f]{40}\..+"]
@@ -125,6 +136,6 @@
       ring-exception/wrap))
 
 ;#### debug ###################################################################
-;(logging-config/set-logger! :level :debug)
+(logging-config/set-logger! :level :debug)
 ;(logging-config/set-logger! :level :info)
-;(debug/debug-ns *ns*)
+(debug/debug-ns *ns*)

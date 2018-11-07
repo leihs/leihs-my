@@ -11,3 +11,5 @@
 /tmp
 figwheel_server.log
 resources/all/public/auth/build-timestamp.txt
+/.cljs_nashorn_repl
+/nashorn_code_cache
