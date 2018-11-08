@@ -8,6 +8,7 @@
     [leihs.my.env :as env]
     [leihs.my.back.html :as html]
     [leihs.my.paths :refer [path]]
+    [leihs.my.utils.redirects :refer [redirect-target]]
     [leihs.my.sign-in.shared 
      :refer [auth-system-user-base-query 
              auth-system-base-query-for-unique-id]]
@@ -161,7 +162,7 @@
       (if-let [user (user-for-sign-in-token sign-in-token authentication-system-id tx)]
         (let [user-session (session/create-user-session user request)]
           {:status 302
-           :headers {"Location" (path :home)}
+           :headers {"Location" (redirect-target tx user)}
            :cookies {leihs.core.constants/USER_SESSION_COOKIE_NAME
                      {:value (:token user-session)
                       :http-only true
