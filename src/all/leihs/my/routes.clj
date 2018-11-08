@@ -60,7 +60,8 @@
     :sign-out})
 
 (def no-html-handler-keys
-  #{:home
+  #{:external-authentication-sign-in
+    :home
     :navbar
     :not-found
     :redirect-to-root
