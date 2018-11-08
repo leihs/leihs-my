@@ -61,7 +61,7 @@ get '/sign-in' do
     sign_in_request_token: sign_in_request_token,
     error_message: "The user did not authenticate successfully!"}, ES256_priv_key,'ES256')
 
-  url = (token_data.first["server_base_url"] || 'http://localhost:3220') + token_data.first['path'] 
+  url = (token_data.first["server_base_url"] || 'http://localhost:3240') + token_data.first['path'] 
 
 
   html = 

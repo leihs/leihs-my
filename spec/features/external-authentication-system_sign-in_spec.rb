@@ -43,7 +43,7 @@ feature 'Sign in via an external authentication system', type: :feature do
     click_on @test_authentication_system.name
     click_on 'No, I am not admin@example.com'
     wait_until do
-      page.has_content? 'Authentication failed!'
+      page.has_content? 'The user did not authenticate successfully!'
     end
   end
 

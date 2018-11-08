@@ -158,7 +158,8 @@
     (logging/debug 'sign-in-token sign-in-token)
     (if-not (:success sign-in-token)
       {:status 400
-       :body (:error-message sign-in-token)}
+       :headers {"Content-Type" "text/plain"}
+       :body (:error_message sign-in-token)}
       (if-let [user (user-for-sign-in-token sign-in-token authentication-system-id tx)]
         (let [user-session (session/create-user-session user request)]
           {:status 302
@@ -186,7 +187,7 @@
     (logging/debug 'sign-in-token sign-in-token)
     (if-not (:success sign-in-token)
       {:status 400
-       :body (:error-message sign-in-token)}
+       :body (:error_message sign-in-token)}
       (if-let [user (user-for-sign-in-token sign-in-token authentication-system-id tx)]
         (let [user-session (session/create-user-session user request)]
           {:body user
