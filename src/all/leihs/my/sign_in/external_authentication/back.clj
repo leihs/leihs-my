@@ -142,7 +142,35 @@
                  "No valid user account could be identified for this sign-in request."
                  {:status 400})))))
 
-(defn authentication-sign-in 
+(defn authentication-sign-in-get 
+  [{{authentication-system-id :authentication-system-id} :route-params
+    {token :token} :query-params-raw
+    tx :tx
+    :as request}]
+  (let [authentication-system (authentication-system! authentication-system-id tx)
+        external-pub-key (-> authentication-system :external_public_key public-key!)
+        sign-in-token (jwt/unsign token external-pub-key {:alg :es256})
+        internal-pub-key (-> authentication-system :internal_public_key public-key!)
+        sign-in-request-token (jwt/unsign (:sign_in_request_token sign-in-token) 
+                                          internal-pub-key {:alg :es256})]
+
+    (logging/debug 'sign-in-token sign-in-token)
+    (if-not (:success sign-in-token)
+      {:status 400
+       :body (:error-message sign-in-token)}
+      (if-let [user (user-for-sign-in-token sign-in-token authentication-system-id tx)]
+        (let [user-session (session/create-user-session user request)]
+          {:status 302
+           :headers {"Location" (path :home)}
+           :cookies {leihs.core.constants/USER_SESSION_COOKIE_NAME
+                     {:value (:token user-session)
+                      :http-only true
+                      :max-age (* 10 356 24 60 60)
+                      :path "/"
+                      :secure (:sessions_force_secure (:settings request))}}})
+        {:status 404}))))
+
+(defn authentication-sign-in-post 
   [{{authentication-system-id :authentication-system-id} :route-params
     {token :token} :query-params-raw
     tx :tx
@@ -177,7 +205,10 @@
               [] #'authentication-request)
     (cpj/POST (path :external-authentication-sign-in
                     {:authentication-system-id ":authentication-system-id"}) 
-              [] #'authentication-sign-in)))
+              [] #'authentication-sign-in-post)
+    (cpj/GET (path :external-authentication-sign-in
+                   {:authentication-system-id ":authentication-system-id"}) 
+             [] #'authentication-sign-in-get)))
 
 
 ;#### debug ###################################################################
