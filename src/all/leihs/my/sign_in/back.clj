@@ -10,6 +10,8 @@
             [leihs.my.back.ssr :as ssr]
             [leihs.my.paths :refer [path]]
             [leihs.my.sign-in.shared :refer [auth-system-base-query-for-unique-id]]
+            [leihs.my.sign-in.external-authentication.back
+             :refer [ext-auth-system-token-url]]
             [leihs.my.utils.redirects :refer [redirect-target]]
             [ring.util.response :refer [redirect]]))
 
@@ -39,7 +41,10 @@
                "Contact your leihs administrator if the problem persists. "])})
 
 (defn sign-in-get
-  [{tx :tx, {user-param :user} :query-params, :as request}]
+  [{tx :tx,
+    settings :settings,
+    {user-param :user} :query-params,
+    :as request}]
   (let [user-auth-systems (auth-systems tx user-param)]
     (if (empty? user-auth-systems)
       (ssr/render-sign-in-page user-param
@@ -52,7 +57,10 @@
         (if (= (count user-auth-systems) 1)
           (let [auth-system (first user-auth-systems)]
             (if (= (:type auth-system) "external")
-              (redirect (:external_url auth-system))
+              (redirect (ext-auth-system-token-url tx
+                                                   user-param
+                                                   (:id auth-system)
+                                                   settings))
               (render-sign-in-page-fn)))
           (render-sign-in-page-fn))))))
 

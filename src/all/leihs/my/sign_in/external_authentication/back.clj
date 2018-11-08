@@ -84,11 +84,8 @@
    :path (path :external-authentication-sign-in
                {:authentication-system-id (:id authentication-system)})})
 
-(defn authentication-request 
-  [{tx :tx :as request
-    settings :settings
-    {authentication-system-id :authentication-system-id} :route-params
-    {user-unique-id :user-unique-id} :body}]
+(defn ext-auth-system-token-url
+  [tx user-unique-id authentication-system-id settings]
   (let [data (authentication-system-user-data! user-unique-id authentication-system-id tx)
         authentication-system (-> data :authentication_system)
         priv-key (-> authentication-system :internal_private_key private-key!)
@@ -96,9 +93,17 @@
                         (-> data :authentication_system_user) 
                         authentication-system settings)
         token (jwt/sign claims priv-key {:alg :es256})]
-    (redirect (str (:external_url authentication-system)
-                   "?token="
-                   token))))
+    (str (:external_url authentication-system) "?token=" token)))
+
+(defn authentication-request 
+  [{tx :tx :as request
+    settings :settings
+    {authentication-system-id :authentication-system-id} :route-params
+    {user-unique-id :user-unique-id} :body}]
+  (redirect (ext-auth-system-token-url tx
+                                       user-unique-id
+                                       authentication-system-id
+                                       settings)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
