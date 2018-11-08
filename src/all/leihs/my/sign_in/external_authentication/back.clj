@@ -99,7 +99,7 @@
   [{tx :tx :as request
     settings :settings
     {authentication-system-id :authentication-system-id} :route-params
-    {user-unique-id :user-unique-id} :body}]
+    {user-unique-id :user-unique-id} :params}]
   (redirect (ext-auth-system-token-url tx
                                        user-unique-id
                                        authentication-system-id
