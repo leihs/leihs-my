@@ -45,24 +45,26 @@
     settings :settings,
     {user-param :user} :query-params,
     :as request}]
-  (let [user-auth-systems (auth-systems tx user-param)]
-    (if (empty? user-auth-systems)
-      (ssr/render-sign-in-page user-param
-                               request
-                               {:flashMessages [sign-in-error-flash]})
-      (let [user-auth-systems-props {:authSystems user-auth-systems}
-            render-sign-in-page-fn #(ssr/render-sign-in-page user-param
-                                                             request
-                                                             user-auth-systems-props)]
-        (if (= (count user-auth-systems) 1)
-          (let [auth-system (first user-auth-systems)]
-            (if (= (:type auth-system) "external")
-              (redirect (ext-auth-system-token-url tx
-                                                   user-param
-                                                   (:id auth-system)
-                                                   settings))
-              (render-sign-in-page-fn)))
-          (render-sign-in-page-fn))))))
+  (if-let [user (:authenticated-entity request)]
+    (redirect (redirect-target tx user))
+    (let [user-auth-systems (auth-systems tx user-param)]
+      (if (empty? user-auth-systems)
+        (ssr/render-sign-in-page user-param
+                                 request
+                                 {:flashMessages [sign-in-error-flash]})
+        (let [user-auth-systems-props {:authSystems user-auth-systems}
+              render-sign-in-page-fn #(ssr/render-sign-in-page user-param
+                                                               request
+                                                               user-auth-systems-props)]
+          (if (= (count user-auth-systems) 1)
+            (let [auth-system (first user-auth-systems)]
+              (if (= (:type auth-system) "external")
+                (redirect (ext-auth-system-token-url tx
+                                                     user-param
+                                                     (:id auth-system)
+                                                     settings))
+                (render-sign-in-page-fn)))
+            (render-sign-in-page-fn)))))))
 
 (defn sign-in-post
   [{tx :tx,
