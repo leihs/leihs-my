@@ -2,9 +2,7 @@
   (:refer-clojure :exclude [str keyword])
   (:require [clojure.java.jdbc :as jdbc]
             [hiccup.page :refer [html5 include-js]]
-            [leihs.core
-             [http-cache-buster :as cache-buster]
-             [sql :as sql]]
+            [leihs.core [http-cache-buster :as cache-buster] [sql :as sql]]
             [leihs.core.remote-navbar.shared :refer [navbar-props]]
             [leihs.my.back.shared :refer [head]]
             [leihs.my.server-side-js.engine :as js-engine]))
@@ -12,7 +10,7 @@
 (defn- render-page-base
   [inner-html]
   (html5 (head)
-         [:body
+         [:body {:class "bg-paper"}
           [:noscript "This application requires Javascript."] inner-html
           (hiccup.page/include-js (cache-buster/cache-busted-path
                                     "/my/leihs-shared-bundle.js"))]))
@@ -37,8 +35,7 @@
                                             {:navbar (navbar-props request)})))
 
 (defn render-sign-in-page
-  ([user-param request]
-   (render-sign-in-page user-param request {}))
+  ([user-param request] (render-sign-in-page user-param request {}))
   ([user-param request extra-props]
    (let [tx (:tx request)
          auth-entity (:authenticated-entity request)]

@@ -34,6 +34,8 @@
                                        [:= :groups_users.user_id :users.id]])
         (sql/merge-where [:= :users.account_enabled true]))]])
 
+; FIXME: needs `DISTINCT`!!! (otherwise when user is nil, returns 1 entry per
+; user in the DB (without login)!)
 (def auth-system-user-base-query
   (-> (sql/from :authentication_systems :users)
       (sql/merge-where authentication-systems-users-sql-expr)

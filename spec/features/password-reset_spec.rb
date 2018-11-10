@@ -28,7 +28,7 @@ feature 'Password-Reset', type: :feature do
         click_button
       end
 
-      within('form.form-signin') do
+      within('form.ui-form-signin') do
         fill_in 'password', with: @user1.password
         click_button
       end
@@ -44,7 +44,7 @@ feature 'Password-Reset', type: :feature do
         click_button
       end
 
-      within('form.form-signin') do
+      within('form.ui-form-signin') do
         fill_in 'password', with: 'new password'
         click_button
       end
@@ -81,7 +81,7 @@ feature 'Password-Reset', type: :feature do
         click_button
       end
 
-      within('form.form-signin') do
+      within('form.ui-form-signin') do
         fill_in 'password', with: 'new password'
         click_button
       end

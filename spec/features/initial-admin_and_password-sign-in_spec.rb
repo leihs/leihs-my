@@ -9,17 +9,19 @@ feature 'Initial admin and password sign-in', type: :feature do
     expect(page).to have_content  "Initial Admin"
 
     # we create the initial admin
-    fill_in 'email', with: 'admin@example.com'
-    fill_in 'password', with: 'password'
-    click_on 'Create'
+    within('#initial-admin-form') do
+      fill_in 'email', with: 'admin@example.com'
+      fill_in 'password', with: 'password'
+      click_on 'Create'
+    end
 
     # we sign-in as the admin
-    within('.navbar-leihs form') do
+    within('.navbar-leihs form.ui-form-signin') do
       fill_in 'user', with: 'admin@example.com'
       click_button
     end
 
-    within('form.form-signin') do
+    within('form.ui-form-signin') do
       fill_in 'password', with: 'password'
       click_button
     end

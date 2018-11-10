@@ -9,7 +9,7 @@ module Helpers
         click_button
       end
 
-      within('form.form-signin') do
+      within('form.ui-form-signin') do
         fill_in 'password', with: user.password
         click_button
       end
