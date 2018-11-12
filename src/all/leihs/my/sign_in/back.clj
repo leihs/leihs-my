@@ -6,6 +6,7 @@
     [clojure.string :as str]
     [compojure.core :as cpj]
     [leihs.core.auth.session :as session]
+    [leihs.core.core :refer [presence!]]
     [leihs.core.password-authentication.back :refer [password-check-query]]
     [leihs.core.sql :as sql]
     [leihs.my.back.ssr :as ssr]
@@ -30,6 +31,7 @@
 (defn auth-systems
   [tx unique-id]
   (->> unique-id
+       presence!
        auth-system-query
        (jdbc/query tx)))
 
