@@ -61,12 +61,12 @@
    (if @me?*
      [:h1 "Reset My Password"]
      (let [id (-> @routing/state* :route-params :user-id)]
-       [:div 
+       [:div
         [:h1 "Reset User's Password"]
         [:p "user-id: " [:code id ]]]))
    [:p "You can set or reset the password here."]
    [:p "Note that a set password alone does not suffice to sign in via leihs password authentication. "
-    "This also depens on some settings which can only be set by leihs administrators."]
+    "This also depends on some settings which can only be set by leihs administrators."]
    [:form.form.mt-2
     {:on-submit (fn [e]
                   (.preventDefault e)
