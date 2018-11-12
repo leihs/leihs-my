@@ -28,14 +28,13 @@
        [(api-tokens-breadcrumbs/api-tokens-li)
         (password-breadcrumbs/password-li)
         (when (:is_admin @user/state*)
-          (breadcrumbs/li (str "/admin/users/" user-id) 
+          (breadcrumbs/li (str "/admin/users/" user-id)
                           [:span icons/user-in-admin " User in the admin interface"]))])
      [:div
       (if @me?*
         [:h1 "My leihs Home"]
         (let [id (-> @routing/state* :route-params :user-id)]
-          [:div 
+          [:div
            [:h1 "User's Home"]
            [:p "user-id: " [:code id ]]]))]
-     [:div
-      [:p "There will be some awesome information in the future here."]]]))
+     [:div]]))

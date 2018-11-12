@@ -35,19 +35,19 @@
 
 (def error-flash-invalid-user
   {:level "error",
-   :message (clojure.string/join
-              " \n"
-              ["Signing in with this account is currently not possible!"
-               "Check your email-address respectively login and try again. "
-               "Contact your leihs administrator if the problem persists. "])})
+   :message
+     (clojure.string/join
+       " \n"
+       ["Anmelden ist mit diesem Benutzerkonto nicht möglich! "
+        "Bitte prüfen Sie Ihre E-Mail-Adresse oder den Benutzernamen. Kontaktieren Sie den leihs-Support, falls das Problem weiterhin besteht."])})
 
 (def error-flash-invalid-password
   {:level "error",
-   :message (clojure.string/join
-              " \n"
-              ["Password authentication failed!"
-               "Check your password and try again."
-               "Contact your leihs administrator if the problem persists."])})
+   :message
+     (clojure.string/join
+       " \n"
+       ["Falsches Passwort! "
+        "Überprüfen Sie Ihr Passwort und versuchen Sie es erneut. Kontaktieren Sie den leihs-Support, falls das Problem weiterhin besteht."])})
 
 (defn handle-first-step
   "try to find a user account from the user param,
