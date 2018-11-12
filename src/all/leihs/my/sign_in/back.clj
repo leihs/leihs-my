@@ -62,7 +62,6 @@
   (if (nil? user-param)
     (ssr/render-sign-in-page user-param request)
     (let [user-auth-systems (auth-systems tx user-param)]
-      (log/info user-auth-systems)
       (if (empty? user-auth-systems)
         (ssr/render-sign-in-page user-param
                                  request

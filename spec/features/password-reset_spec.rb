@@ -33,7 +33,7 @@ feature 'Password-Reset', type: :feature do
         click_button
       end
       wait_until do
-        page.has_content? 'Password authentication failed!'
+        page.has_content? 'Falsches Passwort!'
       end
 
 
