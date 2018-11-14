@@ -88,7 +88,7 @@
   in which case an error is ignored and it is handled like first step"
   [{tx :tx,
     {user-param :user, password :password, invisible-pw :invisible-password}
-      :form-params,
+      :form-params-raw,
     settings :settings,
     :as request}]
   (if-let [user (->> [user-param password]

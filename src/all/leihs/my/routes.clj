@@ -24,7 +24,6 @@
     [leihs.my.resources.status.back :as status]
     [leihs.my.sign-in.back :as sign-in]
     [leihs.my.sign-in.external-authentication.back :as external-authentication]
-    [leihs.my.sign-in.password-authentication.back :as password-authentication]
     [leihs.my.sign-out.back :as sign-out]
     [leihs.my.user.back :as user]
     [leihs.my.user.api-token.back :as api-token]
@@ -76,7 +75,6 @@
    :navbar remote-navbar/handler
    :my-user user/routes
    :not-found html/not-found-handler
-   :password-authentication password-authentication/routes
    :password password/routes
    :external-authentication-request external-authentication/routes
    :external-authentication-sign-in external-authentication/routes
@@ -139,4 +137,4 @@
 ;#### debug ###################################################################
 ;(logging-config/set-logger! :level :debug)
 ;(logging-config/set-logger! :level :info)
-;(debug/debug-ns *ns*)
+(debug/debug-ns *ns*)

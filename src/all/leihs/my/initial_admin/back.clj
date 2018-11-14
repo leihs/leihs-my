@@ -22,7 +22,9 @@
 (defn prepare-data [data]
   (-> data
       (select-keys [:email])
-      (assoc :is_admin true)))
+      (assoc :is_admin true)
+      (assoc :lastname "Admin")
+      (assoc :firstname "Initial")))
 
 (defn insert-user [data tx]
   (first (jdbc/insert! tx :users data)))
