@@ -1,6 +1,6 @@
 (defproject leihs-my "0.0.0"
   :description "My Service for Leihs"
-  :url "https://github.com/leihs/leihs-my" 
+  :url "https://github.com/leihs/leihs-my"
   :license {:name "AGPL"
             :url "https://www.gnu.org/licenses/agpl-3.0.de.html"}
   :dependencies
@@ -30,6 +30,7 @@
    [io.forward/yaml "1.0.9"]
    [log4j/log4j "1.2.17" :exclusions [javax.mail/mail javax.jms/jms com.sun.jdmk/jmxtools com.sun.jmx/jmxri]]
    [logbug "4.2.2"]
+   [me.raynes/conch "0.8.0"]
    [nilenso/honeysql-postgres "0.2.4"]
    [org.clojure/clojure "1.9.0"]
    [org.clojure/clojurescript "1.10.339" :scope "provided"]
@@ -102,7 +103,7 @@
              :nrepl-middleware ["cemerick.piggieback/wrap-cljs-repl"]
              :css-dirs ["resources/all/public/my/css"]}
 
-  :profiles {:dev 
+  :profiles {:dev
              {:dependencies [[com.cemerick/piggieback "0.2.2"]
                              [figwheel-sidecar "0.5.16"]
                              [org.clojure/tools.nrepl "0.2.13"]
