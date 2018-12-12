@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [str keyword])
   (:require [clojure.java.jdbc :as jdbc]
             [hiccup.page :refer [html5 include-js]]
-            [leihs.core [http-cache-buster :as cache-buster] [sql :as sql]]
+            [leihs.core [http-cache-buster2 :as cache-buster] [sql :as sql]]
             [leihs.core.remote-navbar.shared :refer [navbar-props]]
             [leihs.my.back.shared :refer [head]]
             [leihs.my.server-side-js.engine :as js-engine]))

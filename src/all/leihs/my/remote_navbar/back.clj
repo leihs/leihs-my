@@ -2,7 +2,7 @@
   (:require
     [hiccup.core :refer [html]]
     [hiccup.page :refer [include-js]]
-    [leihs.core.http-cache-buster :as cache-buster]
+    [leihs.core.http-cache-buster2 :as cache-buster]
     [leihs.my.back.ssr :refer [render-navbar]]))
 
 (defn handler [request]

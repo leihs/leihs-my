@@ -2,8 +2,7 @@
   (:refer-clojure :exclude [str keyword])
   (:require [leihs.core.core :refer [keyword str presence]])
   (:require [leihs.core.json :refer [to-json]]
-            [leihs.core.http-cache-buster :as cache-buster :refer
-             [wrap-resource]]
+            [leihs.core.http-cache-buster2 :as cache-buster]
             [leihs.my.utils.release-info :as release-info]
             [leihs.core.sql :as sql]
             [leihs.core.ds :as ds]

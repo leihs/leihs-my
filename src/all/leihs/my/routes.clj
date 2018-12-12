@@ -4,7 +4,7 @@
   (:require
     [leihs.core.anti-csrf.back :as anti-csrf]
     [leihs.core.ds :as ds]
-    [leihs.core.http-cache-buster :as cache-buster :refer [wrap-resource]]
+    [leihs.core.http-cache-buster2 :as cache-buster :refer [wrap-resource]]
     [leihs.core.ring-exception :as ring-exception]
     [leihs.core.routing.back :as routing]
     [leihs.core.routing.dispatch-content-type :as dispatch-content-type]
@@ -126,12 +126,11 @@
       (wrap-resource
         "public" {:allow-symlinks? true
                   :cache-bust-paths ["/my/css/site.css"
-                                     "/my/css/site.min.css"
                                      "/my/leihs-shared-bundle.js"
                                      "/my/js/app.js"]
-                  :no-expire-paths [#".*font-awesome-[^\/]*\d\.\d\.\d\/.*"
+                  :never-expire-paths [#".*fontawesome-[^\/]*\d+\.\d+\.\d+\/.*"
                                        #".+_[0-9a-f]{40}\..+"]
-                  :enabled? (= env/env :prod)})
+                  :cache-enabled? (= env/env :prod)})
       ring-exception/wrap))
 
 ;#### debug ###################################################################
