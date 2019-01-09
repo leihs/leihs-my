@@ -34,7 +34,7 @@ jobs:
           RAILS_ENV: test
           RUBY: '{{RUBY_ENGINE}}-{{RUBY_VERSION}}'
           RUBY_ENGINE: ruby
-          RUBY_VERSION: 2.4.3
+          RUBY_VERSION: 2.6.0
         git_options:
           submodules:
             include_match: ^.*$
