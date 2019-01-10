@@ -2,5 +2,4 @@
 
 cd leihs-ui && \
 test -d node_modules && npm i || { npm ci || npm i ;} && \
-npm run build:theme
-npm run watch-lib
+npm run build

@@ -1,8 +1,7 @@
 #git submodule update --recursive --init --force leihs-ui
 cd leihs-ui
-npm ci || npm i
+test -d node_modules && npm i || { npm ci || npm i ;}
 npm run build
-npm run build-lib
 cd -
 
 # cp leihs-ui/bootstrap-theme-leihs/build/bootstrap-leihs.css \
