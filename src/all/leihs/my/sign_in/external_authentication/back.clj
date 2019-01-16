@@ -120,16 +120,24 @@
 (defn user-for-sign-in-token-query [sign-in-token authentication-system-id]
   (let [unique-ids [:email :login :org_id]
         unique-id (some sign-in-token unique-ids)
-        query (auth-system-base-query-for-unique-id unique-id authentication-system-id)
-        aggregator-fn (fn [query k]
-                        (if-let [v (k sign-in-token)]
-                          (sql/merge-where query [:= (keyword (str "users." k)) v])
-                          query))
-        reducer (partial reduce aggregator-fn) ]
-    (-> (auth-system-base-query-for-unique-id unique-id authentication-system-id)
-        (reducer unique-ids)
-        (sql/merge-select :users.*)
-        sql/format)))
+        base-query (auth-system-base-query-for-unique-id unique-id authentication-system-id)]
+    (when-not unique-id 
+      (throw (ex-info 
+               "The sign-in token must at least submit one of email, org_id or login" 
+               {:status 400})))
+    ; extending the base-query with the actual unique id(s) submitted makes this more stringent
+    (as-> base-query query
+      (if-let [email (:email sign-in-token)]
+        (sql/merge-where query [:= (sql/raw "lower(users.email)") (str/lower-case email)])
+        query)
+      (if-let [org-id (:org_id sign-in-token)]
+        (sql/merge-where query [:= :users.org_id org-id])
+        query)
+      (if-let [login (:login sign-in-token)]
+        (sql/merge-where query [:= :users.login login])
+        query)
+      (sql/merge-select query :users.*)
+      (sql/format query))))
 
 (defn user-for-sign-in-token [sign-in-token authentication-system-id tx]
   (let [query (user-for-sign-in-token-query sign-in-token authentication-system-id)

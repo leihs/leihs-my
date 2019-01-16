@@ -35,8 +35,3 @@ windows:
     command: |
       export TEST_AUTH_SYSTEM_PORT=3245
       bundle exec ruby bin/test-auth-system.rb -p ${TEST_AUTHENTICATION_SYSTEM_PORT}
-  10:
-    name: sass
-    command: |
-      sass --watch resources/all/public/my/css/site.sass:resources/all/public/my/css/site.css
-
