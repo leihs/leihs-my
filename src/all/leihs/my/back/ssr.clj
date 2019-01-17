@@ -1,8 +1,12 @@
 (ns leihs.my.back.ssr
   (:refer-clojure :exclude [str keyword])
   (:require [clojure.java.jdbc :as jdbc]
+            [clojure.tools.logging :as log]
             [hiccup.page :refer [html5 include-js]]
-            [leihs.core [http-cache-buster2 :as cache-buster] [sql :as sql]]
+            [leihs.core
+             [http-cache-buster2 :as cache-buster]
+             [release :as release]
+             [sql :as sql]]
             [leihs.core.remote-navbar.shared :refer [navbar-props]]
             [leihs.my.back.shared :refer [head]]
             [leihs.my.server-side-js.engine :as js-engine]))
@@ -27,12 +31,18 @@
 
 (defn render-navbar
   [request]
-  (js-engine/render-react "Navbar" (navbar-props request)))
+  (->> request
+       navbar-props
+       (js-engine/render-react "Navbar")))
 
 (defn render-root-page
   [request]
-  (render-page-base (js-engine/render-react "HomePage"
-                                            {:navbar (navbar-props request)})))
+  (->> request
+       navbar-props
+       (hash-map :navbar)
+       (merge {:footer {:appVersion release/version}})
+       (js-engine/render-react "HomePage")
+       render-page-base))
 
 (defn render-sign-in-page
   ([user-param request] (render-sign-in-page user-param request {}))
