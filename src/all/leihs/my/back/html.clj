@@ -9,6 +9,7 @@
             [leihs.core.sql :as sql]
             [leihs.core.ds :as ds]
             [leihs.core.url.core :as url]
+            [leihs.my.authorization :as auth]
             [leihs.my.back.ssr :as ssr]
             [leihs.my.server-side-js.engine :as js-engine]
             [leihs.core.anti-csrf.back :refer [anti-csrf-token]]
@@ -25,11 +26,25 @@
             [logbug.ring :refer [wrap-handler-with-logging]]
             [logbug.thrown :as thrown]))
 
+(defn route-user [request]
+  (let [user-id (-> request :route-params :user-id)
+        tx (:tx request)]
+    (-> (sql/select :*)
+        (sql/from :users)
+        (sql/where [:= :id user-id])
+        sql/format
+        (->> (jdbc/query tx))
+        first)))
+
+(defn user-attribute [request]
+  (let [user (if (auth/me? request)
+               (:authenticated-entity request)
+               (route-user request))]
+    (-> user to-json url/encode)))
+
 (defn body-attributes
   [request]
-  {:data-user (some-> (:authenticated-entity request)
-                      to-json
-                      url/encode),
+  {:data-user (user-attribute request),
    :data-leihs-my-version (url/encode (to-json release-info/leihs-my-version)),
    :data-leihs-version (url/encode (to-json release-info/leihs-version))})
 

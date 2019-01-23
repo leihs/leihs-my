@@ -1,6 +1,6 @@
 scripts:
   build-uberjar:
-    timeout: 5 minutes
+    timeout: 10 minutes
     exclusive_executor_resource: build-leihs-my-jar
     body: |
       #!/usr/bin/env bash

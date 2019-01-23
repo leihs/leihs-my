@@ -8,6 +8,7 @@
     [leihs.core.icons :as icons]
     [leihs.core.routing.front :as routing]
     [leihs.core.user.front :as user]
+    [leihs.core.user.shared :refer [user-name-html]]
 
     [leihs.my.front.breadcrumbs :as my-breadcrumbs]
     [leihs.my.user.shared :refer [me?*]]
@@ -15,7 +16,10 @@
     [leihs.my.user.api-tokens.breadcrumbs :as api-tokens-breadcrumbs]
     [leihs.my.user.password.breadcrumbs :as password-breadcrumbs]))
 
-
+(defn user-name-component []
+  (let [user-data @user/state*
+        user-id (:id user-data)]
+    (user-name-html user-id user-data)))
 
 (defn page []
   (let [user-id (if @me?*
@@ -32,9 +36,9 @@
                           [:span icons/user-in-admin " User in the admin interface"]))])
      [:div
       (if @me?*
-        [:h1 "My leihs Home"]
+        [:h1 "My user"]
         (let [id (-> @routing/state* :route-params :user-id)]
           [:div
-           [:h1 "User's Home"]
-           [:p "user-id: " [:code id ]]]))]
+           [:h1 [:span "User "] [user-name-component]]
+           [:p "user-id: " [:code id]]]))]
      [:div]]))
