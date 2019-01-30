@@ -7,6 +7,7 @@
     [compojure.core :as cpj]
     [leihs.core.auth.session :as session]
     [leihs.core.core :refer [presence!]]
+    [leihs.core.locale :refer [get-cookie-language delete-language-cookie]]
     [leihs.core.password-authentication.back :refer [password-check-query]]
     [leihs.core.sql :as sql]
     [leihs.my.back.ssr :as ssr]
@@ -95,15 +96,22 @@
                      (apply password-check-query)
                      (jdbc/query tx)
                      first)]
-    (let [user-session (session/create-user-session user request)]
-      {:status 302,
-       :headers {"Location" (redirect-target tx user)},
-       :cookies {leihs.core.constants/USER_SESSION_COOKIE_NAME
-                   {:value (:token user-session),
-                    :http-only true,
-                    :max-age (* 10 356 24 60 60),
-                    :path "/",
-                    :secure (:sessions_force_secure settings)}}})
+    (let [user-session (session/create-user-session user request)
+          cookie-language (get-cookie-language request)
+          response {:status 302,
+                    :headers {"Location" (redirect-target tx user)},
+                    :cookies {leihs.core.constants/USER_SESSION_COOKIE_NAME
+                              {:value (:token user-session),
+                               :http-only true,
+                               :max-age (* 10 356 24 60 60),
+                               :path "/",
+                               :secure (:sessions_force_secure settings)}}}]
+      (when cookie-language
+        (jdbc/update! tx
+                      :users
+                      {:language_id (:id cookie-language)}
+                      ["id = ?" (:id user)]))
+      (-> response delete-language-cookie))
     (if (not (nil? invisible-pw))
       (handle-first-step request)
       {:status 401,

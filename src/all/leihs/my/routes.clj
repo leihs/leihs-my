@@ -5,6 +5,7 @@
     [leihs.core.anti-csrf.back :as anti-csrf]
     [leihs.core.ds :as ds]
     [leihs.core.http-cache-buster2 :as cache-buster :refer [wrap-resource]]
+    [leihs.core.locale :as locale]
     [leihs.core.ring-exception :as ring-exception]
     [leihs.core.routing.back :as routing]
     [leihs.core.routing.dispatch-content-type :as dispatch-content-type]
@@ -17,6 +18,7 @@
     [leihs.my.constants :as constants]
     [leihs.my.env :as env]
     [leihs.my.initial-admin.back :as initial-admin]
+    [leihs.my.language :as language]
     [leihs.my.paths :refer [path paths]]
     [leihs.my.remote-navbar.back :as remote-navbar]
     [leihs.my.resources.home.back :as home]
@@ -52,6 +54,7 @@
     :external-authentication-sign-in
     :home
     :initial-admin
+    :language
     :navbar
     :password-authentication
     :shutdown
@@ -62,6 +65,7 @@
   #{:external-authentication-sign-in
     :home
     :navbar
+    :language
     :not-found
     :redirect-to-root
     :sign-in})
@@ -73,6 +77,7 @@
    :home home/routes
    :initial-admin initial-admin/routes
    :navbar remote-navbar/handler
+   :language language/routes
    :my-user user/routes
    :not-found html/not-found-handler
    :password password/routes
@@ -109,6 +114,7 @@
       (dispatch-content-type/wrap-dispatch-html no-html-handler-keys html/html-handler)
       initial-admin/wrap
       anti-csrf/wrap
+      locale/wrap
       auth/wrap-authenticate
       ring.middleware.cookies/wrap-cookies
       routing/wrap-empty
