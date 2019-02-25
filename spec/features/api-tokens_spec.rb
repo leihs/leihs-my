@@ -21,11 +21,13 @@ feature 'API Tokens', type: :feature do
       @token_secret = find(".token_secret").text
       click_on 'Continue'
       wait_until{ page.has_content? "API-Tokens"}
+      expect(page).to have_content @token_part
+      click_on_first @token_part
+      wait_until(10){ all('.modal-body').empty? }
     end
 
     scenario 'creating an API-Token works' do
       add_api_token
-      expect(page).to have_content @token_part
     end
 
     context 'an API-Token for the current user has been added' do
@@ -75,22 +77,56 @@ feature 'API Tokens', type: :feature do
       end
 
       scenario 'editing the description of the token' do
-        click_on_first @token_part
         click_on_first 'Edit'
-        sleep 3
         fill_in 'Description', with: "The updated description"
         click_on 'Save'
+        wait_until { first('.modal', text: 'OK') }
         wait_until do
           page.has_field?('Description', with: 'The updated description', disabled: true)
         end
       end
 
+      scenario 'default scopes and editing the scope of the token' do
+
+        expect(page).to have_field('read', checked: true, disabled: true)
+        expect(page).to have_field('write', checked: true, disabled: true)
+
+        expect(page).to have_field('admin read', checked: true, disabled: true)
+        expect(page).to have_field('admin write', checked: true, disabled: true)
+
+        expect(page).to have_field('system admin read', checked: false, disabled: true)
+        expect(page).to have_field('system admin write', checked: false , disabled: true)
+
+
+        # enable the system admin scopes 
+
+        click_on_first 'Edit'
+        wait_until { all('.modal-body').empty? }
+        check 'system admin read'
+        check 'system admin write'
+        click_on 'Save'
+        wait_until { first('.modal', text: 'OK') }
+
+
+        expect(page).to have_field('system admin read', checked: true, disabled: true)
+        expect(page).to have_field('system admin write', checked: true, disabled: true)
+
+        # make sure the front end doesen't show some fiction
+        visit current_path
+        expect(page).to have_field('system admin read', checked: true, disabled: true)
+        expect(page).to have_field('system admin write', checked: true, disabled: true)
+        db_token = ApiToken.where(token_part: @token_part).all.first
+        expect(db_token[:scope_system_admin_read]).to be== true
+        expect(db_token[:scope_system_admin_write]).to be== true
+
+      end
+
+
       scenario 'an edited token such that it is expired can not be used to authenticate' do 
         plain_faraday_json_client.basic_auth(@token_secret,'')
         expect(plain_faraday_json_client.get('/my/user/me/auth-info').status).to be== 200
-        click_on_first @token_part
         click_on_first 'Edit'
-        sleep 3
+        wait_until { all('.modal-body').empty? }
         fill_in 'Expires', with: (Time.now - 3.hours).iso8601
         click_on 'Save'
         wait_until { page.has_field?('Expires', disabled: true) }
@@ -100,7 +136,6 @@ feature 'API Tokens', type: :feature do
       scenario 'deleting a token works and makes it useless for authentication' do 
         plain_faraday_json_client.basic_auth(@token_secret,'')
         expect(plain_faraday_json_client.get('/my/user/me/auth-info').status).to be== 200
-        click_on_first @token_part
         click_on_first 'Delete'
         wait_until { page.has_content? "Delete My API-Token #{@token_part}" }
         click_on 'Delete'

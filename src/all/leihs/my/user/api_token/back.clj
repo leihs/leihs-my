@@ -29,10 +29,12 @@
    :description
    :expires_at
    :id
-   :scope_admin_read
-   :scope_admin_write
    :scope_read
    :scope_write
+   :scope_admin_read
+   :scope_admin_write
+   :scope_system_admin_read
+   :scope_system_admin_write
    :token_part
    :updated_at
    :user_id])
@@ -42,6 +44,8 @@
    :expires_at
    :scope_admin_read
    :scope_admin_write
+   :scope_system_admin_read
+   :scope_system_admin_write
    :scope_read
    :scope_write])
 

@@ -73,19 +73,27 @@
 ;;; form scopes ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def scopes
-  (->> [:scope_read :scope_write :scope_admin_read :scope_admin_write]
+  (->> [:scope_read :scope_write 
+        :scope_admin_read :scope_admin_write 
+        :scope_system_admin_read :scope_system_admin_write]
        (map (fn [x] {:scope x :key x}))))
 
 (defn scope-disalbed? [scope]
   (or (= :show @mode?*)
       (case scope
         :scope_read (or (-> @api-token-data* :scope_admin_read)
+                        (-> @api-token-data* :scope_system_admin_read)
                         (-> @api-token-data* :scope_write))
         :scope_write (or (-> @api-token-data* :scope_read not)
-                         (-> @api-token-data* :scope_admin_write))
+                         (-> @api-token-data* :scope_admin_write)
+                         (-> @api-token-data* :scope_system_admin_write))
         :scope_admin_read (or (-> @api-token-data* :scope_read not)
                               (-> @api-token-data* :scope_admin_write))
         :scope_admin_write (or (-> @api-token-data* :scope_admin_read not)
+                               (-> @api-token-data* :scope_write not))
+        :scope_system_admin_read (or (-> @api-token-data* :scope_read not)
+                              (-> @api-token-data* :scope_system_admin_write))
+        :scope_system_admin_write (or (-> @api-token-data* :scope_system_admin_read not)
                                (-> @api-token-data* :scope_write not)))))
 
 (defn scope-text [scope]
