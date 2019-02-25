@@ -38,6 +38,10 @@ jobs:
         git_options:
           submodules:
             include_match: ^.*$
+        trial_attachments:
+          screenshots:
+            include_match: '^tmp\/screenshots\/.+\.png$'
+            content_type: image/png
         scripts:
           test:
             body: |
