@@ -136,7 +136,7 @@
                                      "/my/js/app.js"]
                   :never-expire-paths [#".*fontawesome-[^\/]*\d+\.\d+\.\d+\/.*"
                                        #".+_[0-9a-f]{40}\..+"]
-                  :cache-enabled? (= env/env :prod)})
+                  :cache-enabled? true})
       ring-exception/wrap))
 
 ;#### debug ###################################################################
