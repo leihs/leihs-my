@@ -98,7 +98,7 @@
                  :pretty-print  true}}}}
 
   :figwheel {:http-server-root "public"
-             :server-port 3231
+             :server-port 3241
              :nrepl-port 3232
              :nrepl-middleware ["cemerick.piggieback/wrap-cljs-repl"]
              :css-dirs ["resources/all/public/my/css"]}

@@ -10,7 +10,7 @@
     [leihs.core.locale :refer [get-cookie-language delete-language-cookie]]
     [leihs.core.password-authentication.back :refer [password-check-query]]
     [leihs.core.sql :as sql]
-    [leihs.my.back.ssr :as ssr]
+    [leihs.core.ssr :as ssr]
     [leihs.my.paths :refer [path]]
     [leihs.my.sign-in.shared :refer [auth-system-base-query-for-unique-id]]
     [leihs.my.sign-in.external-authentication.back :refer

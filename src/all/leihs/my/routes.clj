@@ -20,7 +20,6 @@
     [leihs.my.initial-admin.back :as initial-admin]
     [leihs.my.language :as language]
     [leihs.my.paths :refer [path paths]]
-    [leihs.my.remote-navbar.back :as remote-navbar]
     [leihs.my.resources.home.back :as home]
     [leihs.my.resources.settings.back :as settings]
     [leihs.my.resources.status.back :as status]
@@ -55,7 +54,6 @@
     :home
     :initial-admin
     :language
-    :navbar
     :password-authentication
     :shutdown
     :sign-in
@@ -64,7 +62,6 @@
 (def no-html-handler-keys
   #{:external-authentication-sign-in
     :home
-    :navbar
     :language
     :not-found
     :redirect-to-root
@@ -76,7 +73,6 @@
    :auth-info auth-info/ring-handler
    :home home/routes
    :initial-admin initial-admin/routes
-   :navbar remote-navbar/handler
    :language language/routes
    :my-user user/routes
    :not-found html/not-found-handler

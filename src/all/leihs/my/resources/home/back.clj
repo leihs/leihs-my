@@ -1,7 +1,7 @@
 (ns leihs.my.resources.home.back
   (:refer-clojure :exclude [str keyword])
   (:require [compojure.core :as cpj]
-            [leihs.my.back.ssr :as ssr]
+            [leihs.core.ssr :as ssr]
             [leihs.my.paths :refer [path]]
             [leihs.my.utils.redirects :refer [redirect-target]]
             [ring.util.response :refer [redirect]]))

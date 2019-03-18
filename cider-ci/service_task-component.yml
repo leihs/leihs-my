@@ -1,14 +1,20 @@
+traits:
+  JDK: true
+
 scripts:
 
-  run-server:
+  run-my-service:
     start_when:
       uberjar has been built:
-        script_key: build-uberjar
+        script_key: build-my-uberjar
       database has been created:
         script_key: create-database
-    body: java -jar target/leihs-my.jar run -s
+    body: |
+      set -euxo
+      cd $LEIHS_MY_DIR
+      java -jar target/leihs-my.jar run -s
 
-  server-is-running:
+  my-service-is-running:
     body: |
       until curl --fail -I \
         -H 'Accept: application/json' \
@@ -17,15 +23,15 @@ scripts:
       done
     start_when:
       run server is executing:
-        script_key: run-server
+        script_key: run-my-service
         states: [executing]
 
   test:
     start_when:
-      server is running:
-        script_key: server-is-running
+      my service is running:
+        script_key: my-service-is-running
 
-  shutdown-server:
+  shutdown-my-service:
     body: |
       until curl --silent --fail -X POST -I \
         -H 'Accept: application/json' \
@@ -35,4 +41,10 @@ scripts:
     start_when:
       test is terminal:
         script_key: test
+        states: [aborted, defective, passed, failed, skipped]
+
+  delete-database:
+    start_when:
+       shutdown-my-service is in termial state:
+        script_key: shutdown-my-service
         states: [aborted, defective, passed, failed, skipped]

@@ -62,7 +62,6 @@
   (branch ""
           leihs.core.paths/core-paths
           (branch "/my"
-                  (leaf "/navbar" :navbar)
                   (leaf "/language" :language)
                   my-service-paths
                   user-paths)))

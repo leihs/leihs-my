@@ -1,21 +1,43 @@
+traits:
+  JDK: true
+  Leiningen 2: true
+  S3-Cache: true
+  npm: true
+
 scripts:
-  build-uberjar:
+  build-my-uberjar:
     timeout: 10 minutes
     exclusive_executor_resource: build-leihs-my-jar
     body: |
       #!/usr/bin/env bash
-      set -eux
+      set -euxo
+      cd $LEIHS_MY_DIR
 
-      sh scripts/prepare-shared-ui.sh
-      
-      export LEIN_SNAPSHOTS_IN_RELEASE=yes
       DIGEST=$(git log -n 1 HEAD --pretty=%T)
-      LEIN_UBERJAR_FILE="/tmp/leihs-my_${DIGEST}.jar"
-      if [ -f "${LEIN_UBERJAR_FILE}" ];then
-        echo " ${LEIN_UBERJAR_FILE} exists"
+      UBERJAR_PATH=${LEIHS_MY_DIR}/target/leihs-my.jar
+      S3_UBERJAR_FILE_NAME="leihs-my_${DIGEST}.jar"
+
+      if [ -z ${S3_CI_ENDPOINT:+x} ] ; then
+        echo "WARN: S3_CI_ENDPOINT is not set; caching can not be used"
       else
-        lein uberjar
-        mv "target/leihs-my.jar" "${LEIN_UBERJAR_FILE}"
+        if [ "$(aws --quiet --only-show-errors --no-progress --endpoint $S3_CI_ENDPOINT s3 cp s3://${S3_CI_CACHE_BUCKET}/${S3_UBERJAR_FILE_NAME} ${UBERJAR_PATH})" ]; then
+          echo "INFO: Rerrieved uberjar from s3 cache"
+        else
+          echo "INFO: No S3 cached uberjar found "
+        fi
       fi
-      mkdir -p target
-      ln -s "$LEIN_UBERJAR_FILE" "target/leihs-my.jar"
+
+      if [ ! -f ${UBERJAR_PATH} ]; then
+        echo "INFO: building uberjar now"
+        cd $LEIHS_MY_DIR
+        sh scripts/prepare-shared-ui.sh
+        export LEIN_SNAPSHOTS_IN_RELEASE=yes
+        lein uberjar
+      fi
+
+      if [ ! -z ${S3_CI_ENDPOINT:+x} ] ; then
+        if [ ! "$(aws --quiet --only-show-errors --no-progress --endpoint $S3_CI_ENDPOINT s3 cp s3://${S3_CI_CACHE_BUCKET}/${S3_UBERJAR_FILE_NAME} ${UBERJAR_PATH})" ]; then
+          echo "INFO: No S3 cached uberjar found; uploading ours now"
+          aws --endpoint $S3_CI_ENDPOINT s3 cp ${UBERJAR_PATH} s3://${S3_CI_CACHE_BUCKET}/${S3_UBERJAR_FILE_NAME} 
+        fi
+      fi
