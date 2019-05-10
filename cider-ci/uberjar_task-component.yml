@@ -8,36 +8,50 @@ scripts:
   build-my-uberjar:
     timeout: 10 minutes
     exclusive_executor_resource: build-leihs-my-jar
+    environment_variables:
+      RUBY: '{{RUBY_ENGINE}}-{{RUBY_VERSION}}'
+      RUBY_ENGINE: ruby
+      RUBY_VERSION: 2.6.0
     body: |
       #!/usr/bin/env bash
       set -euxo
-      cd $LEIHS_MY_DIR
 
-      DIGEST=$(git log -n 1 HEAD --pretty=%T)
-      UBERJAR_PATH=${LEIHS_MY_DIR}/target/leihs-my.jar
-      S3_UBERJAR_FILE_NAME="leihs-my_${DIGEST}.jar"
+      # custom stuff for this project 
+      #
+      export PROJECT_DIR="$LEIHS_MY_DIR"
+      export UBERJAR_NAME="leihs-my"
 
-      if [ -z ${S3_CI_ENDPOINT:+x} ] ; then
-        echo "WARN: S3_CI_ENDPOINT is not set; caching can not be used"
-      else
-        if [ "$(aws --quiet --only-show-errors --no-progress --endpoint $S3_CI_ENDPOINT s3 cp s3://${S3_CI_CACHE_BUCKET}/${S3_UBERJAR_FILE_NAME} ${UBERJAR_PATH})" ]; then
-          echo "INFO: Rerrieved uberjar from s3 cache"
-        else
-          echo "INFO: No S3 cached uberjar found "
-        fi
-      fi
-
-      if [ ! -f ${UBERJAR_PATH} ]; then
-        echo "INFO: building uberjar now"
-        cd $LEIHS_MY_DIR
-        sh scripts/prepare-shared-ui.sh
+      function build_uberjar() {
+        echo "INFO: building the ${UBERJAR_NAME} uberjar now"
         export LEIN_SNAPSHOTS_IN_RELEASE=yes
-        lein uberjar
-      fi
+        cd $PROJECT_DIR
+        sh scripts/prepare-shared-ui.sh 
+        lein uberjar 
+      }
 
-      if [ ! -z ${S3_CI_ENDPOINT:+x} ] ; then
-        if [ ! "$(aws --quiet --only-show-errors --no-progress --endpoint $S3_CI_ENDPOINT s3 cp s3://${S3_CI_CACHE_BUCKET}/${S3_UBERJAR_FILE_NAME} ${UBERJAR_PATH})" ]; then
-          echo "INFO: No S3 cached uberjar found; uploading ours now"
-          aws --endpoint $S3_CI_ENDPOINT s3 cp ${UBERJAR_PATH} s3://${S3_CI_CACHE_BUCKET}/${S3_UBERJAR_FILE_NAME} 
+      # the reminder should be pretty much the same for all our projects resulting in an uberjar
+
+      cd $PROJECT_DIR
+      DIGEST=$(git log -n 1 HEAD --pretty=%T)
+
+      UBERJAR_PATH=/tmp/${UBERJAR_NAME}_${DIGEST}.jar # path of locally cached uberjar
+      LEIN_UBERJAR_PATH="${PROJECT_DIR}/target/${UBERJAR_NAME}.jar" # path of the expeced repository uberjar path
+      S3_UBERJAR_FILE_NAME="${UBERJAR_NAME}_${DIGEST}.jar" # name of the uberjar in the S3 Bucket
+
+      export PATH=~/.rubies/$RUBY/bin:$PATH # the s3-chache-helper needs this
+
+      if [ -e $UBERJAR_PATH ]; then
+          echo "INFO: locally cached uberjar found; linking and exiting"
+          ln -s "$UBERJAR_PATH" "$LEIN_UBERJAR_PATH"
+          exit 0
+      else
+        s3-cache-helper download -n "$S3_UBERJAR_FILE_NAME" -p "$UBERJAR_PATH"
+        # build the uberjar if it was not downloaded
+        if [ ! -f ${UBERJAR_PATH} ]; then
+          build_uberjar
+          mv "$LEIN_UBERJAR_PATH" "$UBERJAR_PATH"
+          s3-cache-helper upload -n "$S3_UBERJAR_FILE_NAME" -p "$UBERJAR_PATH"
         fi
+        # link the either downloaded or build uberjar
+        ln -s "$UBERJAR_PATH" "$LEIN_UBERJAR_PATH"
       fi

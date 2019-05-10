@@ -1,10 +1,12 @@
 jobs:
   specs:
     name: Run specs
-    run_when:
-      any branch has been updated:
-        type: branch
-        include_match: ^.*$
+    depends_on: &RSPEC_DEPENDENCIES
+      build-my-uberjar has passed: 
+        type: job
+        job_key: build-my-uberjar
+        states: [passed]
+    run_when: *RSPEC_DEPENDENCIES
     context:
       generate_tasks:
         include_match: spec/.*_spec.rb
