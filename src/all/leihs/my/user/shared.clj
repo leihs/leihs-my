@@ -3,6 +3,7 @@
   (:require
     [leihs.core.core :refer [keyword str presence]]
     [leihs.core.sql :as sql]
+    [leihs.shared :refer [password-hash]]
 
     [clojure.java.jdbc :as jdbc]
 
@@ -24,13 +25,6 @@
                  (-> request :authenticated-entity :user_id))
        request))))
 
-
-(defn password-hash
-  ([password tx]
-   (->> ["SELECT crypt(?,gen_salt('bf',10)) AS pw_hash" password]
-        (jdbc/query tx)
-        first :pw_hash)))
-
 (defn sql-command [user-id pw-hash]
   (-> (sql/insert-into :authentication_systems_users)
       (sql/values [{:user_id user-id
@@ -43,7 +37,6 @@
                          ))))
       (sql/returning :*)
       sql/format))
-
 
 (defn set-password [user-id password tx]
   (let [pw-hash (password-hash password tx)

@@ -16,3 +16,4 @@ resources/all/public/auth/build-timestamp.txt
 /leihs-ui.tgz
 /resources/all/public/my/build-timestamp.txt
 leihs-ui-compiled
+profiles.clj

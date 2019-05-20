@@ -20,9 +20,11 @@
   #{:admin
     :borrow
     :daily
+    :forgot-password
     :home
     :manage
     :procurement
+    :reset-password
     :sign-in})
 
 ;(re-matches
@@ -58,9 +60,15 @@
           (leaf "/password" :password)
           api-tokens-paths))
 
+(def password-restore-paths
+  (branch "/"
+          (leaf "forgot-password" :forgot-password)
+          (leaf "reset-password" :reset-password)))
+
 (def paths
   (branch ""
           leihs.core.paths/core-paths
+          password-restore-paths
           (branch "/my"
                   (leaf "/language" :language)
                   my-service-paths

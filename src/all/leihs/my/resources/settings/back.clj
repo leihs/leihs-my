@@ -4,7 +4,6 @@
   (:require
     [leihs.my.paths :refer [path]]
     [leihs.core.sql :as sql]
-    [leihs.shared :refer [password-hash]]
 
     [clojure.java.jdbc :as jdbc]
     [compojure.core :as cpj]

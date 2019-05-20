@@ -16,25 +16,43 @@
     [leihs.my.sign-in.external-authentication.back :refer
      [ext-auth-system-token-url]]
     [leihs.my.utils.redirects :refer [redirect-target]]
+    [leihs.core.ssr-engine :as js-engine]
+    [leihs.core.remote-navbar.shared :refer [navbar-props]]
     [ring.util.response :refer [redirect]]))
 
 (defn auth-system-query
   [unique-id]
-  (-> unique-id
-      auth-system-base-query-for-unique-id
-      (sql/merge-select :authentication_systems.id
-                        :authentication_systems.type
-                          :authentication_systems.name
-                        :authentication_systems.description
-                          :authentication_systems.external_url)
-      sql/format))
+  (->
+    unique-id
+    auth-system-base-query-for-unique-id
+    (sql/merge-select
+      :authentication_systems.id
+      :authentication_systems.type :authentication_systems.name
+      :authentication_systems.description :authentication_systems.external_url)
+    sql/format))
 
 (defn auth-systems
   [tx unique-id]
-  (->> unique-id
-       presence!
-       auth-system-query
-       (jdbc/query tx)))
+  (->>
+    unique-id
+    presence!
+    auth-system-query
+    (jdbc/query tx)))
+
+; FIXME: should use ssr/render-page-by-name
+(defn render-sign-in-page
+  ([user-param request] (render-sign-in-page user-param request {}))
+  ([user-param request extra-props]
+   (let [tx (:tx request)
+         auth-entity (:authenticated-entity request)]
+     (ssr/render-page-base
+       (js-engine/render-react
+         "SignInPage"
+         (merge
+           {:navbar (navbar-props request),
+            :authFlow
+              {:user user-param, :forgotPasswordLink "/forgot-password"}}
+           extra-props))))))
 
 (def error-flash-invalid-user
   {:level "error",
@@ -61,24 +79,28 @@
   otherwise show a form with all auth systems."
   [{tx :tx, {user-param :user} :params, settings :settings, :as request}]
   (if (nil? user-param)
-    (ssr/render-sign-in-page user-param request)
+    (render-sign-in-page user-param request)
     (let [user-auth-systems (auth-systems tx user-param)]
       (if (empty? user-auth-systems)
-        (ssr/render-sign-in-page user-param
-                                 request
-                                 {:flashMessages [error-flash-invalid-user]})
+        (render-sign-in-page
+          user-param
+          request
+          {:flashMessages [error-flash-invalid-user]})
         (let [user-auth-systems-props {:authSystems user-auth-systems}
-              render-sign-in-page-fn #(ssr/render-sign-in-page
-                                        user-param
-                                        request
-                                        user-auth-systems-props)]
+              render-sign-in-page-fn
+                #(render-sign-in-page
+                   user-param
+                   request
+                   user-auth-systems-props)]
           (if (= (count user-auth-systems) 1)
             (let [auth-system (first user-auth-systems)]
               (if (= (:type auth-system) "external")
-                (redirect (ext-auth-system-token-url tx
-                                                     user-param
-                                                     (:id auth-system)
-                                                     settings))
+                (redirect
+                  (ext-auth-system-token-url
+                    tx
+                    user-param
+                    (:id auth-system)
+                    settings))
                 (render-sign-in-page-fn)))
             (render-sign-in-page-fn)))))))
 
@@ -92,34 +114,42 @@
       :form-params-raw,
     settings :settings,
     :as request}]
-  (if-let [user (->> [user-param password]
-                     (apply password-check-query)
-                     (jdbc/query tx)
-                     first)]
+  (if-let [user
+             (->>
+               [user-param password]
+               (apply password-check-query)
+               (jdbc/query tx)
+               first)]
     (let [user-session (session/create-user-session user request)
           cookie-language (get-cookie-language request)
-          response {:status 302,
-                    :headers {"Location" (redirect-target tx user)},
-                    :cookies {leihs.core.constants/USER_SESSION_COOKIE_NAME
-                              {:value (:token user-session),
-                               :http-only true,
-                               :max-age (* 10 356 24 60 60),
-                               :path "/",
-                               :secure (:sessions_force_secure settings)}}}]
+          response
+            {:status 302,
+             :headers {"Location" (redirect-target tx user)},
+             :cookies
+               {leihs.core.constants/USER_SESSION_COOKIE_NAME
+                  {:value (:token user-session),
+                   :http-only true,
+                   :max-age (* 10 356 24 60 60),
+                   :path "/",
+                   :secure (:sessions_force_secure settings)}}}]
       (when cookie-language
-        (jdbc/update! tx
-                      :users
-                      {:language_id (:id cookie-language)}
-                      ["id = ?" (:id user)]))
-      (-> response delete-language-cookie))
+        (jdbc/update!
+          tx
+          :users
+          {:language_id (:id cookie-language)}
+          ["id = ?" (:id user)]))
+      (->
+        response
+        delete-language-cookie))
     (if (not (nil? invisible-pw))
       (handle-first-step request)
       {:status 401,
        :headers {"Content-Type" "text/html"},
-       :body (ssr/render-sign-in-page user-param
-                                      request
-                                      {:flashMessages
-                                         [error-flash-invalid-password]})})))
+       :body
+         (render-sign-in-page
+           user-param
+           request
+           {:flashMessages [error-flash-invalid-password]})})))
 
 (defn sign-in-get
   [{tx :tx, settings :settings, {user-param :user} :query-params, :as request}]
@@ -141,10 +171,10 @@
       (handle-first-step request)
       (handle-second-step request))))
 
-
 (def routes
-  (cpj/routes (cpj/GET (path :sign-in) [] #'sign-in-get)
-              (cpj/POST (path :sign-in) [] #'sign-in-post)))
+  (cpj/routes
+    (cpj/GET (path :sign-in) [] #'sign-in-get)
+    (cpj/POST (path :sign-in) [] #'sign-in-post)))
 
 ;#### debug ###################################################################
 ;(logging-config/set-logger! :level :debug)

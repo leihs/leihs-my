@@ -1,0 +1,5 @@
+{:width 80,
+  :old? false,
+  :map {:lift-ns? false},
+  :comment {:wrap? false, :inline? false, :count? false},
+  :vector {:respect-nl? true}}

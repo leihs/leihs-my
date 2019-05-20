@@ -58,6 +58,11 @@
    (-> (auth-system-base-query-for-unique-id user-unique-id)
        (sql/merge-where [:= :authentication_systems.id authentication-system-id]))))
 
+(comment
+  (-> (auth-system-base-query-for-unique-id "mkmit") 
+      (sql/merge-select :*)
+      sql/format))
+
 ;#### debug ###################################################################
 ;(logging-config/set-logger! :level :debug)
 ;(logging-config/set-logger! :level :info)

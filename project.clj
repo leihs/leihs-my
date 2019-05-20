@@ -11,6 +11,7 @@
    [camel-snake-kebab "0.4.0"]
    [cheshire "5.8.0"]
    [clj-http "3.9.0"]
+   [clj-ulid "0.1.0-SNAPSHOT"]
    [cljs-http "0.1.45"]
    [cljsjs/jimp "0.2.27"]
    [cljsjs/js-yaml "3.3.1-0"]
@@ -37,7 +38,6 @@
    [org.clojure/java.jdbc "0.7.7"]
    [org.clojure/tools.cli "0.3.7"]
    [org.clojure/tools.logging "0.4.1"]
-   [org.clojure/tools.nrepl "0.2.13"]
    [org.slf4j/slf4j-log4j12 "1.7.25"]
    [pandect "0.6.1"]
    [pg-types "2.4.0-PRE.1"]
@@ -78,6 +78,8 @@
             [lein-environ "1.1.0"]
             [lein-shell "0.4.2"]]
 
+  :aliases {"auto-reset" ["auto" "exec" "-p" "scripts/lein-exec-reset.clj"]}
+
   :cljsbuild {:builds
               {:min {:source-paths ["src/all" "src/prod" "leihs-clj-shared/src"]
                      :jar true
@@ -103,21 +105,26 @@
              :nrepl-middleware ["cemerick.piggieback/wrap-cljs-repl"]
              :css-dirs ["resources/all/public/my/css"]}
 
-  :profiles {:dev
+  :profiles {:dev-common
              {:dependencies [[com.cemerick/piggieback "0.2.2"]
                              [figwheel-sidecar "0.5.16"]
-                             [org.clojure/tools.nrepl "0.2.13"]
+                             [nrepl "0.6.0"]
+                             [org.clojure/tools.namespace "0.2.11"]
                              [pjstadig/humane-test-output "0.8.3"]
                              [prone "1.6.0"]
                              [ring/ring-devel "1.6.3"]
                              [ring/ring-mock "0.3.2"]]
-              :plugins [[lein-figwheel "0.5.16"]
+              :plugins [[lein-auto "0.1.3"]
+                        [lein-exec "0.3.7"]
+                        [lein-figwheel "0.5.16"]
                         [lein-sassy "1.0.8"]]
               :source-paths ["src/all" "src/dev" "leihs-clj-shared/src"]
               :resource-paths ["resources/all" "resources/dev" "target/cljsbuild"]
               :injections [(require 'pjstadig.humane-test-output)
                            (pjstadig.humane-test-output/activate!)]
               :env {:dev true}}
+             :dev-overrides {} ; defined if needed in profiles.clj file
+             :dev [:dev-common :dev-overrides]
              :uberjar {:hooks [minify-assets.plugin/hooks]
                        :source-paths ["src/all" "src/prod" "leihs-clj-shared/src"]
                        :prep-tasks [["shell" "./bin/build-timestamp"]
@@ -125,7 +132,4 @@
                        :resource-paths ["resources/all" "resources/prod" "target/cljsbuild"]
                        :aot [#"leihs\..*"]
                        :uberjar-name "leihs-my.jar"}
-             :test {:resource-paths ["resources/all" "resources/test" "target/cljsbuild"]}}
-
-
-)
+             :test {:resource-paths ["resources/all" "resources/test" "target/cljsbuild"]}})

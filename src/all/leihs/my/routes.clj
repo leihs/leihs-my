@@ -20,6 +20,7 @@
     [leihs.my.initial-admin.back :as initial-admin]
     [leihs.my.language :as language]
     [leihs.my.paths :refer [path paths]]
+    [leihs.my.password-restore :as password-restore]
     [leihs.my.resources.home.back :as home]
     [leihs.my.resources.settings.back :as settings]
     [leihs.my.resources.status.back :as status]
@@ -51,26 +52,31 @@
 (def skip-authorization-handler-keys
   #{:external-authentication-request
     :external-authentication-sign-in
+    :forgot-password
     :home
     :initial-admin
     :language
     :password-authentication
+    :reset-password
     :shutdown
     :sign-in
     :sign-out})
 
 (def no-html-handler-keys
   #{:external-authentication-sign-in
+    :forgot-password
     :home
     :language
     :not-found
     :redirect-to-root
+    :reset-password
     :sign-in})
 
 (def resolve-table
   {:api-token api-token/routes
    :api-tokens api-tokens/routes
    :auth-info auth-info/ring-handler
+   :forgot-password password-restore/forgot-routes
    :home home/routes
    :initial-admin initial-admin/routes
    :language language/routes
@@ -80,6 +86,7 @@
    :external-authentication-request external-authentication/routes
    :external-authentication-sign-in external-authentication/routes
    :redirect-to-root redirect-to-root-handler
+   :reset-password password-restore/reset-routes
    :shutdown shutdown/ring-handler
    :sign-in sign-in/routes
    :sign-out sign-out/routes
