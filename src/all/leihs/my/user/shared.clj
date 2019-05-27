@@ -28,7 +28,7 @@
 (defn sql-command [user-id pw-hash]
   (-> (sql/insert-into :authentication_systems_users)
       (sql/values [{:user_id user-id
-                    :authentication_system_id "password"
+                    :authentication_system_id leihs.core.constants/PASSWORD_AUTHENTICATION_SYSTEM_ID
                     :data pw-hash}])
       (sql/upsert (-> (sql/on-conflict :user_id :authentication_system_id)
                       (sql/do-update-set :data)

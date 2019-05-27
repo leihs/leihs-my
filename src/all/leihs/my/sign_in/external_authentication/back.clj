@@ -94,7 +94,7 @@
                         (-> data :authentication_system_user) 
                         authentication-system settings)
         token (jwt/sign claims priv-key {:alg :es256})]
-    (str (:external_url authentication-system) "?token=" token)))
+    (str (:external_sign_in_url authentication-system) "?token=" token)))
 
 (defn authentication-request 
   [{tx :tx :as request
@@ -169,7 +169,7 @@
        :headers {"Content-Type" "text/plain"}
        :body (:error_message sign-in-token)}
       (if-let [user (user-for-sign-in-token sign-in-token authentication-system-id tx)]
-        (let [user-session (session/create-user-session user request)]
+        (let [user-session (session/create-user-session user authentication-system-id request)]
           {:status 302
            :headers {"Location" (redirect-target tx user)}
            :cookies {leihs.core.constants/USER_SESSION_COOKIE_NAME
@@ -197,7 +197,7 @@
       {:status 400
        :body (:error_message sign-in-token)}
       (if-let [user (user-for-sign-in-token sign-in-token authentication-system-id tx)]
-        (let [user-session (session/create-user-session user request)]
+        (let [user-session (session/create-user-session user authentication-system-id request)]
           {:body user
            :status 200
            :cookies {leihs.core.constants/USER_SESSION_COOKIE_NAME

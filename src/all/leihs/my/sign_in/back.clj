@@ -22,14 +22,14 @@
 
 (defn auth-system-query
   [unique-id]
-  (->
-    unique-id
-    auth-system-base-query-for-unique-id
-    (sql/merge-select
-      :authentication_systems.id
-      :authentication_systems.type :authentication_systems.name
-      :authentication_systems.description :authentication_systems.external_url)
-    sql/format))
+  (-> unique-id
+      auth-system-base-query-for-unique-id
+      (sql/merge-select :authentication_systems.id
+                        :authentication_systems.type
+                          :authentication_systems.name
+                        :authentication_systems.description
+                          :authentication_systems.external_sign_in_url)
+      sql/format))
 
 (defn auth-systems
   [tx unique-id]
@@ -111,27 +111,26 @@
   in which case an error is ignored and it is handled like first step"
   [{tx :tx,
     {user-param :user, password :password, invisible-pw :invisible-password}
-      :form-params-raw,
+    :form-params-raw,
     settings :settings,
     :as request}]
-  (if-let [user
-             (->>
-               [user-param password]
-               (apply password-check-query)
-               (jdbc/query tx)
-               first)]
-    (let [user-session (session/create-user-session user request)
+  (if-let [user (->> [user-param password]
+                     (apply password-check-query)
+                     (jdbc/query tx)
+                     first)]
+    (let [user-session (session/create-user-session 
+                         user leihs.core.constants/PASSWORD_AUTHENTICATION_SYSTEM_ID request)
           cookie-language (get-cookie-language request)
           response
-            {:status 302,
-             :headers {"Location" (redirect-target tx user)},
-             :cookies
-               {leihs.core.constants/USER_SESSION_COOKIE_NAME
-                  {:value (:token user-session),
-                   :http-only true,
-                   :max-age (* 10 356 24 60 60),
-                   :path "/",
-                   :secure (:sessions_force_secure settings)}}}]
+          {:status 302,
+           :headers {"Location" (redirect-target tx user)},
+           :cookies
+           {leihs.core.constants/USER_SESSION_COOKIE_NAME
+            {:value (:token user-session),
+             :http-only true,
+             :max-age (* 10 356 24 60 60),
+             :path "/",
+             :secure (:sessions_force_secure settings)}}}]
       (when cookie-language
         (jdbc/update!
           tx
@@ -146,10 +145,10 @@
       {:status 401,
        :headers {"Content-Type" "text/html"},
        :body
-         (render-sign-in-page
-           user-param
-           request
-           {:flashMessages [error-flash-invalid-password]})})))
+       (render-sign-in-page
+         user-param
+         request
+         {:flashMessages [error-flash-invalid-password]})})))
 
 (defn sign-in-get
   [{tx :tx, settings :settings, {user-param :user} :query-params, :as request}]

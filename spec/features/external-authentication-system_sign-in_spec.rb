@@ -11,7 +11,7 @@ feature 'Sign in via an external authentication system', type: :feature do
     @test_authentication_system = FactoryBot.create :authentication_system, 
       id: 'test', 
       name: 'Test Authentication-System', 
-      external_url: "http://localhost:#{ENV['TEST_AUTH_SYSTEM_PORT']}/sign-in"
+      external_sign_in_url: "http://localhost:#{ENV['TEST_AUTH_SYSTEM_PORT']}/sign-in"
 
     @admin = FactoryBot.create :admin, 
       email: 'admin@example.com',
