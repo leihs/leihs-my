@@ -6,13 +6,13 @@
   (:require
     [leihs.core.core :refer [keyword str presence]]
     [leihs.core.routing.front :as routing]
+    [leihs.core.sign-in.external-authentication.front :as external-authentication]
 
     [leihs.my.front.state]
     [leihs.my.initial-admin.front :as initial-admin]
     [leihs.my.paths :as paths :refer [path paths]]
     [leihs.my.resources.home.front :as home]
     [leihs.my.resources.status.front :as status]
-    [leihs.my.sign-in.external-authentication.front :as external-authentication]
     [leihs.my.sign-in.front :as sign-in]
     [leihs.my.user.api-token.front :as api-token]
     [leihs.my.user.api-tokens.front :as api-tokens]

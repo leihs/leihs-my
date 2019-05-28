@@ -7,13 +7,13 @@
     [leihs.core.core :refer [keyword str presence]]
     [leihs.core.requests.core :as requests]
     [leihs.core.routing.front :as routing]
+    [leihs.core.sign-in.external-authentication.front :as external-authentication]
     [leihs.core.sign-in.front :as sign-in]
+    [leihs.core.sign-in.password-authentication.front :as password-authentication]
 
     [leihs.my.front.breadcrumbs :as breadcrumbs]
     [leihs.my.front.state :as state]
     [leihs.my.paths :as paths :refer [path]]
-    [leihs.my.sign-in.external-authentication.front :as external-authentication]
-    [leihs.my.sign-in.password-authentication.front :as password-authentication]
 
     [accountant.core :as accountant]
     [cljs.core.async :as async]

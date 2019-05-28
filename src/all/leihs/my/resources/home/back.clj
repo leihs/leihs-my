@@ -3,7 +3,7 @@
   (:require [compojure.core :as cpj]
             [leihs.core.ssr :as ssr]
             [leihs.my.paths :refer [path]]
-            [leihs.my.utils.redirects :refer [redirect-target]]
+            [leihs.core.redirects :refer [redirect-target]]
             [ring.util.response :refer [redirect]]))
 
 (defn home

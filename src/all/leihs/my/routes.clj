@@ -3,14 +3,15 @@
   (:require [leihs.core.core :refer [keyword str presence]])
   (:require
     [leihs.core.anti-csrf.back :as anti-csrf]
+    [leihs.core.auth.core :as auth]
     [leihs.core.ds :as ds]
     [leihs.core.http-cache-buster2 :as cache-buster :refer [wrap-resource]]
     [leihs.core.locale :as locale]
     [leihs.core.ring-exception :as ring-exception]
     [leihs.core.routing.back :as routing]
     [leihs.core.routing.dispatch-content-type :as dispatch-content-type]
-    [leihs.core.auth.core :as auth]
     [leihs.core.shutdown :as shutdown]
+    [leihs.core.sign-in.external-authentication.back :as external-authentication]
 
     [clj-logging-config.log4j :as logging-config]
     [leihs.my.authorization :as authorization]
@@ -25,7 +26,6 @@
     [leihs.my.resources.settings.back :as settings]
     [leihs.my.resources.status.back :as status]
     [leihs.my.sign-in.back :as sign-in]
-    [leihs.my.sign-in.external-authentication.back :as external-authentication]
     [leihs.my.sign-out.back :as sign-out]
     [leihs.my.user.back :as user]
     [leihs.my.user.api-token.back :as api-token]

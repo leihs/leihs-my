@@ -1,23 +1,22 @@
 (ns leihs.my.sign-in.back
   (:refer-clojure :exclude [str keyword])
   (:require
-    [clojure.tools.logging :as log]
     [clojure.java.jdbc :as jdbc]
     [clojure.string :as str]
+    [clojure.tools.logging :as log]
     [compojure.core :as cpj]
     [leihs.core.auth.session :as session]
     [leihs.core.core :refer [presence!]]
     [leihs.core.locale :refer [get-cookie-language delete-language-cookie]]
-    [leihs.core.password-authentication.back :refer [password-check-query]]
+    [leihs.core.sign-in.password-authentication.back :refer [password-check-query]]
+    [leihs.core.paths :refer [path]]
+    [leihs.core.redirects :refer [redirect-target]]
+    [leihs.core.remote-navbar.shared :refer [navbar-props]]
     [leihs.core.sql :as sql]
     [leihs.core.ssr :as ssr]
-    [leihs.my.paths :refer [path]]
-    [leihs.my.sign-in.shared :refer [auth-system-base-query-for-unique-id]]
-    [leihs.my.sign-in.external-authentication.back :refer
-     [ext-auth-system-token-url]]
-    [leihs.my.utils.redirects :refer [redirect-target]]
     [leihs.core.ssr-engine :as js-engine]
-    [leihs.core.remote-navbar.shared :refer [navbar-props]]
+    [leihs.core.sign-in.external-authentication.back :refer [ext-auth-system-token-url]]
+    [leihs.core.sign-in.shared :refer [auth-system-base-query-for-unique-id]]
     [ring.util.response :refer [redirect]]))
 
 (defn auth-system-query
