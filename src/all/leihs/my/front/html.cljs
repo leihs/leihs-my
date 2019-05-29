@@ -15,7 +15,6 @@
     [leihs.my.front.shared :refer [humanize-datetime-component short-id gravatar-url]]
     [leihs.my.front.state :as state]
     [leihs.my.paths :refer [path]]
-    [leihs.my.sign-out.front :as sign-out]
 
     [clojure.pprint :refer [pprint]]
     [accountant.core :as accountant]
