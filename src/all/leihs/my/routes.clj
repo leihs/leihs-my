@@ -11,6 +11,7 @@
     [leihs.core.routing.back :as routing]
     [leihs.core.routing.dispatch-content-type :as dispatch-content-type]
     [leihs.core.shutdown :as shutdown]
+    [leihs.core.sign-in.back :as sign-in]
     [leihs.core.sign-in.external-authentication.back :as external-authentication]
 
     [clj-logging-config.log4j :as logging-config]
@@ -25,7 +26,6 @@
     [leihs.my.resources.home.back :as home]
     [leihs.my.resources.settings.back :as settings]
     [leihs.my.resources.status.back :as status]
-    [leihs.my.sign-in.back :as sign-in]
     [leihs.my.sign-out.back :as sign-out]
     [leihs.my.user.back :as user]
     [leihs.my.user.api-token.back :as api-token]

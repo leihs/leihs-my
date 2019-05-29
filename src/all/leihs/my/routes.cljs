@@ -13,7 +13,7 @@
     [leihs.my.paths :as paths :refer [path paths]]
     [leihs.my.resources.home.front :as home]
     [leihs.my.resources.status.front :as status]
-    [leihs.my.sign-in.front :as sign-in]
+    ;[leihs.my.sign-in.front :as sign-in]
     [leihs.my.user.api-token.front :as api-token]
     [leihs.my.user.api-tokens.front :as api-tokens]
     [leihs.my.user.auth-info.front :as auth-info]
@@ -38,7 +38,7 @@
    :initial-admin #'initial-admin/page
    :my-user #'user/page
    :password #'password/page
-   :sign-in #'sign-in/page
+   ; :sign-in #'sign-in/page
    :status #'status/info-page
    })
 
