@@ -13,7 +13,6 @@
     [leihs.core.routing.dispatch-content-type :as dispatch-content-type]
     [leihs.core.shutdown :as shutdown]
 
-    [clj-logging-config.log4j :as logging-config]
     [leihs.my.authorization :as authorization]
     [leihs.my.back.html :as html]
     [leihs.my.constants :as constants]
@@ -38,6 +37,7 @@
     [ring.middleware.params]
     [ring.util.response :refer [redirect]]
 
+    [clj-logging-config.log4j :as logging-config]
     [clojure.tools.logging :as logging]
     [logbug.catcher :as catcher]
     [logbug.debug :as debug :refer [I>]]
