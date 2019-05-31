@@ -63,7 +63,7 @@
 
   :javac-options ["-target" "1.8" "-source" "1.8" "-Xlint:-options"]
 
-  :source-paths ["src/all" "leihs-clj-shared/src"]
+  :source-paths ["src/all" "shared-clj/src"]
 
   :resource-paths ["resources/all"]
 
@@ -81,7 +81,7 @@
   :aliases {"auto-reset" ["auto" "exec" "-p" "scripts/lein-exec-reset.clj"]}
 
   :cljsbuild {:builds
-              {:min {:source-paths ["src/all" "src/prod" "leihs-clj-shared/src"]
+              {:min {:source-paths ["src/all" "src/prod" "shared-clj/src"]
                      :jar true
                      :compiler
                      {:output-to "target/cljsbuild/public/my/js/app.js"
@@ -89,7 +89,7 @@
                       :optimizations :simple
                       :pretty-print  false}}
                :app
-               {:source-paths ["src/all" "src/dev" "leihs-clj-shared/src"]
+               {:source-paths ["src/all" "src/dev" "shared-clj/src"]
                 :compiler
                 {:main "leihs.my.front.init"
                  :asset-path "/my/js/out"
@@ -118,7 +118,7 @@
                         [lein-exec "0.3.7"]
                         [lein-figwheel "0.5.16"]
                         [lein-sassy "1.0.8"]]
-              :source-paths ["src/all" "src/dev" "leihs-clj-shared/src"]
+              :source-paths ["src/all" "src/dev" "shared-clj/src"]
               :resource-paths ["resources/all" "resources/dev" "target/cljsbuild"]
               :injections [(require 'pjstadig.humane-test-output)
                            (pjstadig.humane-test-output/activate!)]
@@ -126,7 +126,7 @@
              :dev-overrides {} ; defined if needed in profiles.clj file
              :dev [:dev-common :dev-overrides]
              :uberjar {:hooks [minify-assets.plugin/hooks]
-                       :source-paths ["src/all" "src/prod" "leihs-clj-shared/src"]
+                       :source-paths ["src/all" "src/prod" "shared-clj/src"]
                        :prep-tasks [["shell" "./bin/build-timestamp"]
                                     "compile" ["cljsbuild" "once" "min"]]
                        :resource-paths ["resources/all" "resources/prod" "target/cljsbuild"]
