@@ -45,7 +45,7 @@
 
 
 
-(defn html-handler
+(defn spa-handler
   [request]
   {:headers {"Content-Type" "text/html"},
    :body (html5 (head)

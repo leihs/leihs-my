@@ -3,16 +3,16 @@
   (:require [leihs.core.core :refer [keyword str presence]])
   (:require
     [leihs.core.anti-csrf.back :as anti-csrf]
+    [leihs.core.auth.core :as auth]
     [leihs.core.ds :as ds]
     [leihs.core.http-cache-buster2 :as cache-buster :refer [wrap-resource]]
     [leihs.core.locale :as locale]
     [leihs.core.ring-exception :as ring-exception]
+    [leihs.core.routes :as core-routes]
     [leihs.core.routing.back :as routing]
     [leihs.core.routing.dispatch-content-type :as dispatch-content-type]
-    [leihs.core.auth.core :as auth]
     [leihs.core.shutdown :as shutdown]
 
-    [clj-logging-config.log4j :as logging-config]
     [leihs.my.authorization :as authorization]
     [leihs.my.back.html :as html]
     [leihs.my.constants :as constants]
@@ -24,9 +24,6 @@
     [leihs.my.resources.home.back :as home]
     [leihs.my.resources.settings.back :as settings]
     [leihs.my.resources.status.back :as status]
-    [leihs.my.sign-in.back :as sign-in]
-    [leihs.my.sign-in.external-authentication.back :as external-authentication]
-    [leihs.my.sign-out.back :as sign-out]
     [leihs.my.user.back :as user]
     [leihs.my.user.api-token.back :as api-token]
     [leihs.my.user.api-tokens.back :as api-tokens]
@@ -40,6 +37,7 @@
     [ring.middleware.params]
     [ring.util.response :refer [redirect]]
 
+    [clj-logging-config.log4j :as logging-config]
     [clojure.tools.logging :as logging]
     [logbug.catcher :as catcher]
     [logbug.debug :as debug :refer [I>]]
@@ -50,53 +48,43 @@
 (declare redirect-to-root-handler)
 
 (def skip-authorization-handler-keys
-  #{:external-authentication-request
-    :external-authentication-sign-in
-    :forgot-password
-    :home
-    :initial-admin
-    :language
-    :password-authentication
-    :reset-password
-    :shutdown
-    :sign-in
-    :sign-out})
+  (clojure.set/union 
+    core-routes/skip-authorization-handler-keys
+    #{:forgot-password
+      :home
+      :initial-admin
+      :language
+      :password-authentication
+      :reset-password
+      :shutdown}))
 
-(def no-html-handler-keys
-  #{:external-authentication-sign-in
-    :forgot-password
-    :home
-    :language
-    :not-found
-    :redirect-to-root
-    :reset-password
-    :sign-in})
+(def no-spa-handler-keys
+  (clojure.set/union 
+    core-routes/no-spa-handler-keys
+    #{:forgot-password
+      :home
+      :language
+      :not-found
+      :redirect-to-root
+      :reset-password
+      }))
 
 (def resolve-table
-  {:api-token api-token/routes
-   :api-tokens api-tokens/routes
-   :auth-info auth-info/ring-handler
-   :forgot-password password-restore/forgot-routes
-   :home home/routes
-   :initial-admin initial-admin/routes
-   :language language/routes
-   :my-user user/routes
-   :not-found html/not-found-handler
-   :password password/routes
-   :external-authentication-request external-authentication/routes
-   :external-authentication-sign-in external-authentication/routes
-   :redirect-to-root redirect-to-root-handler
-   :reset-password password-restore/reset-routes
-   :shutdown shutdown/ring-handler
-   :sign-in sign-in/routes
-   :sign-out sign-out/routes
-   :status status/routes
-
-   ;   :auth-info auth/routes
-   ;   :auth-password-sign-in auth/routes
-   ;   :auth-shib-sign-in auth/routes
-   ;   :sign-out auth/routes
-   })
+  (merge core-routes/resolve-table
+         {:api-token api-token/routes
+          :api-tokens api-tokens/routes
+          :auth-info auth-info/ring-handler
+          :forgot-password password-restore/forgot-routes
+          :home home/routes
+          :initial-admin initial-admin/routes
+          :language language/routes
+          :my-user user/routes
+          :not-found html/not-found-handler
+          :password password/routes
+          :redirect-to-root redirect-to-root-handler
+          :reset-password password-restore/reset-routes
+          :shutdown shutdown/ring-handler
+          :status status/routes}))
 
 
 
@@ -114,7 +102,7 @@
   (I> wrap-handler-with-logging
       routing/dispatch-to-handler
       (authorization/wrap skip-authorization-handler-keys)
-      (dispatch-content-type/wrap-dispatch-html no-html-handler-keys html/html-handler)
+      (dispatch-content-type/wrap-dispatch-html no-spa-handler-keys html/spa-handler)
       initial-admin/wrap
       anti-csrf/wrap
       locale/wrap

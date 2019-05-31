@@ -6,6 +6,7 @@
             [clojure.java.jdbc :as jdbc]
             [clojure.spec.alpha :as spec]
             [compojure.core :as cpj]
+            [leihs.core.sign-in.back :refer [error-flash-invalid-user]]
             [leihs.core
              [core :refer [presence]]
              [ds :as ds]
@@ -13,7 +14,6 @@
              [ssr :as ssr]]
             [leihs.my.paths :refer [path]]
             [leihs.my.resources.settings.back :as settings]
-            [leihs.my.sign-in.back :refer [error-flash-invalid-user]]
             [leihs.my.user.shared :refer [set-password]]))
 
 (spec/def ::external-base-url presence)
