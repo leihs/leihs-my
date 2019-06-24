@@ -7,6 +7,7 @@
     [leihs.core.ds :as ds]
     [leihs.core.http-cache-buster2 :as cache-buster :refer [wrap-resource]]
     [leihs.core.locale :as locale]
+    [leihs.core.ring-audits :as ring-audits]
     [leihs.core.ring-exception :as ring-exception]
     [leihs.core.routes :as core-routes]
     [leihs.core.routing.back :as routing]
@@ -104,6 +105,7 @@
       (authorization/wrap skip-authorization-handler-keys)
       (dispatch-content-type/wrap-dispatch-html no-spa-handler-keys html/spa-handler)
       initial-admin/wrap
+      ring-audits/wrap
       anti-csrf/wrap
       locale/wrap
       auth/wrap-authenticate
