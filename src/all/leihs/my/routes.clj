@@ -12,7 +12,6 @@
     [leihs.core.routes :as core-routes]
     [leihs.core.routing.back :as routing]
     [leihs.core.routing.dispatch-content-type :as dispatch-content-type]
-    [leihs.core.shutdown :as shutdown]
 
     [leihs.my.authorization :as authorization]
     [leihs.my.back.html :as html]
@@ -56,8 +55,7 @@
       :initial-admin
       :language
       :password-authentication
-      :reset-password
-      :shutdown}))
+      :reset-password}))
 
 (def no-spa-handler-keys
   (clojure.set/union 
@@ -84,7 +82,6 @@
           :password password/routes
           :redirect-to-root redirect-to-root-handler
           :reset-password password-restore/reset-routes
-          :shutdown shutdown/ring-handler
           :status status/routes}))
 
 

@@ -66,8 +66,7 @@
     :default (-> (env-or-default :LEIHS_DATABASE_URL)
                  jdbc-url/dissect extend-pg-params)
     :parse-fn #(-> % jdbc-url/dissect extend-pg-params)]
-   ["-s" "--enable-shutdown-route"
-    "Enable the shutdown route; primarily used for testing."]])
+   shutdown/pid-file-option])
 
 (defn main-usage [options-summary & more]
   (->> ["Leihs PERM run "

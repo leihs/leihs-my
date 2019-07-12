@@ -12,6 +12,7 @@ scripts:
     body: |
       set -euxo
       cd $LEIHS_MY_DIR
+      mkdir tmp
       java -jar target/leihs-my.jar run -s
 
   my-service-is-running:
@@ -33,11 +34,11 @@ scripts:
 
   shutdown-my-service:
     body: |
-      until curl --silent --fail -X POST -I \
-        -H 'Accept: application/json' \
-        http://localhost:${LEIHS_MY_HTTP_PORT}/my/shutdown;
-        do sleep 1;
-      done
+      set -euxo 
+      cd $LEIHS_MY_DIR
+      export PID=$(cat tmp/service.pid)
+      kill $PID 
+      tail --pid=$PID -f /dev/null
     start_when:
       test is terminal:
         script_key: test

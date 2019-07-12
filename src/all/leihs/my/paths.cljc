@@ -37,7 +37,6 @@
 (def my-service-paths
   (branch ""
           (leaf "/status" :status)
-          (leaf "/shutdown" :shutdown)
           (leaf "/initial-admin" :initial-admin)
           (branch "/debug"
                   (branch "/requests"
