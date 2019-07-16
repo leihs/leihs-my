@@ -81,6 +81,17 @@
       (->> (jdbc/query tx))
       first))
 
+(def error-flash-user-has-no-email
+  {:level "error",
+   :message
+     (clojure.string/join
+       " \n"
+       ["Keine Email-Adresse vorhanden!"
+        "Das Passwort für dieses Benutzerkonto kann nicht zurückgesetzt werden,
+         weil keine Email-Adresse im System vorhanden ist.
+         Bitte prüfen Sie den angegebenen Benutzernamen.
+         Kontaktieren Sie den leihs-Support, falls das Problem weiterhin besteht."])})
+
 (defn forgot-get
   [request]
   (let [user-param (-> request
@@ -97,7 +108,10 @@
                                       {:userParam user-param})}
       {:headers {"Content-Type" "text/html"},
        :status 422,
-       :body "user does not have an email"})))
+       :body (ssr/render-page-by-name request
+                                      "PasswordForgotPage"
+                                      {:userParam user-param,
+                                       :flashMessages [error-flash-user-has-no-email]})})))
 
 (defn forgot-post
   [request]
