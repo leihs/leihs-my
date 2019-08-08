@@ -32,6 +32,10 @@
 (defn run [options]
   (catcher/snatch
     {:return-fn (fn [e] (System/exit -1))}
+    ; ---------------------------------------------------
+    ; provide implementation fo render-page-base function
+    (require 'leihs.my.back.ssr)
+    ; ---------------------------------------------------
     (logging/info "Invoking run with options: " options)
     (shutdown/init options)
     (let [status (status/init)

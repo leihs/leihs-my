@@ -48,7 +48,11 @@
 (defn spa-handler
   [request]
   {:headers {"Content-Type" "text/html"},
-   :body (html5 (head)
+   :body (html5 (head
+                  (hiccup.page/include-css
+                    (cache-buster/cache-busted-path "/my/css/site.css"))
+                  (hiccup.page/include-css
+                    "/my/css/fontawesome-free-5.0.13/css/fontawesome-all.css"))
                 [:body (body-attributes request)
                  [:div (ssr/render-navbar request)
                   [:div#app.container-fluid
