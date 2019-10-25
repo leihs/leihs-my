@@ -2,6 +2,7 @@
   (:require [clj-time
              [core :as clj-time]
              [local :as clj-time-local]]
+            [leihs.core.sign-in.back :refer [user-with-unique-id]]
             [clj-ulid :refer [random-base32-string]]
             [clojure.java.jdbc :as jdbc]
             [clojure.spec.alpha :as spec]
@@ -39,16 +40,6 @@
 (defn normalize-token-str
   [str]
   (clojure.string/escape (clojure.string/upper-case str) {\O 0, \I 1, \L 1}))
-
-(defn get-user-by-login-or-email
-  [tx login-or-email]
-  (-> (sql/select :*)
-      (sql/from :users)
-      (sql/merge-where [:or [:= :login login-or-email]
-                        [:= :email login-or-email]])
-      sql/format
-      (->> (jdbc/query tx))
-      first))
 
 (defn insert-into-emails
   [tx user token]
@@ -98,7 +89,7 @@
                        :params
                        :user)
         tx (:tx request)
-        user (get-user-by-login-or-email tx user-param)]
+        user (user-with-unique-id tx user-param)]
     (if (-> user
             :email
             presence)
@@ -119,7 +110,7 @@
                        :params
                        :user)
         tx (:tx request)
-        user (get-user-by-login-or-email tx user-param)
+        user (user-with-unique-id tx user-param)
         token (make-token 20)]
     (if user
       (do (insert-into-user-password-resets tx user user-param token)
