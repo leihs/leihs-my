@@ -58,7 +58,7 @@
 
   :profiles {:dev-common
              {:dependencies [[com.cemerick/piggieback "0.2.2"]
-                             [figwheel-sidecar "0.5.16"]
+                             [figwheel-sidecar "0.5.18"]
                              [nrepl "0.6.0"]
                              [org.clojure/tools.namespace "0.2.11"]
                              [pjstadig/humane-test-output "0.8.3"]
@@ -67,7 +67,7 @@
                              [ring/ring-mock "0.3.2"]]
               :plugins [[lein-auto "0.1.3"]
                         [lein-exec "0.3.7"]
-                        [lein-figwheel "0.5.16"]
+                        [lein-figwheel "0.5.18"]
                         [lein-sassy "1.0.8"]]
               :source-paths ["src/all" "src/dev" "shared-clj/src"]
               :resource-paths ["resources/all" "resources/dev" "target/cljsbuild"]
