@@ -73,8 +73,8 @@
 ;;; form scopes ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def scopes
-  (->> [:scope_read :scope_write 
-        :scope_admin_read :scope_admin_write 
+  (->> [:scope_read :scope_write
+        :scope_admin_read :scope_admin_write
         :scope_system_admin_read :scope_system_admin_write]
        (map (fn [x] {:scope x :key x}))))
 
@@ -310,7 +310,7 @@
   [:div.new-api-token
    [new-token-secret-modal]
    [routing/hidden-state-component
-    {:will-mount (fn [] (reset-api-token-form-data))
+    {:did-mount (fn [] (reset-api-token-form-data))
      :will-unmount #(reset! api-token-data* nil)}]
    (breadcrumbs/nav-component
      [(breadcrumbs/leihs-li)
@@ -322,7 +322,7 @@
     (if @me?*
       [:h1 "Add My API-Token "]
       (let [id (-> @routing/state* :route-params :user-id)]
-        [:div 
+        [:div
          [:h1 "Add User's API-Token"]
          [:p "user-id: " [:code id ]]]))
     [form-component]
@@ -351,16 +351,17 @@
 (defn show-page []
   [:div.api-token
    [routing/hidden-state-component
-    {:will-mount (fn [] (reset! api-token-data* nil))
+    {:did-mount (fn []
+                  (reset! api-token-data* nil)
+                  (fetch-token))
      :did-change (fn [old diff new]
                    (js/console.log (with-out-str (pprint  diff)))
-                   (fetch-token))
-     :did-mount fetch-token}]
+                   (fetch-token))}]
    (breadcrumbs/nav-component
      [(breadcrumbs/leihs-li)
       (my-breadcrumbs/user-li)
       (api-tokens-breadcrumbs/api-tokens-li)
-      (api-tokens-breadcrumbs/api-token-li)] 
+      (api-tokens-breadcrumbs/api-token-li)]
      [(api-tokens-breadcrumbs/api-token-delete-li)
       (api-tokens-breadcrumbs/api-token-edit-li)
       ])
@@ -369,7 +370,7 @@
       (if @me?*
         [:h1 "My API-Token " [:code part]]
         (let [id (-> @routing/state* :route-params :user-id)]
-          [:div 
+          [:div
            [:h1 "User's API-Token" [:code part]]
            [:p "user-id: " [:code id ]]])))]
    (if @api-token-data*
@@ -422,7 +423,7 @@
       (if @me?*
         [:h1 "Edit My API-Token " [:code part]]
         (let [id (-> @routing/state* :route-params :user-id)]
-          [:div 
+          [:div
            [:h1 "Edit User's API-Token" [:code part]]
            [:p "user-id: " [:code id ]]])))]
    (if @api-token-data*
@@ -460,7 +461,9 @@
 (defn delete-page []
   [:div.api-token
    [routing/hidden-state-component
-    {:will-mount (fn [] (reset! api-token-data* nil))
+    {:did-mount (fn []
+                  (reset! api-token-data* nil)
+                  (fetch-token))
      :did-change fetch-token}]
    (breadcrumbs/nav-component
      [(breadcrumbs/leihs-li)
@@ -473,7 +476,7 @@
      (if @me?*
        [:h1 "Delete My API-Token " [:code part]]
        (let [id (-> @routing/state* :route-params :user-id)]
-         [:div 
+         [:div
           [:h1 "Delete User's API-Token" [:code part]]
           [:p "user-id: " [:code id ]]])))
    (if @api-token-data*

@@ -43,7 +43,9 @@
 (defn page []
   [:div.auth-info
    [routing/hidden-state-component
-    {:will-mount (fn [] (reset! auth-info-data* nil))
+    {:did-mount (fn []
+                  (reset! auth-info-data* nil)
+                  (fetch-auth-info))
      :did-change fetch-auth-info}]
    [:h1 "Auth-Info"]
    [:p "The data shown below is mostly of interest for exploring the API or for debugging."]

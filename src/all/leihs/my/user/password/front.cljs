@@ -24,12 +24,12 @@
     ))
 
 (def user-id*
-  (reaction 
+  (reaction
     (-> @routing/state* :route-params :user-id)))
 
 (def form-data* (reagent/atom {}))
 
-(def form-data-valid* 
+(def form-data-valid*
   (reaction (-> @form-data* :password presence boolean)))
 
 (defn submit [& args]
@@ -52,7 +52,7 @@
 (defn page []
   [:div.password
    [routing/hidden-state-component
-    {:will-mount reset-data
+    {:did-mount reset-data
      :did-change reset-data}]
    (breadcrumbs/nav-component
      [(breadcrumbs/leihs-li)
