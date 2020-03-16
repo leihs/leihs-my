@@ -10,7 +10,7 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     FactoryBot.definition_file_paths = \
-      %w{./spec/factories ./shared-clj/factories}
+      %w{./spec/factories ./database/spec/factories}
     FactoryBot.find_definitions
   end
 end
