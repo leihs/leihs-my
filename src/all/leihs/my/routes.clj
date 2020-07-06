@@ -48,7 +48,7 @@
 (declare redirect-to-root-handler)
 
 (def skip-authorization-handler-keys
-  (clojure.set/union 
+  (clojure.set/union
     core-routes/skip-authorization-handler-keys
     #{:forgot-password
       :home
@@ -58,7 +58,7 @@
       :reset-password}))
 
 (def no-spa-handler-keys
-  (clojure.set/union 
+  (clojure.set/union
     core-routes/no-spa-handler-keys
     #{:forgot-password
       :home
@@ -97,7 +97,8 @@
 
 (defn init []
   (routing/init paths resolve-table)
-  (I> wrap-handler-with-logging
+  ;(I> wrap-handler-with-logging
+  (->
       routing/dispatch-to-handler
       (authorization/wrap skip-authorization-handler-keys)
       (dispatch-content-type/wrap-dispatch-html no-spa-handler-keys html/spa-handler)
