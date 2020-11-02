@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -euo
+
+PROJECT_DIR="$(dirname ${BASH_SOURCE})/.."
+cd "${PROJECT_DIR}"
+echo "PWD: $PWD"
+
+./bin/build
+
+java -jar target/leihs-my.jar run -s 'secret' "$@"
+
+cd -
+
+# vi: ft=sh

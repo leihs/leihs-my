@@ -1,0 +1,25 @@
+depends_on: &GOOD_TO_MERGE_DEPENDENTS
+  build-my-uberjar was successful:
+    type: job
+    job_key: build-my-uberjar
+    states: [passed]
+  specs have passed:
+    type: job
+    job_key: specs
+    states: [passed]
+  good to merge of the database:
+    job_key: good-to-merge
+    type: job
+    submodule: [database]
+    states: [passed]
+run_when: *GOOD_TO_MERGE_DEPENDENTS
+priority: 999 # "empty" job = high priority
+context:
+  task_defaults:
+    max_trials: 1
+  tasks:
+    all relevant tests have passed:
+      name: "All relevant tests have passed, thus good to merge"
+      scripts:
+        main:
+          body: echo 'All relevant tests have passed' ; exit 0

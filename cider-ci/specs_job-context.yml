@@ -1,0 +1,32 @@
+generate_tasks:
+  include_match: spec/.*_spec.rb
+task_defaults:
+  include:
+    - cider-ci/task_defaults.yml
+    - cider-ci/database_task-component.yml
+    - cider-ci/ruby-bundle_task-component.yml
+    - cider-ci/service_task-component.yml
+    - cider-ci/test-auth-system_task-component.yml
+    - cider-ci/uberjar_task-component.yml
+  ports:
+    LEIHS_MY_HTTP_PORT:
+      min: 3240
+      max: 3249
+    TEST_AUTH_SYSTEM_PORT:
+      min: 3240
+      max: 3249
+  git_options:
+    submodules:
+      include_match: ^.*$
+  trial_attachments:
+    screenshots:
+      include_match: '^tmp\/screenshots\/.+\.png$'
+      content_type: image/png
+  scripts:
+    test:
+      body: |
+        #!/usr/bin/env bash
+        set -eux
+        export PATH=~/.rubies/$RUBY/bin:$PATH
+        mkdir -p log
+        xvfb-run -a -e log/xvfb.log bundle exec rspec $CIDER_CI_TASK_FILE

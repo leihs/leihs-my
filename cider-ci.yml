@@ -1,54 +1,4 @@
 jobs:
-  specs:
-    name: Run specs
-    depends_on: &RSPEC_DEPENDENCIES
-      build-my-uberjar has passed: 
-        type: job
-        job_key: build-my-uberjar
-        states: [passed]
-    run_when: *RSPEC_DEPENDENCIES
-    context:
-      generate_tasks:
-        include_match: spec/.*_spec.rb
-      task_defaults:
-        include:
-          - cider-ci/database_task-component.yml
-          - cider-ci/ruby-bundle_task-component.yml
-          - cider-ci/service_task-component.yml
-          - cider-ci/test-auth-system_task-component.yml
-          - cider-ci/uberjar_task-component.yml
-        ports:
-          LEIHS_MY_HTTP_PORT:
-            min: 3240
-            max: 3249
-          TEST_AUTH_SYSTEM_PORT:
-            min: 3240
-            max: 3249
-        environment_variables:
-          LEIHS_MY_DIR: '{{CIDER_CI_WORKING_DIR}}'
-          DATABASE_NAME: leihs_api_{{CIDER_CI_TRIAL_ID}}
-          LEIHS_DATABASE_URL: "jdbc:postgresql://localhost/{{DATABASE_NAME}}?max-pool-size=5"
-          LEIHS_MY_HTTP_BASE_URL: http://localhost:{{LEIHS_MY_HTTP_PORT}}
-          LEIHS_SECRET: '{{CIDER_CI_TRIAL_ID}}'
-          RAILS_ENV: test
-          RUBY: '{{RUBY_ENGINE}}-{{RUBY_VERSION}}'
-          RUBY_ENGINE: ruby
-          RUBY_VERSION: 2.6.0
-        git_options:
-          submodules:
-            include_match: ^.*$
-        trial_attachments:
-          screenshots:
-            include_match: '^tmp\/screenshots\/.+\.png$'
-            content_type: image/png
-        scripts:
-          test:
-            body: |
-              #!/usr/bin/env bash
-              set -eux
-              export PATH=~/.rubies/$RUBY/bin:$PATH
-              mkdir -p log
-              xvfb-run -a -e log/xvfb.log bundle exec rspec $CIDER_CI_TASK_FILE
 
   build-my-uberjar:
     name: Build my uberjar
@@ -57,17 +7,20 @@ jobs:
         type: branch
         include_match: ^.*$
     context:
-      task_defaults:
-        environment_variables:
-          LEIHS_MY_DIR: "{{CIDER_CI_WORKING_DIR}}"
-        git_options:
-          submodules:
-            include_match: ^.*$
+      task_defaults: { include: cider-ci/task_defaults.yml }
       tasks:
         build-my-uberjar:
-          name: "Build my uberjar"
-          include:
-            - cider-ci/uberjar_task-component.yml
+          { include: cider-ci/uberjar_task-component.yml }
+
+  specs:
+    name: Run specs
+    depends_on: &SPEC_DEPENDENTS
+      uberjar passed:
+        type: job
+        job_key: build-my-uberjar
+        states: [passed]
+    run_when: *SPEC_DEPENDENTS
+    context: { include: cider-ci/specs_job-context.yml }
 
   good-to-merge:
     name: ⚑ Good To Merge
@@ -75,28 +28,5 @@ jobs:
       This job depends on all other tests and checks
       and it will pass if and only if all dependencies have passed.
       Status of this job is **used by github's "branch protection"**!
-    depends_on: &GOOD_TO_MERGE_DEPENDENTS
-      build-my-uberjar was successful:
-        type: job
-        job_key: build-my-uberjar
-        states: [passed]
-      specs have passed:
-        type: job
-        job_key: specs
-        states: [passed]
-      good to merge of the database:
-        job_key: good-to-merge
-        type: job
-        submodule: [database]
-        states: [passed]
-    run_when: *GOOD_TO_MERGE_DEPENDENTS
-    priority: 999 # "empty" job = high priority
-    context:
-      task_defaults:
-        max_trials: 1
-      tasks:
-        all relevant tests have passed:
-          name: "All relevant tests have passed, thus good to merge"
-          scripts:
-            main:
-              body: echo 'All relevant tests have passed' ; exit 0
+    include: cider-ci/good-to-merge_job-context.yml
+

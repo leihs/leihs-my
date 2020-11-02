@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -euo
+
+PROJECT_DIR="$(dirname ${BASH_SOURCE})/.."
+cd "${PROJECT_DIR}"
+echo "PWD: $PWD"
+
+lein run -- run --secret 'secret' "$@"
+
+cd -
+
+# vi: ft=sh

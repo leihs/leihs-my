@@ -10,9 +10,7 @@ windows:
       (-main "run")
   3:
     name: figwheel
-    command: |
-      ./scripts/prepare-shared-ui.sh && \
-      lein figwheel
+    command: ./leihs-ui/bin/build && lein figwheel
   5:
     name: psql
     command: |
