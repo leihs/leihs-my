@@ -19,7 +19,7 @@ feature 'Password, sign-in, sign-out and session ' do
         fill_in 'user', with: user.email
         click_on 'Login'
         fill_in 'password', with: user.password
-        click_on 'Weiter'
+        click_on 'Continue'
         find('.fa-user-circle').click
         expect(page).to have_content user.lastname
       end
@@ -29,7 +29,7 @@ feature 'Password, sign-in, sign-out and session ' do
         fill_in 'user', with: user.email
         click_on 'Login'
         fill_in 'password', with: 'bogus'
-        click_on 'Weiter'
+        click_on 'Continue'
         expect(page).to have_content 'Falsches Passwort!'
       end
 
@@ -38,7 +38,7 @@ feature 'Password, sign-in, sign-out and session ' do
         fill_in 'user', with: user.email
         click_on 'Login'
         fill_in 'password', with: user.password
-        click_on 'Weiter'
+        click_on 'Continue'
         find('.fa-user-circle').click
         expect(page).to have_content user.lastname
         click_on 'Logout'
@@ -50,7 +50,7 @@ feature 'Password, sign-in, sign-out and session ' do
         fill_in 'user', with: user.email
         click_on 'Login'
         fill_in 'password', with: user.password
-        click_on 'Weiter'
+        click_on 'Continue'
         find('.fa-user-circle').click
         expect(page).to have_content user.lastname
         database[:users].where(id: user.id).update(account_enabled: false)
@@ -65,7 +65,7 @@ feature 'Password, sign-in, sign-out and session ' do
         fill_in 'user', with: user.email
         click_on 'Login'
         fill_in 'password', with: user.password
-        click_on 'Weiter'
+        click_on 'Continue'
         find('.fa-user-circle').click
         expect(page).to have_content user.lastname
         database[:users].where(id: user.id).update(password_sign_in_enabled: false)

@@ -4,7 +4,7 @@ module Helpers
 
     def sign_in_as user
       visit '/'
-      within('.navbar-leihs form') do
+      within('.navbar-leihs form', match: :first) do
         fill_in 'user', with: user.email
         click_button
       end

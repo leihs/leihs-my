@@ -16,7 +16,7 @@ feature 'Initial admin and password sign-in', type: :feature do
     end
 
     # we sign-in as the admin
-    within('.navbar-leihs form.ui-form-signin') do
+    within('.navbar-leihs form.ui-form-signin', match: :first) do
       fill_in 'user', with: 'admin@example.com'
       click_button
     end

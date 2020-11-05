@@ -9,6 +9,7 @@ scripts:
       set -eux
       createdb "$DATABASE_NAME"
       psql -d "$DATABASE_NAME" -f database/db/structure.sql
+      DATABASE_NAME="$DATABASE_NAME" ./database/scripts/restore-seeds
 
   delete-database:
     body: |

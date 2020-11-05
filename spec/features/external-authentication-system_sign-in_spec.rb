@@ -24,7 +24,7 @@ feature 'Sign in via an external authentication system', type: :feature do
 
   scenario 'sign in' do
     visit '/'
-    within('.navbar-leihs form') do
+    within('.navbar-leihs form', match: :first) do
       fill_in 'user', with: 'admin@example.com'
       click_button
     end
@@ -36,7 +36,7 @@ feature 'Sign in via an external authentication system', type: :feature do
 
   scenario 'fail to sign in' do
     visit '/'
-    within('.navbar-leihs form') do
+    within('.navbar-leihs form', match: :first) do
       fill_in 'user', with: 'admin@example.com'
       click_button
     end

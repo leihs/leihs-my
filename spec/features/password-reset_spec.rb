@@ -23,7 +23,7 @@ feature 'Password-Reset', type: :feature do
       sign_out
 
       # user1 can not sign in with the old password anymore
-      within('.navbar-leihs form') do
+      within('.navbar-leihs form', match: :first) do
         fill_in 'user', with: @user1.email
         click_button
       end
@@ -39,7 +39,7 @@ feature 'Password-Reset', type: :feature do
 
       # user1 can sign in with the new password 
       visit '/'
-      within('.navbar-leihs form') do
+      within('.navbar-leihs form', match: :first) do
         fill_in 'user', with: @user1.email
         click_button
       end
@@ -76,7 +76,7 @@ feature 'Password-Reset', type: :feature do
 
       sign_out
 
-      within('.navbar-leihs form') do
+      within('.navbar-leihs form', match: :first) do
         fill_in 'user', with: @user2.email
         click_button
       end
