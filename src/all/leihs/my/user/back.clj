@@ -11,13 +11,13 @@
 (defn update-user
   [{tx :tx
     {user-id :user-id} :route-params
-    {lang-id :language_id} :form-params
+    {locale :locale} :form-params
     {referer :referer} :headers
     :as request}]
   (when user-id
     (assert (= (jdbc/update! tx
                              :users
-                             {:language_id lang-id}
+                             {:language_locale locale}
                              ["id = ?" user-id])
                '(1))))
   (redirect referer))
