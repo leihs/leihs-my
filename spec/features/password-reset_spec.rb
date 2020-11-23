@@ -90,7 +90,11 @@ feature 'Password-Reset', type: :feature do
 
     end
 
+    scenario 'anti-csrf token of reset password page without anti-csrf cookie' do
+      upr = FactoryBot.create(:user_password_reset, user: @user1)
+      visit "/reset-password?token=#{upr.token}"
+      find '#inputToken'
+      find '#inputNewPassword'
+    end
   end
-
 end
-
