@@ -97,8 +97,8 @@
 
 (defn init []
   (routing/init paths resolve-table)
-  ;(I> wrap-handler-with-logging
-  (->
+  (I> wrap-handler-with-logging
+  ;(->
       routing/dispatch-to-handler
       (authorization/wrap skip-authorization-handler-keys)
       (dispatch-content-type/wrap-dispatch-html no-spa-handler-keys html/spa-handler)
@@ -131,6 +131,6 @@
       ring-exception/wrap))
 
 ;#### debug ###################################################################
-;(logging-config/set-logger! :level :debug)
+(logging-config/set-logger! :level :debug)
 ;(logging-config/set-logger! :level :info)
-;(debug/debug-ns *ns*)
+(debug/debug-ns *ns*)

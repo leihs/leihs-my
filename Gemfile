@@ -1,9 +1,10 @@
 eval_gemfile 'database/Gemfile'
 
-gem 'capybara'
+gem 'capybara', '~> 3.8'
 gem 'faraday'
 gem 'faraday_middleware'
 gem 'haml'
 gem 'jwt'
-gem 'selenium-webdriver', '~> 2.53'
+gem 'geckodriver-helper'
+gem 'selenium-webdriver', '~> 3.14'
 gem 'sinatra'

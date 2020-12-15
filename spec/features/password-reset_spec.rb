@@ -37,7 +37,7 @@ feature 'Password-Reset', type: :feature do
       end
 
 
-      # user1 can sign in with the new password 
+      # user1 can sign in with the new password
       visit '/'
       within('.navbar-leihs form', match: :first) do
         fill_in 'user', with: @user1.email
@@ -50,7 +50,7 @@ feature 'Password-Reset', type: :feature do
       end
       click_on 'Auth-Info'
       expect(page).to have_content @user1.email
-      
+
     end
 
 

@@ -37,17 +37,17 @@ feature 'API Tokens', type: :feature do
       end
 
       let :auth_info_response_without_token do
-        plain_faraday_json_client.get('/my/user/me/auth-info')
+        plain_faraday_client.get('/my/user/me/auth-info')
       end
 
       let :auth_info_response_with_token_auth do
-        plain_faraday_json_client.get('/my/user/me/auth-info') do |conn|
+        plain_faraday_client.get('/my/user/me/auth-info') do |conn|
           conn.headers['authorization'] = "token #{@token_secret}"
         end
       end
 
       let :auth_info_response_with_token_as_basic_user do
-        plain_faraday_json_client.get('/my/user/me/auth-info') do |conn|
+        plain_faraday_client.get('/my/user/me/auth-info') do |conn|
           conn.basic_auth(@token_secret)
         end
       end
@@ -56,24 +56,38 @@ feature 'API Tokens', type: :feature do
         ' authenticate via "authorization token" header' do
 
         # authentication w.o. token returns 401
-        expect(plain_faraday_json_client.get('/my/user/me/auth-info').status).to be== 401
+        expect(plain_faraday_client.get('/my/user/me/auth-info').status).to be== 401
 
         expect(
-          plain_faraday_json_client.get('/my/user/me/auth-info'){|conn|
+          plain_faraday_client.get('/my/user/me/auth-info'){ |conn|
             conn.headers['authorization'] = "token #{@token_secret}"
           }.status).to be== 200
       end
 
       scenario 'the token can be used to ' \
         ' authenticate via basic auth as the username ' do
-        plain_faraday_json_client.basic_auth(@token_secret,'')
-        expect(plain_faraday_json_client.get('/my/user/me/auth-info').status).to be== 200
+        http_client = Faraday.new(
+          url: base_url,
+          headers: { accept: 'application/json' }) do |conn|
+            conn.adapter Faraday.default_adapter
+            conn.response :json, content_type: /\bjson$/
+            conn.basic_auth(@token_secret,'')
+          end
+          resp = http_client.get('/my/user/me/auth-info')
+          expect(resp.status).to be== 200
       end
 
       scenario 'the token can be used to ' \
         ' authenticate via basic auth as the password' do
-        plain_faraday_json_client.basic_auth('', @token_secret)
-        expect(plain_faraday_json_client.get('/my/user/me/auth-info').status).to be== 200
+        http_client = Faraday.new(
+          url: base_url,
+          headers: { accept: 'application/json' }) do |conn|
+            conn.adapter Faraday.default_adapter
+            conn.response :json, content_type: /\bjson$/
+            conn.basic_auth('',@token_secret)
+          end
+          resp = http_client.get('/my/user/me/auth-info')
+          expect(resp.status).to be== 200
       end
 
       scenario 'editing the description of the token' do
@@ -98,7 +112,7 @@ feature 'API Tokens', type: :feature do
         expect(page).to have_field('system admin write', checked: false , disabled: true)
 
 
-        # enable the system admin scopes 
+        # enable the system admin scopes
 
         click_on_first 'Edit'
         wait_until { all('.modal-body').empty? }
@@ -122,25 +136,35 @@ feature 'API Tokens', type: :feature do
       end
 
 
-      scenario 'an edited token such that it is expired can not be used to authenticate' do 
-        plain_faraday_json_client.basic_auth(@token_secret,'')
-        expect(plain_faraday_json_client.get('/my/user/me/auth-info').status).to be== 200
+      scenario 'an edited token such that it is expired can not be used to authenticate' do
+        resp = plain_faraday_client.get('/my/user/me/auth-info') do |req|
+          req.headers["Authorization"] = "Token #{@token_secret}"
+        end
+        expect(resp.status).to be== 200
         click_on_first 'Edit'
         wait_until { all('.modal-body').empty? }
         fill_in 'Expires', with: (Time.now - 3.hours).iso8601
         click_on 'Save'
         wait_until { page.has_field?('Expires', disabled: true) }
-        expect(plain_faraday_json_client.get('/my/user/me/auth-info').status).to be== 401
+        resp2 = plain_faraday_client.get('/my/user/me/auth-info') do |req|
+          req.headers["Authorization"] = "Token #{@token_secret}"
+        end
+        expect(resp2.status).to be== 401
       end
 
-      scenario 'deleting a token works and makes it useless for authentication' do 
-        plain_faraday_json_client.basic_auth(@token_secret,'')
-        expect(plain_faraday_json_client.get('/my/user/me/auth-info').status).to be== 200
+      scenario 'deleting a token works and makes it useless for authentication' do
+        resp = plain_faraday_client.get('/my/user/me/auth-info') do |req|
+          req.headers["Authorization"] = "Token #{@token_secret}"
+        end
+        expect(resp.status).to be== 200
         click_on_first 'Delete'
         wait_until { page.has_content? "Delete My API-Token #{@token_part}" }
         click_on 'Delete'
         wait_until { current_path =~ /^.*\/api-tokens\/$/ }
-        expect(plain_faraday_json_client.get('/my/user/me/auth-info').status).to be== 401
+        resp2 = plain_faraday_client.get('/my/user/me/auth-info') do |req|
+          req.headers["Authorization"] = "Token #{@token_secret}"
+        end
+        expect(resp2.status).to be== 401
       end
 
     end

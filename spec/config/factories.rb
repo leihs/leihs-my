@@ -1,4 +1,4 @@
-require_relative './database.rb'
+require 'config/database.rb'
 require 'factory_bot'
 require 'faker'
 
@@ -10,7 +10,11 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     FactoryBot.definition_file_paths = \
-      %w{./spec/factories ./database/spec/factories}
+      %w{./spec/factories ./shared-clj/factories ./database/spec/factories}
     FactoryBot.find_definitions
+  end
+
+  config.before(:each) do
+    Faker::UniqueGenerator.clear
   end
 end

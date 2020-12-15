@@ -62,7 +62,6 @@
 
 (defn route
   ([handler request]
-   (logging/debug 'request)
    (if (or (not= (-> request :accept :mime) :html)
            (= (:handler-key request) :initial-admin)
            (some-admin? (:tx request)))
