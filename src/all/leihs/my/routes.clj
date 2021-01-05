@@ -12,6 +12,7 @@
     [leihs.core.routes :as core-routes]
     [leihs.core.routing.back :as routing]
     [leihs.core.routing.dispatch-content-type :as dispatch-content-type]
+    [leihs.core.settings :as settings]
 
     [leihs.my.authorization :as authorization]
     [leihs.my.back.html :as html]
@@ -22,7 +23,6 @@
     [leihs.my.paths :refer [path paths]]
     [leihs.my.password-restore :as password-restore]
     [leihs.my.resources.home.back :as home]
-    [leihs.my.resources.settings.back :as settings]
     [leihs.my.resources.status.back :as status]
     [leihs.my.user.back :as user]
     [leihs.my.user.api-token.back :as api-token]
@@ -97,8 +97,8 @@
 
 (defn init []
   (routing/init paths resolve-table)
-  (I> wrap-handler-with-logging
-  ;(->
+  ;(I> wrap-handler-with-logging
+  (->
       routing/dispatch-to-handler
       (authorization/wrap skip-authorization-handler-keys)
       (dispatch-content-type/wrap-dispatch-html no-spa-handler-keys html/spa-handler)
@@ -131,6 +131,6 @@
       ring-exception/wrap))
 
 ;#### debug ###################################################################
-(logging-config/set-logger! :level :debug)
+;(logging-config/set-logger! :level :debug)
 ;(logging-config/set-logger! :level :info)
-(debug/debug-ns *ns*)
+;(debug/debug-ns *ns*)

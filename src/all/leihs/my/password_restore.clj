@@ -14,19 +14,17 @@
              [sql :as sql]
              [ssr :as ssr]]
             [leihs.my.paths :refer [path]]
-            [leihs.my.resources.settings.back :as settings]
+            [leihs.core.settings :as settings]
             [leihs.my.user.shared :refer [set-password]]))
 
 (spec/def ::external-base-url presence)
+(spec/def ::smtp_default_from_address presence)
 
 (defn email-content
-  [tx token]
+  [token {tx :tx settings :settings}]
   (clojure.string/join "\n"
                        ["To do Password reset click this link:"
-                        (str (->> tx
-                                  settings/settings!
-                                  :external_base_url
-                                  (spec/assert ::external-base-url))
+                        (str (->> settings :external_base_url (spec/assert ::external-base-url))
                              "/reset-password?token="
                              token)
                         ""
@@ -41,20 +39,19 @@
   [str]
   (clojure.string/escape (clojure.string/upper-case str) {\O 0, \I 1, \L 1}))
 
-(defn insert-into-emails
-  [tx user token]
+(defn insert-into-emails [token user {settings :settings tx :tx :as request}]
   (-> (sql/insert-into :emails)
       (sql/values [{:user_id (:id user),
                     :subject "Password reset",
-                    :body (email-content tx token),
-                    :from_address (-> tx
-                                      settings/settings!
-                                      :smtp_default_from_address)}])
+                    :body (email-content token request),
+                    :from_address (->> settings
+                                       :smtp_default_from_address
+                                       (spec/assert ::smtp_default_from_address))}])
       sql/format
       (->> (jdbc/execute! tx))))
 
 (defn insert-into-user-password-resets
-  [tx user user-param token]
+  [token user {{user-param :user} :params tx :tx :as request}]
   (-> (sql/insert-into :user_password_resets)
       (sql/values [{:user_id (:id user),
                     :token token,
@@ -104,17 +101,12 @@
                                       {:userParam user-param,
                                        :flashMessages [error-flash-user-has-no-email]})})))
 
-(defn forgot-post
-  [request]
-  (let [user-param (-> request
-                       :params
-                       :user)
-        tx (:tx request)
-        user (user-with-unique-id tx user-param)
+(defn forgot-post [{{user-param :user} :params tx :tx :as request}]
+  (let [user (user-with-unique-id tx user-param)
         token (make-token 20)]
     (if user
-      (do (insert-into-user-password-resets tx user user-param token)
-          (insert-into-emails tx user token)
+      (do (insert-into-user-password-resets token user request)
+          (insert-into-emails token user request)
           {:headers {"Content-Type" "text/html"},
            :body (ssr/render-page-by-name request
                                           "PasswordForgotSuccessPage"

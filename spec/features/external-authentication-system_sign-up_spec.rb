@@ -4,8 +4,7 @@ require 'pry'
 feature 'Sign in via an external authentication system', type: :feature do
 
   before :each do
-    database[:settings].insert_conflict.insert({})
-    database[:settings].update(
+    database[:system_and_security_settings].update(
       external_base_url: ENV['LEIHS_MY_HTTP_BASE_URL'])
 
     @test_authentication_system = FactoryBot.create :authentication_system,
