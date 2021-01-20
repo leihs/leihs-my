@@ -8,6 +8,7 @@
     [leihs.core.routing.front :as routing]
     [leihs.core.user.front :as user]
 
+    [cljsjs.moment]
     [clojure.pprint :refer [pprint]]
     [reagent.core :as reagent]
     ))
