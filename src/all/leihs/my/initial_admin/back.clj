@@ -23,6 +23,7 @@
   (-> data
       (select-keys [:email])
       (assoc :is_admin true)
+      (assoc :is_system_admin true)
       (assoc :lastname "Admin")
       (assoc :firstname "Initial")))
 
@@ -32,11 +33,6 @@
 (defn make-procurement-admin [user tx]
   (->> {:user_id (:id user)}
        (jdbc/insert! tx :procurement_admins)
-       first))
-
-(defn make-system-admin [user tx]
-  (->> {:user_id (:id user)}
-       (jdbc/insert! tx :system_admin_users)
        first))
 
 (defn create-initial-admin
@@ -52,7 +48,6 @@
        (assert (set-password (:id user)
                              (:password data)
                              tx))
-       (assert (make-system-admin user tx))
        (assert (make-procurement-admin user tx))
        (redirect (path :home) :see-other)))))
 
