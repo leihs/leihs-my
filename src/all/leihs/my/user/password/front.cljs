@@ -8,6 +8,7 @@
     [leihs.core.requests.core :as requests]
     [leihs.core.routing.front :as routing]
     [leihs.core.breadcrumbs :as breadcrumbs]
+    [leihs.core.anti-csrf.front :as anti-csrf]
 
     [leihs.my.front.breadcrumbs :as my-breadcrumbs]
     [leihs.my.front.state :as state]
@@ -71,6 +72,7 @@
     {:on-submit (fn [e]
                   (.preventDefault e)
                   (submit))}
+    [anti-csrf/hidden-form-group-token-component]
     [:div.form-group
      [:label {:for :password} "New password:"]
      [:div

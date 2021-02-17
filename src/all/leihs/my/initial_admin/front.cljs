@@ -7,6 +7,7 @@
     [leihs.core.core :refer [keyword str presence]]
     [leihs.core.breadcrumbs :as breadcrumbs]
     [leihs.core.requests.core :as requests]
+    [leihs.core.anti-csrf.front :as anti-csrf]
 
     [leihs.my.front.components :as components]
     [leihs.my.front.shared :refer [humanize-datetime-component short-id gravatar-url]]
@@ -65,6 +66,7 @@
   [:form#initial-admin-form.form
    {:method :post
     :action (path :initial-admin)}
+   [anti-csrf/hidden-form-group-token-component]
    [:div.form-group
     [:label {:for :email} "email "]
     [:div
