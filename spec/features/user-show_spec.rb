@@ -15,7 +15,7 @@ feature 'User show', type: :feature do
     expect(page).to have_content "User #{@user.firstname} #{@user.lastname}"
   end
 
-  scenario 'Show message when no acess to any pool' do
+  scenario 'Show message when no access to any pool' do
     err_msg = "You can not use the borrow section because you dont have access rights to any inventory pool!\nPlease contact your support or lending desk."
     # ensure there are no access rights:
     expect(AccessRight.where(user: @user).count).to be 0
