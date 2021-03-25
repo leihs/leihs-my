@@ -35,10 +35,16 @@
           (breadcrumbs/li (str "/admin/users/" user-id)
                           [:span icons/user-in-admin " User in the admin interface"]))])
      [:div
-      (if @me?*
-        [:h1 "My user"]
-        (let [id (-> @routing/state* :route-params :user-id)]
-          [:div
-           [:h1 [:span "User "] [user-name-component]]
-           [:p "user-id: " [:code id]]]))]
+      (if-let [me (when @me?* @user/state*)]
+        [:<>
+         [:h1 "My user"]
+         [:div.table-responsive
+          [:table.table.table-borderless.table-sm
+           [:tbody
+            [:tr
+             [:td.col-sm-2 "account UUID"]
+             [:td [:span.text-monospace user-id]]]
+            [:tr
+             [:td.col-sm-2 "email adress"]
+             [:td [:span.text-monospace (:email me)]]]]]]])]
      [:div]]))
