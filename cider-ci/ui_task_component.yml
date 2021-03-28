@@ -3,7 +3,7 @@ traits:
   S3-Cache: true
 
 scripts:
-  prepare-shared-ui:
+  prepare-shared-ui-my:
     exclusive_executor_resource: build-leihs-ui
     environment_variables:
       RUBY: '{{RUBY_ENGINE}}-{{RUBY_VERSION}}'
