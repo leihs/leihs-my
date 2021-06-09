@@ -1,8 +1,10 @@
 name: "Build my uberjar"
 
 include:
-- path: cider-ci/install-ruby_task-component.yml
-  submodule: [leihs-ui]
+  - path: cider-ci/install-ruby_task-component.yml
+    submodule: [leihs-ui]
+  - path: cider-ci/install-nodejs_task-component.yml
+    submodule: [leihs-ui]
 
 git_options:
   submodules:
@@ -11,18 +13,24 @@ git_options:
 traits:
   JDK 8: true
   Leiningen 2: true
-  npm: true
+
+environment_variables:
+  NVM_NODEJS_VERSION: "14"
 
 scripts:
   build-leihs-ui-for-my:
     start_when:
-      install-ruby-passed: {script_key: install-ruby}
-    timeout: 10 minutes
-    body: ${LEIHS_MY_DIR}/leihs-ui/bin/build
+      install-ruby-passed: { script_key: install-ruby }
+      install-nodejs-passed: { script_key: install-nodejs }
+    timeout: 15 minutes
     exclusive_executor_resource: build-leihs-ui
+    body: |
+      . ~/.nvm/nvm.sh && nvm use "$NVM_NODEJS_VERSION"
+      ${LEIHS_MY_DIR}/leihs-ui/bin/build
   build-my-uberjar:
     start_when:
-      install-ruby: { script_key: install-ruby }
       build-ui: { script_key: build-leihs-ui-for-my }
-    body: ${LEIHS_MY_DIR}/bin/build
     exclusive_executor_resource: build_my_uberjar
+    body: |
+      . ~/.nvm/nvm.sh && nvm use "$NVM_NODEJS_VERSION"
+      ${LEIHS_MY_DIR}/bin/build
