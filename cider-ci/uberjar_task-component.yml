@@ -30,6 +30,7 @@ scripts:
   build-my-uberjar:
     start_when:
       build-ui: { script_key: build-leihs-ui-for-my }
+    timeout: 10 minutes
     exclusive_executor_resource: build_my_uberjar
     body: |
       . ~/.nvm/nvm.sh && nvm use "$NVM_NODEJS_VERSION"
