@@ -1,0 +1,12 @@
+#!/bin/bash -eu
+
+MY_DIR="$(dirname ${BASH_SOURCE})/.."
+cd "${MY_DIR}"
+
+echo "PWD: $PWD"
+
+rm -rf resources/all/public/my/js/
+
+cd -
+
+# vi: ft=sh

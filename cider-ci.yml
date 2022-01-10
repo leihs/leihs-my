@@ -7,7 +7,12 @@ jobs:
         type: branch
         include_match: ^.*$
     context:
-      task_defaults: { include: cider-ci/task_defaults.yml }
+      task_defaults:
+        environment_variables:
+          LEIHS_MY_DIR: '{{CIDER_CI_WORKING_DIR}}'
+          RUBY: '{{RUBY_ENGINE}}-{{RUBY_VERSION}}'
+          RUBY_ENGINE: ruby
+          RUBY_VERSION: 2.7.2
       tasks:
         build-my-uberjar:
           { include: cider-ci/uberjar_task-component.yml }

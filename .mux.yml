@@ -1,16 +1,13 @@
-name: LEIHS/v5/my
+name: LEIHS/leihs/my
 windows:
   2:
-    name: app
+    name: server-dev
     command: |
-      jenv shell 1.8
-      export LEIHS_MY_HTTP_BASE_URL=http://localhost:3240
-      lein do clean, repl
-    post_command_send_keys: |
-      (-main "run")
+      ./bin/dev-run-backend
   3:
-    name: figwheel
-    command: ./leihs-ui/bin/build && lein figwheel
+    name: front-dev
+    command: |
+      bin/dev-run-frontend
   5:
     name: psql
     command: |
@@ -22,14 +19,12 @@ windows:
   7:
     name: test
     command: |
-      export LEIHS_MY_HTTP_BASE_URL=http://localhost:3240
-      export LEIHS_DATABASE_URL="postgresql://localhost:5432/leihs?max-pool-size=5"
       export TEST_AUTH_SYSTEM_PORT=3245
       export RAILS_ENV=test
   8:
-    name: log
+    name: shared-clj
     command: |
-      mkdir -p log && echo " " > log/debug.log && tail -f log/debug.log
+      cd shared-clj
   9:
     name: auth-sys
     command: |

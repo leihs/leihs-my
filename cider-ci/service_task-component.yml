@@ -3,7 +3,7 @@ traits:
 
 scripts:
 
-  run-my-service:
+  my-service-run:
     start_when:
       uberjar has been built:
         script_key: build-my-uberjar
@@ -13,18 +13,19 @@ scripts:
       set -euxo
       cd $LEIHS_MY_DIR
       mkdir tmp
-      java -jar target/leihs-my.jar run -s
+      export HTTP_PORT=${LEIHS_MY_HTTP_PORT}
+      java -jar target/leihs-my.jar run --pid-file tmp/service.pid
 
   my-service-is-running:
     body: |
       until curl --fail -I \
         -H 'Accept: application/json' \
-         ${LEIHS_MY_HTTP_BASE_URL}/my/status;
+        "http://localhost:${LEIHS_MY_HTTP_PORT}/my/status";
         do sleep 1;
       done
     start_when:
       run server is executing:
-        script_key: run-my-service
+        script_key: my-service-run
         states: [executing]
 
   test:
@@ -32,12 +33,12 @@ scripts:
       my service is running:
         script_key: my-service-is-running
 
-  shutdown-my-service:
+  my-service-shutdown:
     body: |
-      set -euxo 
+      set -euxo
       cd $LEIHS_MY_DIR
       export PID=$(cat tmp/service.pid)
-      kill $PID 
+      kill $PID
       tail --pid=$PID -f /dev/null
     start_when:
       test is terminal:
@@ -46,6 +47,6 @@ scripts:
 
   delete-database:
     start_when:
-       shutdown-my-service is in termial state:
-        script_key: shutdown-my-service
+       my-service-shutdown is in termial state:
+        script_key: my-service-shutdown
         states: [aborted, defective, passed, failed, skipped]

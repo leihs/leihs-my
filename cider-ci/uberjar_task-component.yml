@@ -11,14 +11,15 @@ git_options:
     include_match: ^.*$
 
 traits:
-  JDK 8: true
-  Leiningen 2: true
+  OpenJDK: true
 
 environment_variables:
   NVM_NODEJS_VERSION: "16"
 
 scripts:
   build-leihs-ui-for-my:
+    # note build-ui is strictly not necessary since build invokes it itself
+    # however ci caching and parallelization is much more efficient this way
     start_when:
       install-ruby-passed: { script_key: install-ruby }
       install-nodejs-passed: { script_key: install-nodejs }
@@ -30,7 +31,9 @@ scripts:
   build-my-uberjar:
     start_when:
       build-ui: { script_key: build-leihs-ui-for-my }
-    timeout: 10 minutes
+      install-ruby-passed: { script_key: install-ruby }
+      install-nodejs-passed: { script_key: install-nodejs }
+    timeout: 15 minutes
     exclusive_executor_resource: build_my_uberjar
     body: |
       . ~/.nvm/nvm.sh && nvm use "$NVM_NODEJS_VERSION"

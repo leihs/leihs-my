@@ -1,0 +1,17 @@
+#!/bin/bash -eu
+
+MY_DIR="$(dirname ${BASH_SOURCE})/.."
+
+cd "${MY_DIR}"
+echo "PWD: $PWD"
+
+# add our clojure version to the path
+source $MY_DIR/shared-clj/clojure/bin/activate
+
+
+npm i
+npx shadow-cljs watch leihs-my-js
+
+cd -
+
+# vi: ft=sh

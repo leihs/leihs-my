@@ -4,26 +4,30 @@ traits:
 
 scripts:
 
-  bundle-rspec-ruby:
+  my-bundle-rspec-ruby:
     exclusive_executor_resource: ruby-install_{{$RUBY}}
     timeout: 20 Minutes
+    start_when:
+      uberjar done: # bundle may alter the Gemfile.lock
+        script_key: build-my-uberjar
+        states: [passed]
     body: |
       #!/usr/bin/env bash
-      set -eux
+      set -euxo
+      cd $LEIHS_MY_DIR
       export PATH=~/.rubies/$RUBY/bin:$PATH
 
       if [ ! -d ~/.rubies/$RUBY ]; then
         ruby-install --no-install-deps $RUBY_ENGINE $RUBY_VERSION
       fi
 
-      if [ ! -f ~/.rubies/$RUBY/bin/bundle ]; then
-        gem install bundler
-      fi
+      gem install bundler:${RUBY_BUNDLER_VERSION}
 
       bundle install
+
 
   test:
     start_when:
       gems are bundled:
-        script_key: bundle-rspec-ruby
+        script_key: my-bundle-rspec-ruby
         states: [passed]

@@ -1,0 +1,10 @@
+{:deps {:aliases [:cljs]}
+ :builds {:leihs-my-js
+          {:asset-path "/my/js"
+           :devtools {:http-root "resources/public" :http-port 8020}
+           :modules {:main {:init-fn leihs.my.main/init}}
+           :output-dir "resources/public/my/js"
+           :release {:compiler-options {:optimizations :advanced
+                                        :infer-externs :auto}}
+           :target :browser}}
+ }

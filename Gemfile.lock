@@ -104,7 +104,9 @@ GEM
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
     method_source (1.0.0)
-    mimemagic (0.3.7)
+    mimemagic (0.3.10)
+      nokogiri (~> 1)
+      rake
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
     minitest (5.14.2)
@@ -177,7 +179,7 @@ GEM
     selenium-webdriver (3.142.7)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
-    sequel (4.49.0)
+    sequel (5.52.0)
     sinatra (2.1.0)
       mustermann (~> 1.0)
       rack (~> 2.2)
@@ -218,7 +220,7 @@ DEPENDENCIES
   geckodriver-helper
   haml
   jwt
-  mimemagic (= 0.3.7)
+  mimemagic (= 0.3.10)
   money-rails (~> 1.4)
   pg
   pg_tasks!
@@ -226,9 +228,9 @@ DEPENDENCIES
   rails
   rspec
   selenium-webdriver (~> 3.14)
-  sequel (~> 4.42, >= 4.42.1)
+  sequel
   sinatra
   uuidtools
 
 BUNDLED WITH
-   1.17.3
+   2.3.3

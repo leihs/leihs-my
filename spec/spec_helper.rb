@@ -4,14 +4,6 @@ require 'pry'
 require 'config/database'
 require 'config/factories'
 
-def base_url
-  @base_url ||= ENV['LEIHS_MY_HTTP_BASE_URL'].presence || 'http://localhost:3240'
-end
-
-def port
-  @port ||= Addressable::URI.parse(base_url).port
-end
-
 require 'config/browser'
 require 'config/http_client'
 
@@ -27,4 +19,12 @@ RSpec.configure do |config|
     srand 1
   end
 
+  config.after(:each) do |example|
+    # auto-pry after failures, except in CI!
+    unless (ENV['CIDER_CI_TRIAL_ID'].present? or ENV['NOPRY_ON_EXCEPTION'].present?)
+      unless example.exception.nil?
+        binding.pry if example.exception
+      end
+    end
+  end
 end

@@ -2,8 +2,8 @@ generate_tasks:
   include_match: spec/.*_spec.rb
 task_defaults:
   include:
-    - cider-ci/task_defaults.yml
-    - cider-ci/database_task-component.yml
+    - path: cider-ci/task-components/database.yml
+      submodule: [database]
     - cider-ci/ruby-bundle_task-component.yml
     - cider-ci/service_task-component.yml
     - cider-ci/test-auth-system_task-component.yml
@@ -15,6 +15,18 @@ task_defaults:
     TEST_AUTH_SYSTEM_PORT:
       min: 3240
       max: 3249
+  environment_variables:
+    LEIHS_DATABASE_NAME: leihs_{{CIDER_CI_TRIAL_ID}}
+    DB_NAME: "{{LEIHS_DATABASE_NAME}}"
+    LEIHS_MY_DIR: '{{CIDER_CI_WORKING_DIR}}'
+    LEIHS_DATABASE_DIR: '{{LEIHS_MY_DIR}}/database'
+    LEIHS_MY_HTTP_HOST: localhost
+    LEIHS_MY_HTTP_BASE_URL: http://{{LEIHS_MY_HTTP_HOST}}:{{LEIHS_MY_HTTP_PORT}}
+    RAILS_ENV: test
+    RUBY: '{{RUBY_ENGINE}}-{{RUBY_VERSION}}'
+    RUBY_ENGINE: ruby
+    RUBY_VERSION: 2.7.5
+    RUBY_BUNDLER_VERSION: 2.3.3
   git_options:
     submodules:
       include_match: ^.*$

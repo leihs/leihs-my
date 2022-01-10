@@ -1,14 +1,12 @@
-#!/usr/bin/env bash
+#!/bin/bash -eu
 
-set -eu
-
-PROJECT_DIR="$(dirname ${BASH_SOURCE})/.."
-cd "${PROJECT_DIR}"
+MY_DIR="$(dirname ${BASH_SOURCE})/.."
+cd "${MY_DIR}"
 echo "PWD: $PWD"
 
 ./bin/build
 
-java -jar target/leihs-my.jar run -s 'secret' "$@"
+java -jar target/leihs-admin.jar run "$@"
 
 cd -
 

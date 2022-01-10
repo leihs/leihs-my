@@ -13,7 +13,6 @@ feature 'Password, sign-in, sign-out and session ' do
         @user = FactoryBot.create :user
       end
 
-
       scenario 'signing in with the proper password works' do
         visit '/'
         fill_in 'user', with: user.email

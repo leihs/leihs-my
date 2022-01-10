@@ -1,12 +1,25 @@
 require 'capybara/rspec'
 require 'selenium-webdriver'
 
+
 BROWSER_DOWNLOAD_DIR= File.absolute_path(File.expand_path(__FILE__)  + "/../../../tmp")
+
+def http_port
+  @port ||= Integer(ENV['LEIHS_MY_HTTP_PORT'].presence || 3240)
+end
+
+def http_host
+  @host ||= ENV['LEIHS_MY_HTTP_HOST'].presence || 'localhost'
+end
+
+def http_base_url
+  @http_base_url ||= "http://#{http_host}:#{http_port}"
+end
 
 
 def set_capybara_values
-  Capybara.app_host = base_url
-  Capybara.server_port = port
+  Capybara.app_host = http_base_url
+  Capybara.server_port = http_port
 end
 
 ACCEPTED_FIREFOX_ENV_PATHS = ['FIREFOX_ESR_78_PATH']

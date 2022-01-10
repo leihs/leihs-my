@@ -13,6 +13,7 @@ feature 'API Tokens', type: :feature do
     let :add_api_token do
       visit '/my/user/me'
       click_on_first 'API-Tokens'
+      binding.pry
       click_on_first 'Add API-Token'
       fill_in 'Description', with: "My first token"
       click_on 'Add'
@@ -67,7 +68,7 @@ feature 'API Tokens', type: :feature do
       scenario 'the token can be used to ' \
         ' authenticate via basic auth as the username ' do
         http_client = Faraday.new(
-          url: base_url,
+          url: http_base_url,
           headers: { accept: 'application/json' }) do |conn|
             conn.adapter Faraday.default_adapter
             conn.response :json, content_type: /\bjson$/
@@ -80,7 +81,7 @@ feature 'API Tokens', type: :feature do
       scenario 'the token can be used to ' \
         ' authenticate via basic auth as the password' do
         http_client = Faraday.new(
-          url: base_url,
+          url: http_base_url,
           headers: { accept: 'application/json' }) do |conn|
             conn.adapter Faraday.default_adapter
             conn.response :json, content_type: /\bjson$/

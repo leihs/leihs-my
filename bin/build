@@ -16,6 +16,9 @@ LOCAL_CACHED_ARTEFACT_PATH="${LOCAL_CACHE_DIR}/${PROJECT_NAME}_${DIGEST}.jar"
 S3_CACHED_ARTEFACT_NAME="${PROJECT_NAME}_${DIGEST}.jar"
 BUILD_CACHE_DISABLED="${BUILD_CACHE_DISABLED:-NO}"
 
+# add our clojure version to the path
+source $PROJECT_DIR/shared-clj/clojure/bin/activate
+
 set +x
 
 cd "${PROJECT_DIR}"
@@ -34,7 +37,9 @@ fi
 
 function build {
   ./leihs-ui/bin/build
-  LEIN_SNAPSHOTS_IN_RELEASE=LOL lein do uberjar || { echo "build error!"; exit 1; }
+  ./bin/cljs-release
+  ./bin/set-built-info
+  ./bin/clj-uberjar
 }
 
 function pack {

@@ -6,7 +6,7 @@ require 'jwt'
 require 'pry'
 require 'sinatra'
 
-# for now: 
+# for now:
 # start with `bundle exec ruby ... -p PORT`
 
 priv_key = <<-KEY.strip_heredoc
@@ -48,7 +48,7 @@ end
 
 get '/sign-in' do
   sign_in_request_token = params[:token]
-  # TODO do verify, catch and redirect back with error 
+  # TODO do verify, catch and redirect back with error
   token_data = JWT.decode sign_in_request_token, ES256_pub_key, true, { algorithm: 'ES256' }
   email = token_data.first["email"]
 
@@ -61,30 +61,30 @@ get '/sign-in' do
     sign_in_request_token: sign_in_request_token,
     error_message: "The user did not authenticate successfully!"}, ES256_priv_key,'ES256')
 
-  url = (token_data.first["server_base_url"] || 'http://localhost:3240') + token_data.first['path'] 
+  url = (token_data.first["server_base_url"] || 'http://localhost:3240') + token_data.first['path']
 
 
-  html = 
+  html =
     Haml::Engine.new(
       <<-HAML.strip_heredoc
         %h1 The Super Secure Test Authentication System
 
-        %p 
-          Answer truthfully! Are you 
-          %em 
+        %p
+          Answer truthfully! Are you
+          %em
             #{email}
           ?
         %ul
           %li
             %a{href: "#{url}?token=#{success_token}"}
               %span
-                Yes, I am 
+                Yes, I am
                 %em
                   #{email}
           %li
             %a{href: "#{url}?token=#{fail_token}"}
-              %span 
-                No, I am not 
+              %span
+                No, I am not
                 %em
                   #{email}
       HAML
