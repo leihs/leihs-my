@@ -6,7 +6,7 @@ echo "PWD: $PWD"
 
 ./bin/build
 
-java -jar target/leihs-admin.jar run "$@"
+java -jar target/leihs-my.jar run "$@"
 
 cd -
 
