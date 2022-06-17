@@ -8,7 +8,6 @@ echo "PWD: $PWD"
 # add our clojure version to the path
 source $MY_DIR/shared-clj/clojure/bin/activate
 
-npm i
 npx shadow-cljs compile leihs-my-js
 
 cd -

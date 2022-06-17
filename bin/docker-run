@@ -1,0 +1,12 @@
+#!/bin/bash
+set -exu
+
+WD="$(pwd)"
+
+IMAGE="$(IMAGE_NAME=leihs-my-runner STAGE=builder bin/docker-build | tail -1)"
+test "$IMAGE"
+
+docker run --rm -it \
+  -v "${WD}/:/leihs/my/" \
+  "$IMAGE" \
+  $*

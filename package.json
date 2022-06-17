@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Frontend for leihs-admin",
   "devDependencies": {
-    "shadow-cljs": "^2.16.12"
+    "shadow-cljs": "^2.19.3"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
