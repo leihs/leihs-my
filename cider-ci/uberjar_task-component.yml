@@ -23,4 +23,12 @@ scripts:
     start_when:
       install-ruby-passed: { script_key: install-ruby }
     body: |
-      USE_DOCKER=YES ${LEIHS_MY_DIR}/bin/build
+      cd ${LEIHS_MY_DIR}
+
+      # build with docker, prime docker cache
+      IMAGE_NAME="$DIST_IMAGE_NAME" \
+      VERSION_NAME="$DIST_VERSION_NAME" \
+        bin/docker-build
+
+      # build again to prime our own file-based artefact cache
+      USE_DOCKER=YES bin/build
