@@ -43,7 +43,7 @@ end
 RSpec.configure do |config|
   config.before :each  do
     clean_db
-    system("DATABASE_NAME=#{db_name} ./database/scripts/restore-seeds")
+    system("LEIHS_DATABASE_NAME=#{db_name} ./database/scripts/restore-seeds")
   end
   config.after :suite do
     clean_db

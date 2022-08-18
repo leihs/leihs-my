@@ -29,7 +29,7 @@ feature 'Password, sign-in, sign-out and session ' do
         click_on 'Login'
         fill_in 'password', with: 'bogus'
         click_on 'Continue'
-        expect(page).to have_content 'Falsches Passwort!'
+        expect(page).to have_content 'Wrong password!'
       end
 
       scenario 'signing out after signing in with passwort works' do
@@ -88,7 +88,7 @@ feature 'Password, sign-in, sign-out and session ' do
         visit '/'
         fill_in 'user', with: user.email
         click_on 'Login'
-        expect(page).to have_content 'Anmelden ist mit diesem Benutzerkonto nicht möglich'
+        expect(page).to have_content 'Login is not possible with this user account'
       end
 
     end
@@ -105,7 +105,7 @@ feature 'Password, sign-in, sign-out and session ' do
         visit '/'
         fill_in 'user', with: user.email
         click_on 'Login'
-        expect(page).to have_content 'Anmelden ist mit diesem Benutzerkonto nicht möglich'
+        expect(page).to have_content 'Login is not possible with this user account'
       end
 
     end

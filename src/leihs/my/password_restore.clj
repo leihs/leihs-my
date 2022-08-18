@@ -8,7 +8,6 @@
     [leihs.core.core :refer [presence]]
     [leihs.core.db :as db]
     [leihs.core.settings :as settings]
-    [leihs.core.sign-in.back :refer [error-flash-invalid-user]]
     [leihs.core.sign-in.back :refer [user-with-unique-id]]
     [leihs.core.sql :as sql]
     [leihs.core.ssr :as ssr]
@@ -94,10 +93,12 @@
                                       {:userParam user-param})}
       {:headers {"Content-Type" "text/html"},
        :status 422,
-       :body (ssr/render-page-by-name request
-                                      "PasswordForgotPage"
-                                      {:userParam user-param,
-                                       :flashMessages [error-flash-user-has-no-email]})})))
+       :body (ssr/render-page-by-name
+               request
+               "PasswordForgotPage"
+               {:userParam user-param,
+                :flashMessages [{:messageID "password_forgot_user_has_no_email_flash_text"
+                                 :level "error"}]})})))
 
 (defn forgot-post [{{user-param :user} :params tx :tx :as request}]
   (let [user (user-with-unique-id tx user-param)
@@ -106,19 +107,21 @@
       (do (insert-into-user-password-resets token user request)
           (insert-into-emails token user request)
           {:headers {"Content-Type" "text/html"},
-           :body (ssr/render-page-by-name request
-                                          "PasswordForgotSuccessPage"
-                                          {:userParam user-param,
-                                           :message "check your email!",
-                                           :resetPwLink "/reset-password"})})
+           :body (ssr/render-page-by-name
+                   request
+                   "PasswordForgotSuccessPage"
+                   {:userParam user-param,
+                    :messageID "password_forgot_check_email_message",
+                    :resetPwLink "/reset-password",
+                    :resetPwLinkTextID "password_reset_link_test"})})
       {:headers {"Content-Type" "text/html"},
        :status 404,
-       :body (ssr/render-page-by-name request
-                                      "PasswordForgotPage"
-                                      {:userParam user-param,
-                                       :flashMessages
-                                         [error-flash-invalid-user]})})))
-
+       :body (ssr/render-page-by-name
+               request
+               "PasswordForgotPage"
+               {:userParam user-param,
+                :flashMessages [{:messageID "sign_in_invalid_user_flash_message"
+                                 :level "error"}]})})))
 
 (defn reset-get
   [request]
