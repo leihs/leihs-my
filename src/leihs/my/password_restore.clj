@@ -12,7 +12,9 @@
     [leihs.core.sql :as sql]
     [leihs.core.ssr :as ssr]
     [leihs.my.paths :refer [path]]
-    [leihs.my.user.shared :refer [set-password]]))
+    [leihs.my.user.shared :refer [set-password]]
+    [taoensso.timbre :refer [debug info warn error spy]]
+    ))
 
 (spec/def ::external-base-url presence)
 (spec/def ::smtp_default_from_address presence)
@@ -83,22 +85,34 @@
                        :params
                        :user)
         tx (:tx request)
-        user (user-with-unique-id tx user-param)]
-    (if (-> user
-            :email
-            presence)
-      {:headers {"Content-Type" "text/html"},
-       :body (ssr/render-page-by-name request
-                                      "PasswordForgotPage"
-                                      {:userParam user-param})}
-      {:headers {"Content-Type" "text/html"},
-       :status 422,
+        user (user-with-unique-id tx user-param)
+        headers {:headers {"Content-Type" "text/html"}}]
+    (cond
+      (-> request :settings :email_sending_enabled not)
+      {:status 422,
+       :headers {"Content-Type" "text/html"},
+       :body (ssr/render-page-by-name
+               request
+               "PasswordForgotPage"
+               {:userParam user-param,
+                :flashMessages [{:messageID "password_forgot_email_sending_disabled_text"
+                                 :level "error"}]})}
+
+      (-> user :email presence not)
+      {:status 422,
+       :headers {"Content-Type" "text/html"},
        :body (ssr/render-page-by-name
                request
                "PasswordForgotPage"
                {:userParam user-param,
                 :flashMessages [{:messageID "password_forgot_user_has_no_email_flash_text"
-                                 :level "error"}]})})))
+                                 :level "error"}]})}
+
+      :else
+      {:headers {"Content-Type" "text/html"},
+       :body (ssr/render-page-by-name request
+                                      "PasswordForgotPage"
+                                      {:userParam user-param})})))
 
 (defn forgot-post [{{user-param :user} :params tx :tx :as request}]
   (let [user (user-with-unique-id tx user-param)
