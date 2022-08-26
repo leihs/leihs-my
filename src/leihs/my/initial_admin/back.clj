@@ -23,7 +23,9 @@
   (-> data
       (select-keys [:email])
       (assoc :is_admin true)
+      (assoc :admin_protected true)
       (assoc :is_system_admin true)
+      (assoc :system_admin_protected true)
       (assoc :lastname "Admin")
       (assoc :firstname "Initial")))
 
