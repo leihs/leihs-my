@@ -13,7 +13,6 @@ feature 'API Tokens', type: :feature do
     let :add_api_token do
       visit '/my/user/me'
       click_on_first 'API-Tokens'
-      binding.pry
       click_on_first 'Add API-Token'
       fill_in 'Description', with: "My first token"
       click_on 'Add'
@@ -30,6 +29,7 @@ feature 'API Tokens', type: :feature do
     scenario 'creating an API-Token works' do
       add_api_token
     end
+
 
     context 'an API-Token for the current user has been added' do
 
@@ -168,6 +168,51 @@ feature 'API Tokens', type: :feature do
         expect(resp2.status).to be== 401
       end
 
+    end
+  end
+
+
+  context 'an admin, system-amdin and two users' do
+    before :each do
+      @admin = FactoryBot.create :admin
+      @system_admin = FactoryBot.create :system_admin
+      @user1 = FactoryBot.create :user
+      @user2 = FactoryBot.create :user
+    end
+
+
+    scenario 'An user can not access/create an other users api TOKEN' do
+      sign_in_as @user1
+      visit "/my/user/#{@user2.id}/api-tokens/"
+      wait_until{ page.has_content? 'ERROR 403'}
+      click_on 'Dismiss'
+      click_on 'Dismiss'
+      click_on 'Add API-Token'
+      fill_in 'Description', with: "Other users API-Token"
+      click_on 'Add'
+      expect(page).to have_content 'ERROR 403'
+    end
+
+
+    scenario 'An admin can not access/create an other users api TOKEN' do
+      sign_in_as @admin
+      visit "/my/user/#{@user2.id}/api-tokens/"
+      expect(page).to have_content 'ERROR 403'
+      click_on 'Dismiss'
+      click_on 'Dismiss'
+      click_on 'Add API-Token'
+      fill_in 'Description', with: "Other users API-Token"
+      click_on 'Add'
+      expect(page).to have_content 'ERROR 403'
+    end
+
+    scenario 'A system-admin can create some users API-Token' do
+      sign_in_as @system_admin
+      visit "/my/user/#{@user2.id}/api-tokens/"
+      click_on_first 'Add API-Token'
+      fill_in 'Description', with: "My first token"
+      click_on 'Add'
+      wait_until{ page.has_content? "has been added"}
     end
   end
 end

@@ -16,11 +16,11 @@
 (defn http-unsafe?  [request]
   (boolean (some-> request :request-method HTTP-UNSAFE-VERBS)))
 
-(defn is-admin? [request]
-  (boolean (-> request :authenticated-entity :is_admin)))
+(defn is-system-admin? [request]
+  (boolean (-> request :authenticated-entity :is_system_admin)))
 
-(defn is-not-admin? [request]
-  (complement is-admin?))
+(defn is-not-system-admin? [request]
+  (complement is-system-admin?))
 
 (defn scope-read? [request]
   (boolean (some-> request :authenticated-entity :scope_read)))
@@ -28,11 +28,11 @@
 (defn scope-write? [request]
   (boolean (some-> request :authenticated-entity :scope_write)))
 
-(defn scope-admin-read? [request]
-  (boolean (some-> request :authenticated-entity :scope_admin_read)))
+(defn scope-system-admin-read? [request]
+  (boolean (some-> request :authenticated-entity :scope_system_admin_read)))
 
-(defn scope-admin-write? [request]
-  (boolean (some-> request :authenticated-entity :scope_admin_write)))
+(defn scope-system-admin-write? [request]
+  (boolean (some-> request :authenticated-entity :scope_system_admin_write)))
 
 (defn handler-is-ignored? [ignore-handler-keys request]
   (boolean (when-let [handler-key (:handler-key request)]
@@ -41,17 +41,17 @@
 (defn authenticated-entity-not-present? [request]
   (not (contains? request :authenticated-entity)))
 
-(defn http-safe-and-admin-with-read-scope?  [request]
+(defn http-safe-and-system-admin-with-read-scope?  [request]
   (boolean
     (and (http-safe? request)
-         (is-admin? request)
-         (scope-admin-read? request))))
+         (is-system-admin? request)
+         (scope-system-admin-read? request))))
 
-(defn http-unsafe-and-admin-with-write-scope? [request]
+(defn http-unsafe-and-system-admin-with-write-scope? [request]
   (boolean
     (and (http-unsafe? request)
-         (is-admin? request)
-         (scope-admin-write? request))))
+         (is-system-admin? request)
+         (scope-system-admin-write? request))))
 
 (defn me? [request]
   (or (= (-> request :route-params :user-id) "me")
@@ -89,9 +89,9 @@
      (http-unsafe-and-me-user-with-write-scope?
        request) (handler request)
      ;;; admin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-     (http-safe-and-admin-with-read-scope?
+     (http-safe-and-system-admin-with-read-scope?
        request) (handler request)
-     (http-unsafe-and-admin-with-write-scope?
+     (http-unsafe-and-system-admin-with-write-scope?
        request) (handler request)
      ;;; other ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      :else {:status 403

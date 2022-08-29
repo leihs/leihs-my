@@ -19,6 +19,7 @@
 /target
 /tmp
 figwheel_server.log
+leihs-my_*.jar
 leihs-ui-compiled
 profiles.clj
 resources/all/public/auth/build-timestamp.txt
