@@ -1,12 +1,11 @@
 (ns leihs.my.password-restore
   (:require
-    [tick.core :as tick]
-    [clj-ulid :refer [random-base32-string]]
     [clojure.java.jdbc :as jdbc]
     [clojure.spec.alpha :as spec]
     [compojure.core :as cpj]
     [leihs.core.core :refer [presence]]
     [leihs.core.db :as db]
+    [leihs.core.random :refer [base32-crockford-rand-str]]
     [leihs.core.settings :as settings]
     [leihs.core.sign-in.back :refer [user-with-unique-id]]
     [leihs.core.sql :as sql]
@@ -14,6 +13,7 @@
     [leihs.my.paths :refer [path]]
     [leihs.my.user.shared :refer [set-password]]
     [taoensso.timbre :refer [debug info warn error spy]]
+    [tick.core :as tick]
     ))
 
 (spec/def ::external-base-url presence)
@@ -32,7 +32,7 @@
                         "If you did not request this, you can just ignore it."
                         "Learn more: https://docs.leihs.app/passwort-reset"]))
 
-(defn make-token [n] (clojure.string/upper-case (random-base32-string n)))
+(defn make-token [n] (base32-crockford-rand-str n))
 
 (defn normalize-token-str
   [str]

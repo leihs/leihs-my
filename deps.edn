@@ -1,7 +1,6 @@
 {:paths [:cljc-paths :resource-paths]
  :deps {
         clj-http/clj-http {:mvn/version "3.12.3"}
-        clj-ulid/clj-ulid {:mvn/version "0.1.0-SNAPSHOT"}
         cljs-http/cljs-http {:mvn/version "0.1.46"}
         clojure-humanize/clojure-humanize {:mvn/version "0.2.2"}
         com.github.mfornos/humanize-slim {:mvn/version "1.2.2"}
