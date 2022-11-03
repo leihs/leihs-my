@@ -23,10 +23,6 @@ task_defaults:
     LEIHS_MY_HTTP_HOST: localhost
     LEIHS_MY_HTTP_BASE_URL: http://{{LEIHS_MY_HTTP_HOST}}:{{LEIHS_MY_HTTP_PORT}}
     RAILS_ENV: test
-    RUBY: '{{RUBY_ENGINE}}-{{RUBY_VERSION}}'
-    RUBY_ENGINE: ruby
-    RUBY_VERSION: 2.7.5
-    RUBY_BUNDLER_VERSION: 2.3.3
   git_options:
     submodules:
       include_match: ^.*$
@@ -39,6 +35,5 @@ task_defaults:
       body: |
         #!/usr/bin/env bash
         set -eux
-        export PATH=~/.rubies/$RUBY/bin:$PATH
         mkdir -p log
         xvfb-run -a -e log/xvfb.log bundle exec rspec $CIDER_CI_TASK_FILE

@@ -12,7 +12,6 @@ scripts:
     body: |
       #!/usr/bin/env bash
       set -eux
-      export PATH=~/.rubies/$RUBY/bin:$PATH
       bundle exec ruby bin/test-auth-system.rb -p ${TEST_AUTH_SYSTEM_PORT}
 
   test-auth-system_is-serving:
