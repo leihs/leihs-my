@@ -1,6 +1,6 @@
 jobs:
 
-  build-my-uberjar:
+  my-build-uberjar:
     name: Build my uberjar
     run_when:
       any branch has been updated:
@@ -11,7 +11,7 @@ jobs:
         environment_variables:
           LEIHS_MY_DIR: '{{CIDER_CI_WORKING_DIR}}'
       tasks:
-        build-my-uberjar:
+        my-build-uberjar:
           { include: cider-ci/uberjar_task-component.yml }
 
   specs:
@@ -19,7 +19,7 @@ jobs:
     depends_on: &SPEC_DEPENDENTS
       uberjar passed:
         type: job
-        job_key: build-my-uberjar
+        job_key: my-build-uberjar
         states: [passed]
     run_when: *SPEC_DEPENDENTS
     context: { include: cider-ci/specs_job-context.yml }

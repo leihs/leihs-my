@@ -1,7 +1,7 @@
 depends_on: &GOOD_TO_MERGE_DEPENDENTS
-  build-my-uberjar was successful:
+  my-build-uberjar was successful:
     type: job
-    job_key: build-my-uberjar
+    job_key: my-build-uberjar
     states: [passed]
   specs have passed:
     type: job

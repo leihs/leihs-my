@@ -3,14 +3,23 @@ traits:
 
 scripts:
 
+  my-install-nodejs:
+    exclusive_executor_resource: asdf-nodjes
+    body: |
+      set -eux
+      cd $LEIHS_MY_DIR
+      asdf install nodejs
+
   my-service-run:
     start_when:
+      nodejs is installed:
+        script_key: my-install-nodejs
       uberjar has been built:
-        script_key: build-my-uberjar
+        script_key: my-build-uberjar
       database has been created:
         script_key: create-database
     body: |
-      set -euxo
+      set -eux
       cd $LEIHS_MY_DIR
       mkdir tmp
       export HTTP_PORT=${LEIHS_MY_HTTP_PORT}

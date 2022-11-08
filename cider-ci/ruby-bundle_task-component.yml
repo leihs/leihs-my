@@ -8,7 +8,7 @@ scripts:
     timeout: 20 Minutes
     start_when:
       uberjar done: # bundle may alter the Gemfile.lock
-        script_key: build-my-uberjar
+        script_key: my-build-uberjar
         states: [passed]
     body: |
       #!/usr/bin/env bash

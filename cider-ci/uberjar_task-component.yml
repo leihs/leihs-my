@@ -17,7 +17,7 @@ traits:
 max_trials: 3
 
 scripts:
-  build-my-uberjar:
+  my-build-uberjar:
     timeout: 60 minutes
     exclusive_executor_resource: leihs-my-jar-docker-build_{{CIDER_CI_TREE_ID}}
     start_when:
