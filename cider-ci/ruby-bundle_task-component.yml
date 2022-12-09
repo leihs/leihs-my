@@ -14,6 +14,11 @@ scripts:
       #!/usr/bin/env bash
       set -euxo
       cd $LEIHS_MY_DIR
+      if [[ ! -d ~/.asdf/plugins/ruby ]]; then
+        asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
+      else
+        asdf plugin update ruby
+      fi
       asdf install ruby
       bundle install
 
