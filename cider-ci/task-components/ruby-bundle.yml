@@ -1,0 +1,15 @@
+traits:
+  asdf: true
+
+scripts:
+  my-ruby-bundle:
+    exclusive_executor_resource: asdf-ruby
+    timeout: 20 Minutes
+    body: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+      cd $LEIHS_MY_DIR
+      ./bin/env/ruby-setup
+
+
+

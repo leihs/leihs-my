@@ -1,0 +1,155 @@
+'./spec/features/api-tokens_spec.rb[1:1:1]':
+  name: "API Tokens signed in as an admin 01"
+  environment_variables:
+    FEATURE_NAME: "API Tokens signed in as an admin 01"
+    FEATURE: './spec/features/api-tokens_spec.rb[1:1:1]'
+'./spec/features/api-tokens_spec.rb[1:1:2:1]':
+  name: "API Tokens signed in as an admin an API-Token for the current user has been added 01"
+  environment_variables:
+    FEATURE_NAME: "API Tokens signed in as an admin an API-Token for the current user has been added 01"
+    FEATURE: './spec/features/api-tokens_spec.rb[1:1:2:1]'
+'./spec/features/api-tokens_spec.rb[1:1:2:2]':
+  name: "API Tokens signed in as an admin an API-Token for the current user has been added 02"
+  environment_variables:
+    FEATURE_NAME: "API Tokens signed in as an admin an API-Token for the current user has been added 02"
+    FEATURE: './spec/features/api-tokens_spec.rb[1:1:2:2]'
+'./spec/features/api-tokens_spec.rb[1:1:2:3]':
+  name: "API Tokens signed in as an admin an API-Token for the current user has been added 03"
+  environment_variables:
+    FEATURE_NAME: "API Tokens signed in as an admin an API-Token for the current user has been added 03"
+    FEATURE: './spec/features/api-tokens_spec.rb[1:1:2:3]'
+'./spec/features/api-tokens_spec.rb[1:1:2:4]':
+  name: "API Tokens signed in as an admin an API-Token for the current user has been added 04"
+  environment_variables:
+    FEATURE_NAME: "API Tokens signed in as an admin an API-Token for the current user has been added 04"
+    FEATURE: './spec/features/api-tokens_spec.rb[1:1:2:4]'
+'./spec/features/api-tokens_spec.rb[1:1:2:5]':
+  name: "API Tokens signed in as an admin an API-Token for the current user has been added 05"
+  environment_variables:
+    FEATURE_NAME: "API Tokens signed in as an admin an API-Token for the current user has been added 05"
+    FEATURE: './spec/features/api-tokens_spec.rb[1:1:2:5]'
+'./spec/features/api-tokens_spec.rb[1:1:2:6]':
+  name: "API Tokens signed in as an admin an API-Token for the current user has been added 06"
+  environment_variables:
+    FEATURE_NAME: "API Tokens signed in as an admin an API-Token for the current user has been added 06"
+    FEATURE: './spec/features/api-tokens_spec.rb[1:1:2:6]'
+'./spec/features/api-tokens_spec.rb[1:1:2:7]':
+  name: "API Tokens signed in as an admin an API-Token for the current user has been added 07"
+  environment_variables:
+    FEATURE_NAME: "API Tokens signed in as an admin an API-Token for the current user has been added 07"
+    FEATURE: './spec/features/api-tokens_spec.rb[1:1:2:7]'
+'./spec/features/api-tokens_spec.rb[1:2:1]':
+  name: "API Tokens an admin, system-amdin and two users 01"
+  environment_variables:
+    FEATURE_NAME: "API Tokens an admin, system-amdin and two users 01"
+    FEATURE: './spec/features/api-tokens_spec.rb[1:2:1]'
+'./spec/features/api-tokens_spec.rb[1:2:2]':
+  name: "API Tokens an admin, system-amdin and two users 02"
+  environment_variables:
+    FEATURE_NAME: "API Tokens an admin, system-amdin and two users 02"
+    FEATURE: './spec/features/api-tokens_spec.rb[1:2:2]'
+'./spec/features/api-tokens_spec.rb[1:2:3]':
+  name: "API Tokens an admin, system-amdin and two users 03"
+  environment_variables:
+    FEATURE_NAME: "API Tokens an admin, system-amdin and two users 03"
+    FEATURE: './spec/features/api-tokens_spec.rb[1:2:3]'
+'./spec/features/external-authentication-system_sign-in_spec.rb[1:1]':
+  name: "Sign in via an external authentication system 01"
+  environment_variables:
+    FEATURE_NAME: "Sign in via an external authentication system 01"
+    FEATURE: './spec/features/external-authentication-system_sign-in_spec.rb[1:1]'
+'./spec/features/external-authentication-system_sign-in_spec.rb[1:2]':
+  name: "Sign in via an external authentication system 02"
+  environment_variables:
+    FEATURE_NAME: "Sign in via an external authentication system 02"
+    FEATURE: './spec/features/external-authentication-system_sign-in_spec.rb[1:2]'
+'./spec/features/external-authentication-system_sign-up_spec.rb[1:1]':
+  name: "Sign in via an external authentication system 03"
+  environment_variables:
+    FEATURE_NAME: "Sign in via an external authentication system 03"
+    FEATURE: './spec/features/external-authentication-system_sign-up_spec.rb[1:1]'
+'./spec/features/initial-admin_and_password-sign-in_spec.rb[1:1]':
+  name: "Initial admin and password sign-in 01"
+  environment_variables:
+    FEATURE_NAME: "Initial admin and password sign-in 01"
+    FEATURE: './spec/features/initial-admin_and_password-sign-in_spec.rb[1:1]'
+'./spec/features/password-reset_spec.rb[1:1:1]':
+  name: "Password-Reset an admin, system-amdin and two users 01"
+  environment_variables:
+    FEATURE_NAME: "Password-Reset an admin, system-amdin and two users 01"
+    FEATURE: './spec/features/password-reset_spec.rb[1:1:1]'
+'./spec/features/password-reset_spec.rb[1:1:2]':
+  name: "Password-Reset an admin, system-amdin and two users 02"
+  environment_variables:
+    FEATURE_NAME: "Password-Reset an admin, system-amdin and two users 02"
+    FEATURE: './spec/features/password-reset_spec.rb[1:1:2]'
+'./spec/features/password-reset_spec.rb[1:1:3]':
+  name: "Password-Reset an admin, system-amdin and two users 03"
+  environment_variables:
+    FEATURE_NAME: "Password-Reset an admin, system-amdin and two users 03"
+    FEATURE: './spec/features/password-reset_spec.rb[1:1:3]'
+'./spec/features/password-reset_spec.rb[1:1:4]':
+  name: "Password-Reset an admin, system-amdin and two users 04"
+  environment_variables:
+    FEATURE_NAME: "Password-Reset an admin, system-amdin and two users 04"
+    FEATURE: './spec/features/password-reset_spec.rb[1:1:4]'
+'./spec/features/password-reset_spec.rb[1:1:5]':
+  name: "Password-Reset an admin, system-amdin and two users 05"
+  environment_variables:
+    FEATURE_NAME: "Password-Reset an admin, system-amdin and two users 05"
+    FEATURE: './spec/features/password-reset_spec.rb[1:1:5]'
+'./spec/features/password_sign-in_sign-out_spec.rb[1:1:1]':
+  name: "Password, sign-in, sign-out and session  a user with password 01"
+  environment_variables:
+    FEATURE_NAME: "Password, sign-in, sign-out and session  a user with password 01"
+    FEATURE: './spec/features/password_sign-in_sign-out_spec.rb[1:1:1]'
+'./spec/features/password_sign-in_sign-out_spec.rb[1:1:2]':
+  name: "Password, sign-in, sign-out and session  a user with password 02"
+  environment_variables:
+    FEATURE_NAME: "Password, sign-in, sign-out and session  a user with password 02"
+    FEATURE: './spec/features/password_sign-in_sign-out_spec.rb[1:1:2]'
+'./spec/features/password_sign-in_sign-out_spec.rb[1:1:3]':
+  name: "Password, sign-in, sign-out and session  a user with password 03"
+  environment_variables:
+    FEATURE_NAME: "Password, sign-in, sign-out and session  a user with password 03"
+    FEATURE: './spec/features/password_sign-in_sign-out_spec.rb[1:1:3]'
+'./spec/features/password_sign-in_sign-out_spec.rb[1:1:4]':
+  name: "Password, sign-in, sign-out and session  a user with password 04"
+  environment_variables:
+    FEATURE_NAME: "Password, sign-in, sign-out and session  a user with password 04"
+    FEATURE: './spec/features/password_sign-in_sign-out_spec.rb[1:1:4]'
+'./spec/features/password_sign-in_sign-out_spec.rb[1:1:5]':
+  name: "Password, sign-in, sign-out and session  a user with password 05"
+  environment_variables:
+    FEATURE_NAME: "Password, sign-in, sign-out and session  a user with password 05"
+    FEATURE: './spec/features/password_sign-in_sign-out_spec.rb[1:1:5]'
+'./spec/features/password_sign-in_sign-out_spec.rb[1:2:1]':
+  name: "Password, sign-in, sign-out and session  a user with where password_sign_in_enabled is false 01"
+  environment_variables:
+    FEATURE_NAME: "Password, sign-in, sign-out and session  a user with where password_sign_in_enabled is false 01"
+    FEATURE: './spec/features/password_sign-in_sign-out_spec.rb[1:2:1]'
+'./spec/features/password_sign-in_sign-out_spec.rb[1:3:1]':
+  name: "Password, sign-in, sign-out and session  a user with where account_enabled is false 01"
+  environment_variables:
+    FEATURE_NAME: "Password, sign-in, sign-out and session  a user with where account_enabled is false 01"
+    FEATURE: './spec/features/password_sign-in_sign-out_spec.rb[1:3:1]'
+'./spec/features/super-admin-factory_spec.rb[1:1]':
+  name: "SuperAdmin 01"
+  environment_variables:
+    FEATURE_NAME: "SuperAdmin 01"
+    FEATURE: './spec/features/super-admin-factory_spec.rb[1:1]'
+'./spec/features/user-show_spec.rb[1:1]':
+  name: "User show 01"
+  environment_variables:
+    FEATURE_NAME: "User show 01"
+    FEATURE: './spec/features/user-show_spec.rb[1:1]'
+'./spec/features/user-show_spec.rb[1:2]':
+  name: "User show 02"
+  environment_variables:
+    FEATURE_NAME: "User show 02"
+    FEATURE: './spec/features/user-show_spec.rb[1:2]'
+'./spec/features/user-show_spec.rb[1:3]':
+  name: "User show 03"
+  environment_variables:
+    FEATURE_NAME: "User show 03"
+    FEATURE: './spec/features/user-show_spec.rb[1:3]'

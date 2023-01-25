@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-set -eux
+set -euo pipefail
+
 PROJECT_DIR="$(cd -- "$(dirname "${BASH_SOURCE}")" ; cd .. > /dev/null 2>&1 && pwd -P)"
-cd $PROJECT_DIR
-source $PROJECT_DIR/shared-clj/clojure/bin/activate
-clojure -T:build-leihs uber
+source ${PROJECT_DIR}/shared-clj/bin/helpers/clj.sh
+PROJECT_NAME=my clj_uberjar
+
+# vi: ft=sh

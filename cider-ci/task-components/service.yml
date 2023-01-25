@@ -1,32 +1,32 @@
-traits:
-  JDK: true
+include:
+  - cider-ci/task-components/asdf-nodejs.yml
 
 scripts:
-
-  my-install-nodejs:
-    exclusive_executor_resource: asdf-nodjes
-    body: |
-      set -eux
-      cd $LEIHS_MY_DIR
-      asdf install nodejs
 
   my-service-run:
     start_when:
       nodejs is installed:
-        script_key: my-install-nodejs
+        script_key: my-nodejs-asdf-install
       uberjar has been built:
         script_key: my-build-uberjar
       database has been created:
         script_key: create-database
     body: |
-      set -eux
+      #!/usr/bin/env bash
+      set -euo pipefail
       cd $LEIHS_MY_DIR
-      mkdir tmp
-      export HTTP_PORT=${LEIHS_MY_HTTP_PORT}
-      java -jar target/leihs-my.jar run --pid-file tmp/service.pid
+      mkdir -p $LEIHS_MY_DIR/tmp
+      unset PGPORT
+      unset PGUSER
+      PGPORT=${PG10PORT} PGUSER=${PG10USER} HTTP_PORT=${LEIHS_MY_HTTP_PORT} \
+        java \
+          -jar target/leihs-my.jar \
+          run --pid-file tmp/service.pid
 
   my-service-is-running:
     body: |
+      #!/usr/bin/env bash
+      set -euo pipefail
       until curl --fail -I \
         -H 'Accept: application/json' \
         "http://localhost:${LEIHS_MY_HTTP_PORT}/my/status";
@@ -44,7 +44,8 @@ scripts:
 
   my-service-shutdown:
     body: |
-      set -euxo
+      #!/usr/bin/env bash
+      set -euo pipefail
       cd $LEIHS_MY_DIR
       export PID=$(cat tmp/service.pid)
       kill $PID

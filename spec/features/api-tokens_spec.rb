@@ -144,7 +144,13 @@ feature 'API Tokens', type: :feature do
         expect(resp.status).to be== 200
         click_on_first 'Edit'
         wait_until { all('.modal-body').empty? }
-        fill_in 'Expires', with: (Time.now - 3.hours).iso8601
+        # capybara/webdriver sets Time values properly but events/notification seem not to work
+        # we trigger those via arrow_up and then arrow_down again
+        within(find("div.form-group", text: "Expires")) do
+          fill_in 'Expires', with: (Time.now - 3.hours)
+          find("input[type=datetime-local]").send_keys(:arrow_up)
+          find("input[type=datetime-local]").send_keys(:arrow_down)
+        end
         click_on 'Save'
         wait_until { page.has_field?('Expires', disabled: true) }
         resp2 = plain_faraday_client.get('/my/user/me/auth-info') do |req|

@@ -1,20 +1,24 @@
-generate_tasks:
-  include_match: spec/.*_spec.rb
+tasks:
+  include: cider-ci/generators/feature-tasks.yml
+
 task_defaults:
+  traits:
+    asdf: true
+    Firefox-ESR: true # ensures deps for asdf-firefox
   include:
     - path: cider-ci/task-components/database.yml
       submodule: [database]
-    - cider-ci/ruby-bundle_task-component.yml
-    - cider-ci/service_task-component.yml
-    - cider-ci/test-auth-system_task-component.yml
-    - cider-ci/uberjar_task-component.yml
+    - cider-ci/task-components/ruby-bundle.yml
+    - cider-ci/task-components/service.yml
+    - cider-ci/task-components/test-auth-system.yml
+    - cider-ci/task-components/uberjar.yml
   ports:
     LEIHS_MY_HTTP_PORT:
-      min: 3240
-      max: 3249
+      min: 3000
+      max: 3999
     TEST_AUTH_SYSTEM_PORT:
-      min: 3240
-      max: 3249
+      min: 3000
+      max: 3999
   environment_variables:
     LEIHS_DATABASE_NAME: leihs_{{CIDER_CI_TRIAL_ID}}
     DB_NAME: "{{LEIHS_DATABASE_NAME}}"
@@ -34,6 +38,12 @@ task_defaults:
     test:
       body: |
         #!/usr/bin/env bash
-        set -eux
+        set -euo pipefail
+        cd $LEIHS_MY_DIR
+        echo "# FEATURE_NAME: $FEATURE_NAME"
+        echo "# FEATURE: $FEATURE"
         mkdir -p log
-        xvfb-run -a -e log/xvfb.log bundle exec rspec $CIDER_CI_TASK_FILE
+        unset PGPORT; unset PGUSER
+        PGPORT=${PG10PORT} PGUSER=${PG10USER} \
+          xvfb-run -a -e log/xvfb.log  \
+          ./bin/rspec "${FEATURE}"

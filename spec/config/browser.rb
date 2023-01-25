@@ -22,18 +22,9 @@ def set_capybara_values
   Capybara.server_port = http_port
 end
 
-ACCEPTED_FIREFOX_ENV_PATHS = ['FIREFOX_ESR_78_PATH']
 
-def accepted_firefox_path
-  ENV[ ACCEPTED_FIREFOX_ENV_PATHS.detect do |env_path|
-    ENV[env_path].present?
-  end || ""].tap { |path|
-    path.presence or raise "no accepted FIREFOX found"
-  }
-end
-
-
-Selenium::WebDriver::Firefox.path = accepted_firefox_path
+firefox_bin_path = Pathname.new(`asdf where firefox`.strip).join('bin/firefox').expand_path.to_s
+Selenium::WebDriver::Firefox.path = firefox_bin_path
 
 Capybara.register_driver :firefox do |app|
   capabilities = Selenium::WebDriver::Remote::Capabilities.firefox(
@@ -53,7 +44,7 @@ Capybara.register_driver :firefox do |app|
   profile_config.each { |k, v| profile[k] = v }
 
   opts = Selenium::WebDriver::Firefox::Options.new(
-    binary: accepted_firefox_path,
+    binary: firefox_bin_path,
     profile: profile,
     log_level: :trace)
 
@@ -68,8 +59,7 @@ Capybara.register_driver :firefox do |app|
   Capybara::Selenium::Driver.new(
     app,
     browser: :firefox,
-    options: opts,
-    desired_capabilities: capabilities
+    options: opts
   )
 end
 
@@ -111,8 +101,6 @@ RSpec.configure do |config|
     case Capybara.current_driver
     when :firefox
       page.driver.browser.save_screenshot(path) rescue nil
-    when :poltergeist
-      page.driver.render(path, full: true) rescue nil
     else
       Logger.warn "Taking screenshots is not implemented for \
               #{Capybara.current_driver}."

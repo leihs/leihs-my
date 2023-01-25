@@ -2,7 +2,7 @@ jobs:
 
   my-build-uberjar:
     name: Build my uberjar
-    run_when:
+    run_when: &ON_BRANCH_UPDATE
       any branch has been updated:
         type: branch
         include_match: ^.*$
@@ -12,7 +12,13 @@ jobs:
           LEIHS_MY_DIR: '{{CIDER_CI_WORKING_DIR}}'
       tasks:
         my-build-uberjar:
-          { include: cider-ci/uberjar_task-component.yml }
+          include: cider-ci/task-components/uberjar.yml
+
+  check-feature-tasks:
+    name: Check if feature tasks are up to date
+    run_when: *ON_BRANCH_UPDATE
+    context:
+      include: cider-ci/jobs/feature_tasks_check.yml 
 
   specs:
     name: Run specs

@@ -1,8 +1,9 @@
-#!/bin/bash -eu
-ADMIN_DIR="$(dirname ${BASH_SOURCE})/.."
-cd "${ADMIN_DIR}"
-echo "PWD: $PWD"
+#!/usr/bin/env bash
+set -euo pipefail
+PROJECT_DIR="$(cd -- "$(dirname "${BASH_SOURCE}")" ; cd .. > /dev/null 2>&1 && pwd -P)"
+$PROJECT_DIR/bin/env/java-setup
+cd $PROJECT_DIR
 ./bin/build
-java -jar target/leihs-my.jar --dev-mode true -r true run "$@"
+java -jar target/leihs-my.jar --dev-mode true -r run "$@"
 
 # vi: ft=sh

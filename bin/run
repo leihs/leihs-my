@@ -1,13 +1,12 @@
-#!/bin/bash -eu
+#!/usr/bin/env bash
+set -euo pipefail
 
-MY_DIR="$(dirname ${BASH_SOURCE})/.."
-cd "${MY_DIR}"
-echo "PWD: $PWD"
+PROJECT_DIR="$(cd -- "$(dirname "${BASH_SOURCE}")" ; cd .. > /dev/null 2>&1 && pwd -P)"
+cd $PROJECT_DIR
 
 ./bin/build
 
 java -jar target/leihs-my.jar run "$@"
 
-cd -
-
 # vi: ft=sh
+

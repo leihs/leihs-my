@@ -1,15 +1,8 @@
-#!/bin/bash -eu
+#!/usr/bin/env bash
+set -euo pipefail
 
-MY_DIR="$(dirname ${BASH_SOURCE})/.."
-
-cd "${MY_DIR}"
-echo "PWD: $PWD"
-
-# add our clojure version to the path
-source $MY_DIR/shared-clj/clojure/bin/activate
-
-npx shadow-cljs compile leihs-my-js
-
-cd -
+PROJECT_DIR="$(cd -- "$(dirname "${BASH_SOURCE}")" ; cd .. > /dev/null 2>&1 && pwd -P)"
+source ${PROJECT_DIR}/shared-clj/bin/helpers/clj.sh
+PROJECT_NAME=my cljs-build
 
 # vi: ft=sh

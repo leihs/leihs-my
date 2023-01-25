@@ -3,7 +3,7 @@ scripts:
   run_test-auth-system:
     start_when:
       bundled:
-        script_key: my-bundle-rspec-ruby
+        script_key: my-ruby-bundle
       # the following is not a hard dependency, this ist just not fall
       # into a timeout when building the uberjar taks very long
       the uberjar is ready:
@@ -11,8 +11,9 @@ scripts:
     timeout: 5 Minutes
     body: |
       #!/usr/bin/env bash
-      set -eux
-      bundle exec ruby bin/test-auth-system.rb -p ${TEST_AUTH_SYSTEM_PORT}
+      set -euo pipefail
+      cd $LEIHS_MY_DIR
+      ./bin/test-auth-system -p ${TEST_AUTH_SYSTEM_PORT}
 
   test-auth-system_is-serving:
     timeout: 30 seconds
