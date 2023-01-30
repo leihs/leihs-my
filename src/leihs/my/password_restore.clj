@@ -41,6 +41,7 @@
 (defn insert-into-emails [token user {settings :settings tx :tx :as request}]
   (-> (sql/insert-into :emails)
       (sql/values [{:user_id (:id user),
+                    :to_address (:email user),
                     :subject "Password reset",
                     :body (email-content token request),
                     :from_address (->> settings

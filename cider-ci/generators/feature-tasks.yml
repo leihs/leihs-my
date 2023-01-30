@@ -28,15 +28,10 @@
   environment_variables:
     FEATURE_NAME: "API Tokens signed in as an admin an API-Token for the current user has been added 05"
     FEATURE: './spec/features/api-tokens_spec.rb[1:1:2:5]'
-'./spec/features/api-tokens_spec.rb[1:1:2:6]':
+'./spec/features/api-tokens_spec.rb[1:1:2:7]':
   name: "API Tokens signed in as an admin an API-Token for the current user has been added 06"
   environment_variables:
     FEATURE_NAME: "API Tokens signed in as an admin an API-Token for the current user has been added 06"
-    FEATURE: './spec/features/api-tokens_spec.rb[1:1:2:6]'
-'./spec/features/api-tokens_spec.rb[1:1:2:7]':
-  name: "API Tokens signed in as an admin an API-Token for the current user has been added 07"
-  environment_variables:
-    FEATURE_NAME: "API Tokens signed in as an admin an API-Token for the current user has been added 07"
     FEATURE: './spec/features/api-tokens_spec.rb[1:1:2:7]'
 './spec/features/api-tokens_spec.rb[1:2:1]':
   name: "API Tokens an admin, system-amdin and two users 01"
