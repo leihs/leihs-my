@@ -2,5 +2,5 @@ clojure 1.10.3.1093
 firefox 102.6.0esr
 geckodriver 0.32.0
 java zulu-11.60.19
-nodejs lts-gallium
+nodejs 16.20.0
 ruby 3.1.3
