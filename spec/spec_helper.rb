@@ -1,7 +1,7 @@
 require 'active_support/all'
 require 'pry'
 
-require 'config/database'
+require_relative '../database/spec/config/database'
 require 'config/factories'
 
 require 'config/browser'
@@ -17,6 +17,8 @@ RSpec.configure do |config|
 
   config.before :each do
     srand 1
+    db_clean
+    db_restore_data seeds_sql
   end
 
   config.after(:each) do |example|
