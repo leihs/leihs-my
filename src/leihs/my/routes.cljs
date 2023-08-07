@@ -4,7 +4,7 @@
     [reagent.ratom :as ratom :refer [reaction]]
     )
   (:require
-    ;[leihs.my.sign-in.front :as sign-in]
+    [leihs.my.sign-in.front :as sign-in]
     [clojure.pprint :refer [pprint]]
     [leihs.core.core :refer [keyword str presence]]
     [leihs.core.routing.front :as routing]
@@ -17,6 +17,7 @@
     [leihs.my.user.auth-info.front :as auth-info]
     [leihs.my.user.front :as user]
     [leihs.my.user.password.front :as password]
+    [leihs.my.password-restore.front :as password-restore]
     [reagent.core :as reagent]
     ))
 
@@ -31,7 +32,9 @@
    :initial-admin #'initial-admin/page
    :my-user #'user/page
    :password #'password/page
-   })
+   :sign-in #'sign-in/page
+   :forgot-password #'password-restore/forgot-password
+   :reset-password #'password-restore/reset-password})
 
 
 (defn init []

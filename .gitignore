@@ -24,3 +24,8 @@ leihs-ui-compiled
 profiles.clj
 resources/all/public/auth/build-timestamp.txt
 resources/built-info.yml
+
+# ui
+ui/storybook-static
+ui/node_modules
+ui/dist

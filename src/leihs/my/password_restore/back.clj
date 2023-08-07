@@ -1,20 +1,23 @@
-(ns leihs.my.password-restore
+(ns leihs.my.password-restore.back
   (:require
-    [clojure.java.jdbc :as jdbc]
-    [clojure.spec.alpha :as spec]
-    [compojure.core :as cpj]
-    [leihs.core.core :refer [presence]]
-    [leihs.core.db :as db]
-    [leihs.core.random :refer [base32-crockford-rand-str]]
-    [leihs.core.settings :as settings]
-    [leihs.core.sign-in.back :refer [user-with-unique-id]]
-    [leihs.core.sql :as sql]
-    [leihs.core.ssr :as ssr]
-    [leihs.my.paths :refer [path]]
-    [leihs.my.user.shared :refer [set-password]]
-    [taoensso.timbre :refer [debug info warn error spy]]
-    [tick.core :as tick]
-    ))
+   [clojure.java.jdbc :as jdbc]
+   [clojure.spec.alpha :as spec]
+   [compojure.core :as cpj]
+   [leihs.core.core :refer [presence]]
+   [leihs.core.db :as db]
+   [leihs.core.random :refer [base32-crockford-rand-str]]
+   [leihs.core.settings :as settings]
+   [leihs.core.sign-in.back :refer [user-with-unique-id]]
+   [leihs.core.sql :as sql]
+   [leihs.my.paths :refer [path]]
+   [leihs.my.user.shared :refer [set-password]]
+   [taoensso.timbre :refer [debug info warn error spy]]
+   [tick.core :as tick]
+   [leihs.my.back.html :refer [auth-page]]
+   [leihs.core.remote-navbar.shared :refer [navbar-props]]
+   [leihs.core.anti-csrf.back :refer [anti-csrf-props]]
+   [leihs.core.release :as release]
+   [ring.util.request :as request]))
 
 (spec/def ::external-base-url presence)
 (spec/def ::smtp_default_from_address presence)
@@ -72,13 +75,20 @@
 (def error-flash-user-has-no-email
   {:level "error",
    :message
-     (clojure.string/join
-       " \n"
-       ["Keine Email-Adresse vorhanden!"
-        "Das Passwort für dieses Benutzerkonto kann nicht zurückgesetzt werden,
+   (clojure.string/join
+    " \n"
+    ["Keine Email-Adresse vorhanden!"
+     "Das Passwort für dieses Benutzerkonto kann nicht zurückgesetzt werden,
          weil keine Email-Adresse im System vorhanden ist.
          Bitte prüfen Sie den angegebenen Benutzernamen.
          Kontaktieren Sie den leihs-Support, falls das Problem weiterhin besteht."])})
+
+(defn common-props [request]
+  (as-> request <>
+    (navbar-props <>)
+    (hash-map :navbar <>)
+    (merge (anti-csrf-props request) <>)
+    (merge {:footer {:appVersion release/version}} <>)))
 
 (defn forgot-get
   [request]
@@ -86,34 +96,34 @@
                        :params
                        :user)
         tx (:tx request)
-        user (user-with-unique-id tx user-param)
-        headers {:headers {"Content-Type" "text/html"}}]
+        user (user-with-unique-id tx user-param)]
     (cond
       (-> request :settings :email_sending_enabled not)
       {:status 422,
        :headers {"Content-Type" "text/html"},
-       :body (ssr/render-page-by-name
-               request
-               "PasswordForgotPage"
-               {:userParam user-param,
-                :flashMessages [{:messageID "password_forgot_email_sending_disabled_text"
-                                 :level "error"}]})}
+       :body (-> request
+                 common-props
+                 (merge {:userParam user-param,
+                         :flashMessages [{:messageID "password_forgot_email_sending_disabled_text"
+                                          :level "error"}]})
+                 auth-page)}
 
       (-> user :email presence not)
       {:status 422,
        :headers {"Content-Type" "text/html"},
-       :body (ssr/render-page-by-name
-               request
-               "PasswordForgotPage"
-               {:userParam user-param,
-                :flashMessages [{:messageID "password_forgot_user_has_no_email_flash_text"
-                                 :level "error"}]})}
+       :body (-> request
+                 common-props
+                 (merge {:userParam user-param,
+                         :flashMessages [{:messageID "password_forgot_user_has_no_email_flash_text"
+                                          :level "error"}]})
+                 auth-page)}
 
       :else
-      {:headers {"Content-Type" "text/html"},
-       :body (ssr/render-page-by-name request
-                                      "PasswordForgotPage"
-                                      {:userParam user-param})})))
+      {:headers {"Content-Type" "text/html"}
+       :body (-> request
+                 common-props
+                 (merge {:userParam user-param})
+                 auth-page)})))
 
 (defn forgot-post [{{user-param :user} :params tx :tx :as request}]
   (let [user (user-with-unique-id tx user-param)
@@ -122,21 +132,23 @@
       (do (insert-into-user-password-resets token user request)
           (insert-into-emails token user request)
           {:headers {"Content-Type" "text/html"},
-           :body (ssr/render-page-by-name
-                   request
-                   "PasswordForgotSuccessPage"
-                   {:userParam user-param,
-                    :messageID "password_forgot_check_email_message",
-                    :resetPwLink "/reset-password",
-                    :resetPwLinkTextID "password_reset_link_test"})})
+           :body (-> request
+                     common-props
+                     (merge {:status "success"
+                             :userParam user-param,
+                             :messageID "password_forgot_check_email_message",
+                             :resetPwLink "/reset-password",
+                             :resetPwLinkTextID "password_reset_link_test"})
+                     auth-page)})
+
       {:headers {"Content-Type" "text/html"},
        :status 404,
-       :body (ssr/render-page-by-name
-               request
-               "PasswordForgotPage"
-               {:userParam user-param,
-                :flashMessages [{:messageID "sign_in_invalid_user_flash_message"
-                                 :level "error"}]})})))
+       :body (-> request
+                 common-props
+                 (merge {:userParam user-param,
+                         :flashMessages [{:messageID "sign_in_invalid_user_flash_message"
+                                          :level "error"}]})
+                 auth-page)})))
 
 (defn reset-get
   [request]
@@ -151,11 +163,11 @@
        :status 422
        :body "the token is invalid"}
       {:headers {"Content-Type" "text/html"},
-       :body (ssr/render-page-by-name
-               request
-               "PasswordResetPage"
-               {:pwReset {:userParam (:used_user_param user-password-reset),
-                          :token token-param}})})))
+       :body (-> request
+                 common-props
+                 (merge {:pwReset {:userParam (:used_user_param user-password-reset),
+                                   :token token-param}})
+                 auth-page)})))
 
 (defn get-user-with-token
   [tx token]
@@ -186,15 +198,15 @@
           (not password-reset) {:status 404,
                                 :body "password reset for the token not found"}
           (tick/> (tick/now) (:valid_until password-reset))
-            {:status 403, :body "the token has expired"}
+          {:status 403, :body "the token has expired"}
           (not user) {:status 404,
                       :body "user enabled for password auth not found"}
           :else (do (set-password (:id user) password tx)
                     ; NOTE: row from user_password_resets deleted by trigger
-                    {:body (ssr/render-page-by-name
-                             request
-                             "PasswordResetSuccessPage"
-                             {})}))
+                    {:body (-> request
+                               common-props
+                               (merge {:status "success"})
+                               auth-page)}))
         (assoc :headers {"Content-Type" "text/html"}))))
 
 (def forgot-routes

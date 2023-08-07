@@ -38,7 +38,7 @@
    [:input#toggle-debug
     {:type :checkbox
      :checked (-> @global-state* :debug boolean)
-     :on-click #(update-state global-state*
+     :on-change #(update-state global-state*
                                [:debug]
                                (fn [v] (not v)))}]
    [:label.navbar-text {:for "toggle-debug"

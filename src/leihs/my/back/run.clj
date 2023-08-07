@@ -9,8 +9,6 @@
     [leihs.core.db :as db]
     [leihs.core.http-server :as http-server]
     [leihs.core.shutdown :as shutdown]
-    [leihs.core.ssr-engine :as ssr-engine]
-    [leihs.my.back.ssr]
     [leihs.core.status :as status]
     [leihs.core.url.jdbc :as jdbc-url]
     [leihs.core.url.jdbc]
@@ -19,6 +17,8 @@
     [logbug.catcher :as catcher]
     [logbug.debug :as debug]
     [logbug.thrown :as thrown]
+    [leihs.core.sign-in.back :refer [use-sign-in-page-renderer]]
+    [leihs.my.back.html :refer [auth-page]]
     [taoensso.timbre :refer [debug info warn error]]
     ))
 
@@ -27,8 +27,7 @@
     {:return-fn (fn [e] (System/exit -1))}
     (info "Invoking run with options: " options)
     (shutdown/init options)
-    (ssr-engine/init options)
-    (leihs.core.ssr/init leihs.my.back.ssr/render-page-base)
+    (use-sign-in-page-renderer auth-page)
     (let [status (status/init)]
       (db/init options (:health-check-registry status)))
     (let [http-handler (routes/init)]

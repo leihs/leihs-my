@@ -1,15 +1,15 @@
 (ns leihs.my.back.html
   (:refer-clojure :exclude [str keyword])
   (:require
-    [clojure.java.jdbc :as jdbc]
-    [hiccup.page :refer [html5 include-js]]
-    [leihs.core.json :refer [to-json]]
-    [leihs.core.shared :refer [head]]
-    [leihs.core.sql :as sql]
-    [leihs.core.ssr :as ssr]
-    [leihs.core.http-cache-buster2 :as cache-buster]
-    [leihs.core.url.core :as url]
-    [leihs.my.authorization :as auth]))
+   [clojure.java.jdbc :as jdbc]
+   [hiccup.page :refer [html5 include-js]]
+   [leihs.core.json :refer [to-json]]
+   [leihs.core.shared :refer [head]]
+   [leihs.core.sql :as sql]
+   [leihs.core.http-cache-buster2 :as cache-buster]
+   [leihs.core.url.core :as url]
+   [leihs.my.authorization :as auth]
+   [leihs.core.remote-navbar.shared :refer [navbar-props]]))
 
 (defn route-user [request]
   (let [user-id (-> request :route-params :user-id)
@@ -27,9 +27,14 @@
                (route-user request))]
     (-> user to-json url/encode)))
 
+(defn navbar-attribute [request]
+  (let [navbar (navbar-props request {})]
+    (-> navbar to-json url/encode)))
+
 (defn body-attributes
   [request]
-  {:data-user (user-attribute request)})
+  {:data-user (user-attribute request)
+   :data-navbar (navbar-attribute request)})
 
 (defn not-found-handler
   [request]
@@ -40,23 +45,36 @@
                  [:div.container-fluid
                   [:h1.text-danger "Error 404 - Not Found"]]])})
 
+; renders layout for auth pages (sign-in, password-restore) and home
+(defn auth-page [props]
+  (html5 (head
+          (hiccup.page/include-css (cache-buster/cache-busted-path "/my/ui/my-ui.css")))
 
+         [:body {:class "bg-paper"
+                 :data-page-props (-> props to-json url/encode)}
 
+          [:noscript "This application requires Javascript."]
+
+          [:div#app]
+
+          (hiccup.page/include-js (cache-buster/cache-busted-path "/my/js/main.js"))]))
+
+; renders admin layout for pages like /my/user/me
 (defn spa-handler
   [request]
   {:headers {"Content-Type" "text/html"},
    :body (html5 (head
-                  (hiccup.page/include-css
-                    (cache-buster/cache-busted-path "/my/css/site.css")))
+                 (hiccup.page/include-css
+                  (cache-buster/cache-busted-path "/my/ui/my-ui.css")))
                 [:body (body-attributes request)
-                 [:div (ssr/render-navbar request)
+
+                 [:div
                   [:div#app.container-fluid
                    [:div.alert.alert-warning [:h1 "Leihs My"]
                     [:p "This application requires Javascript."]]]]
+
                  (hiccup.page/include-js (cache-buster/cache-busted-path
-                                           "/my/leihs-shared-bundle.js"))
-                 (hiccup.page/include-js (cache-buster/cache-busted-path
-                                           "/my/js/main.js"))])})
+                                          "/my/js/main.js"))])})
 
 
 ;#### debug ###################################################################

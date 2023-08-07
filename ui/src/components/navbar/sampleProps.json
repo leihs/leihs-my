@@ -1,0 +1,35 @@
+{
+  "csrfToken": { "value": "7d4eeec4-070c-4ea5-a778-85f29d9177e2" },
+  "config": {
+    "appTitle": "Leihs",
+    "me": null,
+    "subApps": null,
+    "locales": [
+      {
+        "name": "Deutsch",
+        "locale": "de-CH",
+        "isDefault": true
+      },
+      {
+        "name": "English",
+        "locale": "en-GB",
+        "isDefault": false
+      },
+      {
+        "name": "Castellano",
+        "locale": "es",
+        "isDefault": false
+      },
+      {
+        "name": "עברית‬",
+        "locale": "he",
+        "isDefault": false
+      },
+      {
+        "name": "Züritüütsch",
+        "locale": "gsw-CH",
+        "isDefault": false
+      }
+    ]
+  }
+}

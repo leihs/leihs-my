@@ -1,0 +1,9 @@
+%render-container {
+  height: 100%; // "pass through" full parent height
+  display: contents; // dont interfere with flexbox layout
+}
+
+// fix: wrapper inserted by storybook -> full height:
+#storybook-root {
+  @extend %render-container;
+}

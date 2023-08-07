@@ -21,7 +21,7 @@
     [leihs.my.constants :as constants]
     [leihs.my.initial-admin.back :as initial-admin]
     [leihs.my.language :as language]
-    [leihs.my.password-restore :as password-restore]
+    [leihs.my.password-restore.back :as password-restore]
     [leihs.my.paths :refer [path paths]]
     [leihs.my.resources.home.back :as home]
     [leihs.core.status :as status]
@@ -52,6 +52,8 @@
       :password-authentication
       :reset-password}))
 
+; Handler keys not to be responded with "admin-style" SPA layout per ring middleware.
+; Note that their route handlers still can respond with an SPA layout (see e.g. `leihs.my.resources.home.back`).
 (def no-spa-handler-keys
   (clojure.set/union
     core-routes/no-spa-handler-keys
@@ -116,9 +118,8 @@
       wrap-content-type
       (wrap-resource
         "public" {:allow-symlinks? true
-                  :cache-bust-paths ["/my/css/site.css"
-                                     "/my/leihs-shared-bundle.js"
-                                     "/my/js/app.js"]
+                  :cache-bust-paths ["/my/ui/my-ui.css"
+                                     "/my/js/main.js"]
                   :never-expire-paths [#".*fontawesome-[^\/]*\d+\.\d+\.\d+\/.*"
                                        #".+_[0-9a-f]{40}\..+"]
                   :cache-enabled? true})

@@ -4,6 +4,3 @@
 [submodule "leihs-clj-shared"]
 	path = shared-clj
 	url = https://github.com/leihs/leihs-clj-shared.git
-[submodule "leihs-ui"]
-	path = leihs-ui
-	url = https://github.com/leihs/leihs-ui

@@ -1,4 +1,4 @@
-{:paths [:cljc-paths :resource-paths]
+{:paths [:cljc-paths :resource-paths "ui/dist"]
  :deps {
         clj-http/clj-http {:mvn/version "3.12.3"}
         cljs-http/cljs-http {:mvn/version "0.1.46"}

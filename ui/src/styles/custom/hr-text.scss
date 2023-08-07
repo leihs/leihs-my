@@ -1,0 +1,26 @@
+.hr-text {
+  // line with text, looks like this:
+  // ------------- some text ------------------
+
+  display: flex;
+  flex-basis: 100%;
+  align-items: center;
+  &::before,
+  &::after {
+    content: '';
+    flex-grow: 1;
+    margin: 0;
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1); // like <hr/>
+  }
+  &::before {
+    margin-right: 1em;
+  }
+  &::after {
+    margin-left: 1em;
+  }
+  // hide any real hrs
+  hr {
+    display: none;
+  }
+}

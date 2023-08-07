@@ -1,23 +1,17 @@
 (ns leihs.my.front.html
   (:refer-clojure :exclude [str keyword])
   (:require-macros
-    [reagent.ratom :as ratom :refer [reaction]]
-    )
+   [reagent.ratom :as ratom :refer [reaction]])
   (:require
-    [accountant.core :as accountant]
-    [clojure.pprint :refer [pprint]]
-    [leihs.core.anti-csrf.front :as anti-csrf]
-    [leihs.core.core :refer [keyword str presence]]
-    [leihs.core.requests.core :as requests]
-    [leihs.core.requests.modal]
-    [leihs.core.routing.front :as routing]
-    [leihs.core.sign-in.front :as sign-in]
-    [leihs.core.user.front :as user]
-    [leihs.my.front.shared :refer [humanize-datetime-component short-id gravatar-url]]
-    [leihs.my.front.state :as state]
-    [leihs.my.paths :refer [path]]
-    [reagent.dom :as rdom]
-    ))
+   [accountant.core :as accountant]
+   [leihs.core.requests.core :as requests]
+   [leihs.core.requests.modal]
+   [leihs.core.routing.front :as routing]
+   [leihs.my.front.state :as state]
+   [leihs.my.paths :refer [path]]
+   [reagent.dom :as rdom]
+   [leihs.core.dom :as dom]
+   ["/my-ui" :as UI]))
 
 (defn version-component []
   [:span.navbar-text "Version "
@@ -56,16 +50,38 @@
       [requests/icon-component]
       " Requests "]]]])
 
+(def auth-page-handler-keys
+  #{:home
+    :sign-in
+    :forgot-password
+    :reset-password})
+
+(defn admin-page []
+  (let [navbar-data (dom/data-attribute "body" "navbar")]
+    [:div
+     [leihs.core.requests.modal/modal-component]
+     [:> UI/Components.Navbar navbar-data]
+     [:div
+      (if-let [page (:page @routing/state*)]
+        [page]
+        [:div.page
+         [:h1.text-danger "Application error: the current path can not be resolved!"]])]
+     [:<>
+      [state/debug-component]
+      [footer-nav-component]]]))
+
+(defn auth-page []
+  (if-let [page (:page @routing/state*)]
+    [page]
+    [:div.page
+     [:h1.text-danger "Application error: the current path can not be resolved!"]]))
+
 (defn current-page []
-  [:div
-   [leihs.core.requests.modal/modal-component]
-   [:div
-    (if-let [page (:page @routing/state*)]
-      [page]
-      [:div.page
-       [:h1.text-danger "Application error: the current path can not be resolved!"]])]
-   [state/debug-component]
-   [footer-nav-component]])
+  (let [handler-key (or (:handler-key @routing/state*) :not-found)
+        auth-page? (handler-key auth-page-handler-keys)]
+    (if auth-page?
+      (auth-page)
+      (admin-page))))
 
 (defn mount []
   (when-let [app (.getElementById js/document "app")]
