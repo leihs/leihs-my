@@ -30,6 +30,16 @@ jobs:
     run_when: *SPEC_DEPENDENTS
     context: { include: cider-ci/specs_job-context.yml }
 
+  ui-checks:
+    name: Check UI package
+    run_when: *ON_BRANCH_UPDATE
+    tasks:
+      ui-lint:
+        scripts:
+          test:
+            body: |
+              ./bin/ui-lint
+              
   good-to-merge:
     name: ⚑ Good To Merge
     description: |
