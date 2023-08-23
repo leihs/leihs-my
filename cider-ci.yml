@@ -39,6 +39,9 @@ jobs:
           test:
             body: |
               ./bin/ui-lint
+      ui-test:
+        include: 
+          - cider-ci/task-components/storybook-test.yml
               
   good-to-merge:
     name: ⚑ Good To Merge
@@ -47,4 +50,3 @@ jobs:
       and it will pass if and only if all dependencies have passed.
       Status of this job is **used by github's "branch protection"**!
     include: cider-ci/good-to-merge_job-context.yml
-
