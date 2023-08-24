@@ -11,7 +11,8 @@ const exampleNavbarParams = {
   subApps: false
 }
 
-const defaultSplashImage = require('../images/splash.jpg')
+// NOTE: this lives in "legacy manage app" and will not exist when running `my` or `my/ui` standalone.
+const splashImageDefault = '/assets/leihs-62b57b03ec5abd5e5fa3e6c35fde8a782419982d2cdd771fa8fba6cd0ab63d41.png'
 
 const defaultProps = {
   navbar: {
@@ -20,7 +21,7 @@ const defaultProps = {
   splash: {
     title: 'Title',
     text: 'Subtitle',
-    image: defaultSplashImage
+    image: splashImageDefault
   },
   footer: {
     appName: 'leihs',
