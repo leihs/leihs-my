@@ -6,36 +6,31 @@
         com.github.mfornos/humanize-slim {:mvn/version "1.2.2"}
         com.lucasbradstreet/cljs-uuid-utils {:mvn/version "1.0.2"}
         environ/environ {:mvn/version "1.2.0"}
-        inflections/inflections {:mvn/version "0.13.2"}
+        inflections/inflections {:mvn/version "0.14.1"}
         leihs-core/leihs-core {:local/root "./shared-clj"}
-        reagent/reagent {:mvn/version "1.1.0"}
-        tick/tick {:mvn/version "0.5.0-RC5"}
+        reagent/reagent {:mvn/version "1.2.0"}
+        tick/tick {:mvn/version "0.7.2"}
         timothypratley/patchin {:mvn/version "0.3.5"}
         venantius/accountant {:git/url "https://github.com/DrTom/accountant.git" :sha "db3d57ce78d3ec5ee17a9bee047ac43ac0e52b2b"}
 
-        org.clojure/clojure {:mvn/version "1.10.3"}
-        org.clojure/clojurescript {:mvn/version "1.11.4"}
-        com.google.javascript/closure-compiler-unshaded {:mvn/version "v20220104"}
+        org.clojure/clojure {:mvn/version "1.11.1"}
+        org.clojure/clojurescript {:mvn/version "1.11.60"}
+        com.google.javascript/closure-compiler-unshaded {:mvn/version "v20230802"}
         }
  :aliases {
 
-           ; we do not use this for now; issue: files behind linked
-           ; directories in resource/public are missing!
-           :build-orig {:deps
-                        {io.github.clojure/tools.build {:git/tag "v0.7.5" :git/sha "34727f7"}}
-                        :ns-default scripts.build}
-
-           :build-leihs {:deps
-                         {io.github.leihs/tools.build {:git/sha "700af097d4a7d2bf4739d0d4b1d1ac2c11019ff7"}}
-                         :ns-default scripts.build}
+           :build {:deps
+                   {io.github.leihs/tools.build 
+                    {:git/tag "v0.9.5-leihs"
+                     :git/sha "94a26a9"}}
+                   :ns-default scripts.build}
 
 
            :cljc-paths ["src" "shared-clj/src"]
 
-           :cljs {:extra-deps {thheller/shadow-cljs {:mvn/version "2.16.12"}}}
+           :cljs {:extra-deps {thheller/shadow-cljs {:mvn/version "2.25.3"}}}
 
-
-           :outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "1.4.0"} }
+           :outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "2.5.1109"} }
                       :main-opts ["-m" "antq.core"]}
 
            :resource-paths ["resources"]
