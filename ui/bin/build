@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PROJECT_DIR="$(cd -- "$(dirname "${BASH_SOURCE}")" ; cd ../.. > /dev/null 2>&1 && pwd -P)"
+cd $PROJECT_DIR
+
+source shared-clj/bin/helpers/clj.sh
+PROJECT_NAME=my
+
+debug_setup
+set_common_vars
+cljs_setup_env
+
+echo "building ui lib..."
+echo "hint: run bin/cljs-watch directly to skip this step"
+cd ui
+npm i
+npm run build
+cd -
+echo "OK, ui lib built"
+echo ""
+
+# vi: ft=sh
