@@ -50,7 +50,10 @@
       :home
       :initial-admin
       :language
+
       :manuel
+      :next
+
       :password-authentication
       :reset-password}))
 
@@ -62,7 +65,10 @@
     #{:forgot-password
       :home
       :language
+
       :manuel
+      :next
+
       :not-found
       :redirect-to-root
       :reset-password
@@ -77,7 +83,10 @@
           :home home/routes
           :initial-admin initial-admin/routes
           :language language/routes
+
           :manuel manuel/routes
+          :next manuel/routes
+
           :my-user user/routes
           :not-found html/not-found-handler
           :password password/routes
