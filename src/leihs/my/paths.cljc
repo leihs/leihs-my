@@ -30,6 +30,7 @@
 
 (def my-service-paths
   (branch ""
+          (leaf "/manuel" :manuel)
           (leaf "/status" :status)
           (leaf "/initial-admin" :initial-admin)
           (branch "/debug"

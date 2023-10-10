@@ -20,6 +20,7 @@
     [leihs.my.back.html :as html]
     [leihs.my.constants :as constants]
     [leihs.my.initial-admin.back :as initial-admin]
+    [leihs.my.manuel.back :as manuel]
     [leihs.my.language :as language]
     [leihs.my.password-restore.back :as password-restore]
     [leihs.my.paths :refer [path paths]]
@@ -49,6 +50,7 @@
       :home
       :initial-admin
       :language
+      :manuel
       :password-authentication
       :reset-password}))
 
@@ -60,6 +62,7 @@
     #{:forgot-password
       :home
       :language
+      :manuel
       :not-found
       :redirect-to-root
       :reset-password
@@ -74,6 +77,7 @@
           :home home/routes
           :initial-admin initial-admin/routes
           :language language/routes
+          :manuel manuel/routes
           :my-user user/routes
           :not-found html/not-found-handler
           :password password/routes
