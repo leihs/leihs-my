@@ -33,6 +33,13 @@
     result))
 
 
+(defn test-logging "Provided logging-types by taoensso.timbre" []
+  (debug "test-debug")
+  (error "test-error")
+  (info "test-info")
+  (spy "test-spy")
+  (warn "test-warn")
+  )
 
 (defn fetch-first-user-by-mode "extract first user-entry"
 
@@ -92,3 +99,4 @@
     (cpj/GET (path :manuel) [] manuel-get)
     (cpj/GET (path :next) [] next-get)
     ))
+

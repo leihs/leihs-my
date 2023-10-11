@@ -13,6 +13,7 @@
 /leihs-ui.tgz
 /log
 /nashorn_code_cache
+.idea
 /node_modules
 /resources/all/public/my/build-timestamp.txt
 /resources/public/my/js/

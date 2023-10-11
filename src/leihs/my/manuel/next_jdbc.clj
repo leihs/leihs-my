@@ -51,5 +51,9 @@
 
     filtered-result))
 
-(defn -main [& _]
-  (fetch-one-row-from-pool))
+;REPL-COMMAND
+;(ns leihs.my.manuel.next_jdbc)
+;(-main)
+
+;(defn -main [& _]
+;  (fetch-one-row-from-pool))
