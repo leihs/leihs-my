@@ -1,28 +1,20 @@
 (ns leihs.my.user.password.back
-  (:refer-clojure :exclude [str keyword])
+  (:refer-clojure :exclude [keyword str])
   (:require
-    [clojure.java.jdbc :as jdbc]
-    [clojure.set :refer [rename-keys]]
-    [clojure.tools.logging :as logging]
     [compojure.core :as cpj]
     [crypto.random]
-    [leihs.core.core :refer [keyword str presence]]
-    [leihs.core.sql :as sql]
     [leihs.my.paths :refer [path]]
-    [leihs.my.user.shared :refer [wrap-me-id set-password]]
+    [leihs.my.user.shared :refer [set-password wrap-me-id]]
     [logbug.catcher :as catcher]
-    [logbug.debug :as debug]
-    ))
-
+    [logbug.debug :as debug]))
 
 
 (defn reset-password-ring-handler
-  [{tx :tx
+  [{tx :tx-next
     {user-id :user-id} :route-params
-    {password :password} :body }]
+    {password :password} :body}]
   (assert (set-password user-id password tx))
   {:status 204})
-
 
 (def password-path
   (path :password {:user-id ":user-id"}))

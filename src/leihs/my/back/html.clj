@@ -1,25 +1,25 @@
 (ns leihs.my.back.html
-  (:refer-clojure :exclude [str keyword])
+  (:refer-clojure :exclude [keyword str])
   (:require
-   [clojure.java.jdbc :as jdbc]
-   [hiccup.page :refer [html5 include-js]]
-   [leihs.core.json :refer [to-json]]
-   [leihs.core.shared :refer [head]]
-   [leihs.core.sql :as sql]
-   [leihs.core.http-cache-buster2 :as cache-buster]
-   [leihs.core.url.core :as url]
-   [leihs.my.authorization :as auth]
-   [leihs.core.remote-navbar.shared :refer [navbar-props]]))
+    [hiccup.page :refer [html5]]
+    [honey.sql :refer [format] :rename {format sql-format}]
+    [honey.sql.helpers :as sql]
+    [leihs.core.http-cache-buster2 :as cache-buster]
+    [leihs.core.json :refer [to-json]]
+    [leihs.core.remote-navbar.shared :refer [navbar-props]]
+    [leihs.core.shared :refer [head]]
+    [leihs.core.url.core :as url]
+    [leihs.my.authorization :as auth]
+    [next.jdbc :as jdbc]))
 
 (defn route-user [request]
   (let [user-id (-> request :route-params :user-id)
-        tx (:tx request)]
+        tx (:tx-next request)]
     (-> (sql/select :*)
         (sql/from :users)
-        (sql/where [:= :id user-id])
-        sql/format
-        (->> (jdbc/query tx))
-        first)))
+        (sql/where [:= :id [:cast user-id :uuid]])
+        sql-format
+        (->> (jdbc/execute-one! tx)))))
 
 (defn user-attribute [request]
   (let [user (if (auth/me? request)
@@ -48,7 +48,7 @@
 ; renders layout for auth pages (sign-in, password-restore) and home
 (defn auth-page [props]
   (html5 (head
-          (hiccup.page/include-css (cache-buster/cache-busted-path "/my/ui/my-ui.css")))
+           (hiccup.page/include-css (cache-buster/cache-busted-path "/my/ui/my-ui.css")))
 
          [:body {:class "bg-paper"
                  :data-page-props (-> props to-json url/encode)}
@@ -64,8 +64,8 @@
   [request]
   {:headers {"Content-Type" "text/html"},
    :body (html5 (head
-                 (hiccup.page/include-css
-                  (cache-buster/cache-busted-path "/my/ui/my-ui.css")))
+                  (hiccup.page/include-css
+                    (cache-buster/cache-busted-path "/my/ui/my-ui.css")))
                 [:body (body-attributes request)
 
                  [:div
@@ -74,7 +74,7 @@
                     [:p "This application requires Javascript."]]]]
 
                  (hiccup.page/include-js (cache-buster/cache-busted-path
-                                          "/my/js/main.js"))])})
+                                           "/my/js/main.js"))])})
 
 
 ;#### debug ###################################################################

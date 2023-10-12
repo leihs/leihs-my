@@ -1,23 +1,19 @@
 (ns leihs.my.user.api-token.back
-  (:refer-clojure :exclude [str keyword])
+  (:refer-clojure :exclude [keyword str])
   (:require
-    [clojure.java.jdbc :as jdbc]
-    [clojure.set :refer [rename-keys]]
-    [clojure.tools.logging :as logging]
     [compojure.core :as cpj]
     [crypto.random]
-    [leihs.core.core :refer [keyword str presence]]
-    [leihs.core.sql :as sql]
+    [honey.sql :refer [format] :rename {format sql-format}]
+    [honey.sql.helpers :as sql]
+    [leihs.core.core :refer [str]]
     [leihs.my.paths :refer [path]]
     [leihs.my.user.shared :refer [wrap-me-id]]
-    [logbug.catcher :as catcher]
-    [logbug.debug :as debug]
-    )
+    [next.jdbc :as jdbc]
+    [taoensso.timbre :refer [error]])
   (:import
-    [com.google.common.io BaseEncoding]
-    [org.joda.time DateTime]
-    [java.time OffsetDateTime]
-    ))
+    (com.google.common.io BaseEncoding)
+    (java.time OffsetDateTime)
+    (org.joda.time DateTime)))
 
 
 (def api-token-selects
@@ -58,26 +54,40 @@
 
 (defn token-hash
   ([password tx]
-   (->> ["SELECT crypt(?,gen_salt('bf')) AS pw_hash" password]
-        (jdbc/query tx)
-        first :pw_hash)))
+   (-> (sql/select [[:crypt password [:gen_salt "bf"]] :token_hash])
+       sql-format
+       (->> (jdbc/execute-one! tx))
+       :token_hash)))
 
 (defn insert-token [params tx]
-  (first (jdbc/insert! tx :api_tokens params)))
+  (let [insert-sql (-> (sql/insert-into :api_tokens)
+                       (sql/values [params])
+                       (sql/returning :*))]
+    (jdbc/execute-one! tx (sql-format insert-sql))))
+
+(defn parse-and-cast-uuid [s]
+  (if (= (type s) java.util.UUID)
+    s
+    (java.util.UUID/fromString s)))
 
 (defn parse-iso8601 [s]
-  (DateTime. (* 1000 (.toEpochSecond (OffsetDateTime/parse s)))))
+  (let [joda_datetime (DateTime. (* 1000 (.toEpochSecond (OffsetDateTime/parse s))))
+        millis (.getMillis joda_datetime)
+        sql-timestamp (java.sql.Timestamp. millis)]
+    sql-timestamp))
 
 (defn normalize-create-or-update-params [params]
   (->> params
        (map (fn [[k v]]
               (case k
                 :expires_at [k (parse-iso8601 v)]
+                :updated_at [k (parse-iso8601 v)]
+                :user_id [k (parse-and-cast-uuid v)]
                 [k v])))
        (into {})))
 
 (defn create-api-token
-  ([{body :body tx :tx {user-id :user-id} :route-params :as request}]
+  ([{body :body tx :tx-next {user-id :user-id} :route-params}]
    (create-api-token user-id body tx))
   ([user-id body tx]
    (let [token-secret (secret 20)
@@ -96,21 +106,26 @@
 ;;; patch ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn patch
-  ([{tx :tx data :body {user-id :user-id
-                        api-token-id :api-token-id} :route-params}]
+  ([{tx :tx-next data :body {user-id :user-id
+                             api-token-id :api-token-id} :route-params}]
    (patch api-token-id user-id data tx))
   ([api-token-id user-id data tx]
-   (when (->> [(str "SELECT true AS exists FROM api_tokens "
-                    "WHERE id = ? AND user_id = ?") api-token-id user-id]
-              (jdbc/query tx )
-              first :exists)
-     (jdbc/update! tx :api_tokens
-                   (-> data
-                       (select-keys allowed-insert-and-patch-keys)
-                       normalize-create-or-update-params)
-                   ["id = ? AND user_id = ? "  api-token-id user-id])
-     {:status 204})))
-
+   (let [user-token-condition [:and [:= :user_id [:cast user-id :uuid]]
+                               [:= :id [:cast api-token-id :uuid]]]]
+     (when (-> (sql/select :*)
+               (sql/from :api_tokens)
+               (sql/where user-token-condition)
+               sql-format
+               (->> (jdbc/execute-one! tx)))
+       (let [revised-data (-> data
+                              (normalize-create-or-update-params)
+                              (dissoc :id :created_at))]
+         (-> (sql/update :api_tokens)
+             (sql/set revised-data)
+             (sql/where user-token-condition)
+             sql-format
+             (->> (jdbc/execute-one! tx))))
+       {:status 204}))))
 
 
 ;;; get ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -118,27 +133,30 @@
 (defn api-token-query [api-token-id user-id]
   (-> (apply sql/select api-token-selects)
       (sql/from :api_tokens)
-      (sql/merge-where [:= :user_id user-id])
-      (sql/merge-where [:= :id api-token-id])
-      sql/format))
+      (sql/where [:and [:= :user_id [:cast user-id :uuid]]] [:= :id [:cast api-token-id :uuid]])
+      sql-format))
 
 (defn get-api-token
-  ([{tx :tx {user-id :user-id api-token-id :api-token-id} :route-params}]
+  ([{tx :tx-next {user-id :user-id api-token-id :api-token-id} :route-params}]
    (get-api-token api-token-id user-id tx))
   ([api-token-id user-id tx]
    (when-let [api-token (->> (api-token-query api-token-id user-id)
-                             (jdbc/query tx) first)]
+                             (jdbc/execute-one! tx))]
      {:body api-token})))
 
 
 ;;; delete ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn delete[{tx :tx {user-id :user-id
-                      api-token-id :api-token-id} :route-params}]
-  (if (= [1] (jdbc/delete! tx :api_tokens ["user_id = ? AND id = ?"
-                                           user-id api-token-id]))
-    {:status 204}
-    {:status 404 :body "Delete api-token-id failed without error."}))
+(defn delete [{tx :tx-next {user-id :user-id
+                            api-token-id :api-token-id} :route-params}]
+  (let [result (-> (sql/delete-from :api-tokens)
+                   (sql/where [:and [:= :user_id [:cast user-id :uuid]] [:= :id [:cast api-token-id :uuid]]])
+                   sql-format
+                   (->> (jdbc/execute-one! tx)))
+        delete-result-count (->> result :next.jdbc/update-count)]
+    (if (= 1 delete-result-count)
+      {:status 204}
+      {:status 404 :body "Delete api-token-id failed without error."})))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

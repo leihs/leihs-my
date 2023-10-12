@@ -1,16 +1,10 @@
 (ns leihs.my.user.shared
-  (:refer-clojure :exclude [str keyword])
+  (:refer-clojure :exclude [keyword str])
   (:require
-    [clojure.java.jdbc :as jdbc]
-    [clojure.tools.logging :as logging]
-    [leihs.core.auth.shared :refer [password-hash]]
+    [honey.sql :refer [format] :rename {format sql-format}]
+    [honey.sql.helpers :as sql]
     [leihs.core.constants :refer [PASSWORD_AUTHENTICATION_SYSTEM_ID]]
-    [leihs.core.core :refer [keyword str presence]]
-    [leihs.core.sql :as sql]
-    [logbug.catcher :as catcher]
-    [logbug.debug :as debug]
-    ))
-
+    [next.jdbc :as jdbc]))
 
 (defn wrap-me-id
   ([handler]
@@ -23,18 +17,22 @@
                  (-> request :authenticated-entity :user_id))
        request))))
 
+(defn password-hash
+  ([password tx]
+   (-> (sql/select [[:crypt password [:gen_salt "bf"]] :pw_hash])
+       sql-format
+       (->> (jdbc/execute-one! tx))
+       :pw_hash)))
+
 (defn sql-command [user-id pw-hash]
   (-> (sql/insert-into :authentication_systems_users)
-      (sql/values [{:user_id user-id
+      (sql/values [{:user_id [:cast user-id :uuid]
                     :authentication_system_id PASSWORD_AUTHENTICATION_SYSTEM_ID
                     :data pw-hash}])
-      (sql/upsert (-> (sql/on-conflict :user_id :authentication_system_id)
-                      (sql/do-update-set :data)
-                      ((fn [sql]
-                         (apply sql/do-update-set sql [:data])
-                         ))))
+      (sql/on-conflict :user_id :authentication_system_id)
+      (sql/do-update-set :data {:raw "EXCLUDED.data"})
       (sql/returning :*)
-      sql/format))
+      sql-format))
 
 (defn set-password [user-id password tx]
   (let [pw-hash (password-hash password tx)
