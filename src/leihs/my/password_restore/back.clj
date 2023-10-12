@@ -1,29 +1,25 @@
 (ns leihs.my.password-restore.back
   (:require
-   [clojure.java.jdbc :as jdbc]
-   [clojure.spec.alpha :as spec]
-   [compojure.core :as cpj]
-   [leihs.core.core :refer [presence]]
-   [leihs.core.db :as db]
-   [leihs.core.random :refer [base32-crockford-rand-str]]
-   [leihs.core.settings :as settings]
-   [leihs.core.sign-in.back :refer [user-with-unique-id]]
-   [leihs.core.sql :as sql]
-   [leihs.my.paths :refer [path]]
-   [leihs.my.user.shared :refer [set-password]]
-   [taoensso.timbre :refer [debug info warn error spy]]
-   [tick.core :as tick]
-   [leihs.my.back.html :refer [auth-page]]
-   [leihs.core.remote-navbar.shared :refer [navbar-props]]
-   [leihs.core.anti-csrf.back :refer [anti-csrf-props]]
-   [leihs.core.release :as release]
-   [ring.util.request :as request]))
+    [clojure.spec.alpha :as spec]
+    [compojure.core :as cpj]
+    [honey.sql :refer [format] :rename {format sql-format}]
+    [honey.sql.helpers :as sql]
+    [leihs.core.anti-csrf.back :refer [anti-csrf-props]]
+    [leihs.core.core :refer [presence]]
+    [leihs.core.random :refer [base32-crockford-rand-str]]
+    [leihs.core.release :as release]
+    [leihs.core.remote-navbar.shared :refer [navbar-props]]
+    [leihs.my.back.html :refer [auth-page]]
+    [leihs.my.paths :refer [path]]
+    [leihs.my.user.shared :refer [set-password]]
+    [next.jdbc :as jdbc]
+    [tick.core :as tick]))
 
 (spec/def ::external-base-url presence)
 (spec/def ::smtp_default_from_address presence)
 
 (defn email-content
-  [token {tx :tx settings :settings}]
+  [token {settings :settings}]
   (clojure.string/join "\n"
                        ["To do Password reset click this link:"
                         (str (->> settings :external_base_url (spec/assert ::external-base-url))
@@ -41,26 +37,26 @@
   [str]
   (clojure.string/escape (clojure.string/upper-case str) {\O 0, \I 1, \L 1}))
 
-(defn insert-into-emails [token user {settings :settings tx :tx :as request}]
+(defn insert-into-emails [token {user-id :id email :email} {settings :settings tx :tx :as request}]
   (-> (sql/insert-into :emails)
-      (sql/values [{:user_id (:id user),
-                    :to_address (:email user),
+      (sql/values [{:user_id user-id,
+                    :to_address email,
                     :subject "Password reset",
                     :body (email-content token request),
                     :from_address (->> settings
                                        :smtp_default_from_address
                                        (spec/assert ::smtp_default_from_address))}])
-      sql/format
+      sql-format
       (->> (jdbc/execute! tx))))
 
 (defn insert-into-user-password-resets
-  [token user {{user-param :user} :params tx :tx :as request}]
+  [token {user-id :id} {{user-param :user} :params tx :tx-next}]
   (-> (sql/insert-into :user_password_resets)
-      (sql/values [{:user_id (:id user),
+      (sql/values [{:user_id [:cast user-id :uuid],
                     :token token,
                     :used_user_param user-param,
-                    :valid_until (sql/raw "now() + interval '1 hour'")}])
-      sql/format
+                    :valid_until [:+ [:now] [:interval "1 hour"]]}])
+      sql-format
       (->> (jdbc/execute! tx))))
 
 (defn get-from-user-password-resets
@@ -68,20 +64,19 @@
   (-> (sql/select :*)
       (sql/from :user_password_resets)
       (sql/where [:= (normalize-token-str token-param) :token])
-      sql/format
-      (->> (jdbc/query tx))
-      first))
+      sql-format
+      (->> (jdbc/execute-one! tx))))
 
 (def error-flash-user-has-no-email
   {:level "error",
    :message
    (clojure.string/join
-    " \n"
-    ["Keine Email-Adresse vorhanden!"
-     "Das Passwort für dieses Benutzerkonto kann nicht zurückgesetzt werden,
-         weil keine Email-Adresse im System vorhanden ist.
-         Bitte prüfen Sie den angegebenen Benutzernamen.
-         Kontaktieren Sie den leihs-Support, falls das Problem weiterhin besteht."])})
+     " \n"
+     ["Keine Email-Adresse vorhanden!"
+      "Das Passwort für dieses Benutzerkonto kann nicht zurückgesetzt werden,
+          weil keine Email-Adresse im System vorhanden ist.
+          Bitte prüfen Sie den angegebenen Benutzernamen.
+          Kontaktieren Sie den leihs-Support, falls das Problem weiterhin besteht."])})
 
 (defn common-props [request]
   (as-> request <>
@@ -90,12 +85,21 @@
     (merge (anti-csrf-props request) <>)
     (merge {:footer {:appVersion release/version}} <>)))
 
+(defn user-with-unique-id [tx user-unique-id]
+  (-> (sql/select :*)
+      (sql/from :users)
+      (sql/where [:or [:= :users.org_id user-unique-id]
+                  [:= :users.login user-unique-id]
+                  [:= [:lower :users/email] [:lower (-> user-unique-id (or ""))]]])
+      sql-format
+      (->> (jdbc/execute-one! tx))))
+
 (defn forgot-get
   [request]
   (let [user-param (-> request
                        :params
                        :user)
-        tx (:tx request)
+        tx (:tx-next request)
         user (user-with-unique-id tx user-param)]
     (cond
       (-> request :settings :email_sending_enabled not)
@@ -125,7 +129,7 @@
                  (merge {:userParam user-param})
                  auth-page)})))
 
-(defn forgot-post [{{user-param :user} :params tx :tx :as request}]
+(defn forgot-post [{{user-param :user} :params tx :tx-next :as request}]
   (let [user (user-with-unique-id tx user-param)
         token (make-token 20)]
     (if user
@@ -155,9 +159,9 @@
   (let [token-param (-> request
                         :params
                         :token)
-        tx (:tx request)
+        tx (:tx-next request)
         user-password-reset (some->> token-param
-                                     (get-from-user-password-resets tx))]
+                              (get-from-user-password-resets tx))]
     (if (and token-param (not user-password-reset))
       {:headers {"Content-Type" "text/html"},
        :status 422
@@ -175,17 +179,15 @@
       (sql/from :users)
       (sql/join :user_password_resets
                 [:= :user_password_resets.user_id :users.id])
-      (sql/merge-where [:= true :users.account_enabled])
-      (sql/merge-where [:= true :users.password_sign_in_enabled])
-      (sql/merge-where [:= :user_password_resets.token
-                        (normalize-token-str token)])
-      sql/format
-      (->> (jdbc/query tx))
-      first))
+      (sql/where [:and [:= true :users.account_enabled]
+                  [:= true :users.password_sign_in_enabled]
+                  [:= :user_password_resets.token (normalize-token-str token)]])
+      sql-format
+      (->> (jdbc/execute-one! tx))))
 
 (defn reset-post
   [request]
-  (let [tx (:tx request)
+  (let [tx (:tx-next request)
         token (-> request
                   :params
                   :token)
@@ -201,7 +203,7 @@
           {:status 403, :body "the token has expired"}
           (not user) {:status 404,
                       :body "user enabled for password auth not found"}
-          :else (do (set-password (:id user) password tx)
+          :else (do (set-password (:user_id user) password tx)
                     ; NOTE: row from user_password_resets deleted by trigger
                     {:body (-> request
                                common-props

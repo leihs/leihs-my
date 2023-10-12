@@ -1,23 +1,20 @@
 (ns leihs.my.initial-admin.back
-  (:refer-clojure :exclude [str keyword])
+  (:refer-clojure :exclude [keyword str])
   (:require
-    [leihs.core.core :refer [keyword str presence]]
-    [leihs.core.sql :as sql]
-
+    [compojure.core :as cpj]
+    [honey.sql :refer [format] :rename {format sql-format}]
+    [honey.sql.helpers :as sql]
     [leihs.my.paths :refer [path]]
     [leihs.my.user.shared :refer [set-password]]
-
-    [clojure.java.jdbc :as jdbc]
-    [compojure.core :as cpj]
-    [ring.util.response :refer [redirect]]
-
-    [clojure.tools.logging :as logging]
-    [logbug.debug :as debug]))
+    [next.jdbc :as jdbc]
+    [ring.util.response :refer [redirect]]))
 
 
 (defn some-admin? [tx]
   (->> ["SELECT true AS has_admin FROM users WHERE is_admin = true"]
-       (jdbc/query tx ) first :has_admin boolean))
+       (jdbc/execute-one! tx)
+       (:has_admin)
+       boolean))
 
 (defn prepare-data [data]
   (-> data
@@ -30,15 +27,21 @@
       (assoc :firstname "Initial")))
 
 (defn insert-user [data tx]
-  (first (jdbc/insert! tx :users data)))
+  (let [query (-> (sql/insert-into :users)
+                  (sql/values [data])
+                  (sql/returning :*)
+                  (sql-format))]
+    (jdbc/execute-one! tx query)))
 
-(defn make-procurement-admin [user tx]
-  (->> {:user_id (:id user)}
-       (jdbc/insert! tx :procurement_admins)
-       first))
+(defn make-procurement-admin [{user-id :id} tx]
+  (-> (sql/insert-into :procurement_admins)
+      (sql/values [{:user_id user-id}])
+      (sql/returning :*)
+      sql-format
+      (->> (jdbc/execute-one! tx))))
 
 (defn create-initial-admin
-  ([{tx :tx form-params :form-params data :body}]
+  ([{tx :tx-next form-params :form-params data :body}]
    (create-initial-admin (if (empty? form-params)
                            data form-params) tx))
   ([data tx]
@@ -61,7 +64,7 @@
   ([handler request]
    (if (or (not= (-> request :accept :mime) :html)
            (= (:handler-key request) :initial-admin)
-           (some-admin? (:tx request)))
+           (some-admin? (:tx-next request)))
      (handler request)
      (redirect (path :initial-admin) :see-other))))
 

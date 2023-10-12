@@ -1,19 +1,24 @@
 (ns leihs.my.language
   (:require
+    [compojure.core :as cpj]
+    [honey.sql :refer [format] :rename {format sql-format}]
+    [honey.sql.helpers :as sql]
     [leihs.core.locale :refer [set-language-cookie]]
     [leihs.my.paths :refer [path]]
-    [clojure.java.jdbc :as jdbc]
-    [compojure.core :as cpj]
-    [clojure.tools.logging :as log]
+    [next.jdbc :as jdbc]
     [ring.util.response :refer [redirect]]))
 
 (defn redirect-back-with-language-cookie
-  [{tx :tx
+  [{tx :tx-next
     {locale :locale} :form-params
-    {referer "referer"} :headers
-    :as request}]
-  (-> (redirect referer)
-      (set-language-cookie (jdbc/get-by-id tx :languages locale :locale))))
+    {referer "referer"} :headers}]
+  (let [result (-> (sql/select :*)
+                   (sql/from :languages)
+                   (sql/where [:= :locale locale])
+                   sql-format
+                   (->> (jdbc/execute-one! tx)))]
+    (-> (redirect referer)
+        (set-language-cookie result))))
 
 (def routes
   (cpj/routes

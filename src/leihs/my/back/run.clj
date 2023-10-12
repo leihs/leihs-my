@@ -1,26 +1,18 @@
 (ns leihs.my.back.run
-  (:refer-clojure :exclude [str keyword])
-  (:require [leihs.core.core :refer [keyword str presence]])
+  (:refer-clojure :exclude [keyword str])
   (:require
-    [clojure.core.async :as async]
     [clojure.pprint :refer [pprint]]
-    [clojure.tools.cli :as cli :refer [parse-opts]]
-    [environ.core :refer [env]]
+    [clojure.tools.cli :as cli]
     [leihs.core.db :as db]
     [leihs.core.http-server :as http-server]
     [leihs.core.shutdown :as shutdown]
+    [leihs.core.sign-in.back :refer [use-sign-in-page-renderer]]
     [leihs.core.status :as status]
-    [leihs.core.url.jdbc :as jdbc-url]
-    [leihs.core.url.jdbc]
+    [leihs.my.back.html :refer [auth-page]]
     [leihs.my.paths]
     [leihs.my.routes :as routes]
     [logbug.catcher :as catcher]
-    [logbug.debug :as debug]
-    [logbug.thrown :as thrown]
-    [leihs.core.sign-in.back :refer [use-sign-in-page-renderer]]
-    [leihs.my.back.html :refer [auth-page]]
-    [taoensso.timbre :refer [debug info warn error]]
-    ))
+    [taoensso.timbre :refer [debug info warn error]]))
 
 (defn run [options]
   (catcher/snatch
