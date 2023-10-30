@@ -10,7 +10,6 @@
 /.sass-cache
 /.shadow-cljs
 /bin/zhdk_agw_auth_system.rb
-/leihs-ui.tgz
 /log
 /nashorn_code_cache
 /node_modules
@@ -20,7 +19,6 @@
 /tmp
 figwheel_server.log
 leihs-my_*.jar
-leihs-ui-compiled
 profiles.clj
 resources/all/public/auth/build-timestamp.txt
 resources/built-info.yml

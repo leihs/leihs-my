@@ -119,6 +119,7 @@
       (wrap-resource
         "public" {:allow-symlinks? true
                   :cache-bust-paths ["/my/ui/my-ui.css"
+                                     "my/ui/my-ui.css.map"
                                      "/my/js/main.js"]
                   :never-expire-paths [#".*fontawesome-[^\/]*\d+\.\d+\.\d+\/.*"
                                        #".+_[0-9a-f]{40}\..+"]

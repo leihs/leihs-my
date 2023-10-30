@@ -9,7 +9,7 @@ function App() {
   return (
     <>
       <PageLayoutMock>
-        <PageLayout.Header title="Borrow UI Test App">
+        <PageLayout.Header title="My UI Test App">
           <p>This is only a debugging tool for the library build. Check the README for more info.</p>
         </PageLayout.Header>
       </PageLayoutMock>

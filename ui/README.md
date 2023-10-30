@@ -1,6 +1,6 @@
 # My UI
 
-- Shared UI components (React) and theme (based on Bootstrap) `leihs-my` app.
+- UI components (React) and theme (based on Bootstrap) `leihs-my` app.
 - Storybook holding the components for `leihs-my`, as well as a few components (notably `Navbar`) which are distributed to other apps (`leihs-admin`, `procure`).
 
 ## Stack
@@ -48,6 +48,6 @@ Note that currently only Prettier's rule definitions are configured in ESLint.
 
 ### Library development and build
 
-- `npm run watch`: Start theme and lib in watch/dev mode (use along with watch mode in Borrow app)
+- `npm run watch`: Start theme and lib in watch/dev mode (use along with watch mode in My app)
 - `npm run build`: Build theme and lib for production
 - `npm run start`: Start dev server for `test-app` (http://localhost:8081/test-app.html). Enable `test-app` in `webpack.config.js` for this to work
