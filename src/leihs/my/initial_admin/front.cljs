@@ -1,25 +1,24 @@
 (ns leihs.my.initial-admin.front
   (:refer-clojure :exclude [str keyword])
   (:require-macros
-    [reagent.ratom :as ratom :refer [reaction]]
-    [cljs.core.async.macros :refer [go]])
+   [reagent.ratom :as ratom :refer [reaction]]
+   [cljs.core.async.macros :refer [go]])
   (:require
-    [leihs.core.core :refer [keyword str presence]]
-    [leihs.core.breadcrumbs :as breadcrumbs]
-    [leihs.core.requests.core :as requests]
-    [leihs.core.anti-csrf.front :as anti-csrf]
+   [leihs.core.core :refer [keyword str presence]]
+   [leihs.core.breadcrumbs :as breadcrumbs]
+   [leihs.core.requests.core :as requests]
+   [leihs.core.anti-csrf.front :as anti-csrf]
 
-    [leihs.my.front.components :as components]
-    [leihs.my.front.shared :refer [humanize-datetime-component short-id gravatar-url]]
-    [leihs.my.front.state :as state]
-    [leihs.my.paths :as paths :refer [path]]
+   [leihs.my.front.components :as components]
+   [leihs.my.front.shared :refer [humanize-datetime-component short-id gravatar-url]]
+   [leihs.my.front.state :as state]
+   [leihs.my.paths :as paths :refer [path]]
 
-    [accountant.core :as accountant]
-    [cljs.core.async :as async]
-    [cljs.core.async :refer [timeout]]
-    [cljs.pprint :refer [pprint]]
-    [reagent.core :as reagent]
-    ))
+   [accountant.core :as accountant]
+   [cljs.core.async :as async]
+   [cljs.core.async :refer [timeout]]
+   [cljs.pprint :refer [pprint]]
+   [reagent.core :as reagent]))
 
 (def form-data* (reagent/atom {}))
 
@@ -27,15 +26,15 @@
 
 (def email-valid*?
   (reaction
-    (boolean
-      (when-let [email (-> @form-data* :email presence)]
-        (re-matches #".+@.+" email)))))
+   (boolean
+    (when-let [email (-> @form-data* :email presence)]
+      (re-matches #".+@.+" email)))))
 
 (def password-valid*?
   (reaction
-    (boolean (-> @form-data* :password presence))))
+   (boolean (-> @form-data* :password presence))))
 
-(def form-valid*? (reaction (and @email-valid*? @password-valid*? )))
+(def form-valid*? (reaction (and @email-valid*? @password-valid*?)))
 
 (defn debug-component []
   (when (:debug @state/global-state*)
@@ -44,23 +43,21 @@
      [:h3 "@form-data*"]
      [:pre (with-out-str (pprint @form-data*))]]))
 
-
 (defn text-input-component
-     ([kw]
-      (text-input-component kw {}))
-     ([kw opts]
-      (let [opts (merge {:type :text
-                         :valid* (reaction (-> @form-data* kw presence))}
-                        opts)]
-        [:div.form-group
-         {:key kw}
-         [:label {:for kw} kw]
-         [:input.form-control
-          {:type (:type opts)
-           :class (if @(:valid* opts) "" "is-invalid")
-           :value (or (-> @form-data* kw) "")
-           :on-change #(swap! form-data* assoc kw (-> % .-target .-value presence))
-           }]])))
+  ([kw]
+   (text-input-component kw {}))
+  ([kw opts]
+   (let [opts (merge {:type :text
+                      :valid* (reaction (-> @form-data* kw presence))}
+                     opts)]
+     [:div.form-group
+      {:key kw}
+      [:label {:for kw} kw]
+      [:input.form-control
+       {:type (:type opts)
+        :class (if @(:valid* opts) "" "is-invalid")
+        :value (or (-> @form-data* kw) "")
+        :on-change #(swap! form-data* assoc kw (-> % .-target .-value presence))}]])))
 
 (defn form-component []
   [:form#initial-admin-form.form
@@ -108,5 +105,4 @@
    [:div
     [:h1 "Initial Admin"]
     [:p "An initial administrator account is required to sign in and further configure this instance of leihs."]
-    [form-component]
-    ]])
+    [form-component]]])

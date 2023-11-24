@@ -1,12 +1,12 @@
 (ns leihs.my.language
   (:require
-    [compojure.core :as cpj]
-    [honey.sql :refer [format] :rename {format sql-format}]
-    [honey.sql.helpers :as sql]
-    [leihs.core.locale :refer [set-language-cookie]]
-    [leihs.my.paths :refer [path]]
-    [next.jdbc :as jdbc]
-    [ring.util.response :refer [redirect]]))
+   [compojure.core :as cpj]
+   [honey.sql :refer [format] :rename {format sql-format}]
+   [honey.sql.helpers :as sql]
+   [leihs.core.locale :refer [set-language-cookie]]
+   [leihs.my.paths :refer [path]]
+   [next.jdbc :as jdbc]
+   [ring.util.response :refer [redirect]]))
 
 (defn redirect-back-with-language-cookie
   [{tx :tx-next
@@ -22,4 +22,4 @@
 
 (def routes
   (cpj/routes
-    (cpj/POST (path :language) [] #'redirect-back-with-language-cookie)))
+   (cpj/POST (path :language) [] #'redirect-back-with-language-cookie)))

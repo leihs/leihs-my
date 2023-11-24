@@ -5,7 +5,6 @@
    [leihs.core.dom :as dom]
    ["/my-ui" :as UI]))
 
-
 (defn forgot-password []
   (let [page-props (dom/data-attribute "body" "page-props")]
     (fn []

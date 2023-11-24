@@ -1,13 +1,12 @@
 (ns leihs.my.paths
   (:refer-clojure :exclude [str keyword])
   (:require
-    [bidi.bidi :refer [path-for match-route]]
-    [bidi.verbose :refer [branch param leaf]]
-    [clojure.pprint :refer [pprint]]
-    [leihs.core.core :refer [keyword str presence]]
-    [leihs.core.paths]
-    [taoensso.timbre :as logging]
-    ))
+   [bidi.bidi :refer [path-for match-route]]
+   [bidi.verbose :refer [branch param leaf]]
+   [clojure.pprint :refer [pprint]]
+   [leihs.core.core :refer [keyword str presence]]
+   [leihs.core.paths]
+   [taoensso.timbre :as logging]))
 
 (def external-handlers
   #{:admin

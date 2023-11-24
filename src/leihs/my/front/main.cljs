@@ -1,15 +1,15 @@
 (ns leihs.my.front.main
   (:refer-clojure :exclude [str keyword])
   (:require-macros
-    [reagent.ratom :as ratom :refer [reaction]])
+   [reagent.ratom :as ratom :refer [reaction]])
   (:require
-    [leihs.core.core :refer [keyword str presence]]
-    [leihs.core.global :as global]
-    [leihs.core.user.front :refer [load-user-data-from-dom]]
+   [leihs.core.core :refer [keyword str presence]]
+   [leihs.core.global :as global]
+   [leihs.core.user.front :refer [load-user-data-from-dom]]
 
-    [leihs.my.paths]
-    [leihs.my.front.html :as html]
-    [leihs.my.routes :as routes]))
+   [leihs.my.paths]
+   [leihs.my.front.html :as html]
+   [leihs.my.routes :as routes]))
 
 (defn init! []
   (load-user-data-from-dom)

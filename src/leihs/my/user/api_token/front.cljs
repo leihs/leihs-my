@@ -1,28 +1,27 @@
 (ns leihs.my.user.api-token.front
   (:refer-clojure :exclude [str keyword])
   (:require-macros
-    [reagent.ratom :as ratom :refer [reaction]]
-    [cljs.core.async.macros :refer [go]])
+   [reagent.ratom :as ratom :refer [reaction]]
+   [cljs.core.async.macros :refer [go]])
   (:require
-    ["date-fns" :as date-fns]
-    [accountant.core :as accountant]
-    [cljs.core.async :as async]
-    [cljs.core.async :refer [timeout]]
-    [cljs.pprint :refer [pprint]]
-    [clojure.string :refer [join split]]
-    [leihs.core.breadcrumbs :as breadcrumbs]
-    [leihs.core.core :refer [keyword str presence]]
-    [leihs.core.requests.core :as requests]
-    [leihs.core.routing.front :as routing]
-    [leihs.my.front.breadcrumbs :as my-breadcrumbs]
-    [leihs.my.front.shared :refer [humanize-datetime-component]]
-    [leihs.my.front.state :as state]
-    [leihs.my.paths :as paths :refer [path]]
-    [leihs.my.user.api-tokens.breadcrumbs :as api-tokens-breadcrumbs]
-    [leihs.my.user.shared :refer [me?*]]
-    [reagent.core :as reagent]
-    [taoensso.timbre :refer [debug info warn error spy]]
-    ))
+   ["date-fns" :as date-fns]
+   [accountant.core :as accountant]
+   [cljs.core.async :as async]
+   [cljs.core.async :refer [timeout]]
+   [cljs.pprint :refer [pprint]]
+   [clojure.string :refer [join split]]
+   [leihs.core.breadcrumbs :as breadcrumbs]
+   [leihs.core.core :refer [keyword str presence]]
+   [leihs.core.requests.core :as requests]
+   [leihs.core.routing.front :as routing]
+   [leihs.my.front.breadcrumbs :as my-breadcrumbs]
+   [leihs.my.front.shared :refer [humanize-datetime-component]]
+   [leihs.my.front.state :as state]
+   [leihs.my.paths :as paths :refer [path]]
+   [leihs.my.user.api-tokens.breadcrumbs :as api-tokens-breadcrumbs]
+   [leihs.my.user.shared :refer [me?*]]
+   [reagent.core :as reagent]
+   [taoensso.timbre :refer [debug info warn error spy]]))
 
 (defonce user-id* (reaction (-> @routing/state* :route-params :user-id)))
 (defonce api-token-id* (reaction (-> @routing/state* :route-params :api-token-id)))
@@ -30,26 +29,23 @@
 
 (defonce mode?*
   (reaction
-    (case (:handler-key @routing/state*)
-      :api-token-add :add
-      (:api-token :api-token-delete) :show
-      :api-token-edit :edit
-      nil
-      )))
-
+   (case (:handler-key @routing/state*)
+     :api-token-add :add
+     (:api-token :api-token-delete) :show
+     :api-token-edit :edit
+     nil)))
 
 (defonce edit-mode?*
   (reaction
-    (and (map? @api-token-data*)
-         (boolean ((set '(:api-token-edit :api-token-add))
-                   (:handler-key @routing/state*))))))
+   (and (map? @api-token-data*)
+        (boolean ((set '(:api-token-edit :api-token-add))
+                  (:handler-key @routing/state*))))))
 
 (defn valid-iso8601? [iso]
   (try (date-fns/parseISO iso)
        true
        (catch js/Error _
          false)))
-
 
 (def description-valid*? (reaction (-> @api-token-data* :description presence boolean)))
 
@@ -66,7 +62,7 @@
            :scope_admin_read false
            :scope_admin_write false
            :expires_at (date-fns/formatISO
-                         (date-fns/add (js/Date.) (clj->js {:years 1})))}))
+                        (date-fns/add (js/Date.) (clj->js {:years 1})))}))
 
 (declare add patch delete)
 
@@ -92,9 +88,9 @@
         :scope_admin_write (or (-> @api-token-data* :scope_admin_read not)
                                (-> @api-token-data* :scope_write not))
         :scope_system_admin_read (or (-> @api-token-data* :scope_read not)
-                              (-> @api-token-data* :scope_system_admin_write))
+                                     (-> @api-token-data* :scope_system_admin_write))
         :scope_system_admin_write (or (-> @api-token-data* :scope_system_admin_read not)
-                               (-> @api-token-data* :scope_write not)))))
+                                      (-> @api-token-data* :scope_write not)))))
 
 (defn scope-text [scope]
   [:span
@@ -112,20 +108,19 @@
     [:span
      {:class (if (scope-disalbed? scope) "text-muted" "")}
      " "
-     [scope-text scope]
-     ]]])
+     [scope-text scope]]]])
 
 (defn scopes-form-component []
   [:div.form-group
-   [:label [:b "Scope and actions:" ]]
+   [:label [:b "Scope and actions:"]]
    (doall (for [scope scopes] [scope-form-component scope]))
    (when-not (= :show @mode?*)
      [:small.form-text
       {:class (when-not (-> @api-token-data* :scope_read presence boolean) "text-warning")}
-      "Not setting at least \"read\" will practically disable this token!" ]
+      "Not setting at least \"read\" will practically disable this token!"]
      [:small.form-text
       "Read and write correspond to perform actions
-      via safe (read) or unsafe (write) HTTP verbs." ]
+      via safe (read) or unsafe (write) HTTP verbs."]
      [:small.form-text
       "Enabled admin scopes will have effect if and only if the corresponding
       user has admin privileges at the time this tokes is used."])])
@@ -134,7 +129,7 @@
 
 (defn description-form-component []
   [:div.form-group
-   [:label {:for :description} [:b "Description:" ]]
+   [:label {:for :description} [:b "Description:"]]
    [:input#description.form-control
     {:class (when (not @description-valid*?) "is-invalid")
      :on-change #(swap! api-token-data* assoc :description (-> % .-target .-value presence))
@@ -143,7 +138,7 @@
    (when (#{:add :edit} @mode?*)
      [:small.form-text
       {:class (if (not @description-valid*?) "text-danger" "text-muted")}
-      "The description may not be empty!" ])])
+      "The description may not be empty!"])])
 
 ;;; form expires ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -161,19 +156,19 @@
         :on-click #(swap! api-token-data* assoc
                           :expires_at
                           (date-fns/formatISO
-                            (date-fns/add (js/Date.) (clj->js v))))}
+                           (date-fns/add (js/Date.) (clj->js v))))}
        period]])])
 
 (defn on-change-datetime-local [e]
   ;(debug 'on-change-datetime-local e)
   (let [value (-> e .-target .-value)
-        iso (-> value date-fns/parseISO date-fns/formatISO) ]
+        iso (-> value date-fns/parseISO date-fns/formatISO)]
     ;(debug {'value value 'iso iso})
     (swap! api-token-data* assoc :expires_at iso)))
 
 (defn expires-at-form-component []
   [:div.form-group {:class (when (not @expires-at-valid*?) "has-error")}
-   [:label {:for :expires_at} [:b "Expires" ":" ]]
+   [:label {:for :expires_at} [:b "Expires" ":"]]
    [:input#expires_at.form-control
     {:class (when (not @expires-at-valid*?) "is-invalid")
      :type :datetime-local
@@ -192,7 +187,6 @@
    (when-not (= :show @mode?*)
      [expires-presets-component])])
 
-
 ;;; form timestamps ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn form-timestamps-component []
@@ -203,7 +197,6 @@
       (-> @api-token-data* :created_at humanize-datetime-component)
       ", and updated "
       (-> @api-token-data* :updated_at humanize-datetime-component) ". "]]))
-
 
 ;;; submit ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -230,8 +223,7 @@
                  (case (:handler-key @routing/state*)
                    :api-token-add (add)
                    :api-token-edit (patch)
-                   :api-token-delete (delete)
-                   ))}
+                   :api-token-delete (delete)))}
    [description-form-component]
    [scopes-form-component]
    [expires-at-form-component]
@@ -273,9 +265,9 @@
      [:div
       [:h3 "@description-valid*?"]
       [:pre (with-out-str (pprint @description-valid*?))]]
-    [:div
+     [:div
       [:h3 "@form-valid*?"]
-      [:pre (with-out-str (pprint @form-valid*?))]] ]))
+      [:pre (with-out-str (pprint @form-valid*?))]]]))
 
 (defn reset-api-token-form-data []
   (reset! api-token-data*
@@ -285,8 +277,8 @@
            :scope_admin_read true
            :scope_admin_write true
            :expires_at (date-fns/formatISO
-                         (date-fns/add (js/Date.)
-                                       (clj->js {:years 1})))}))
+                        (date-fns/add (js/Date.)
+                                      (clj->js {:years 1})))}))
 
 (defn new-token-secret-modal []
   (when @token-secret*
@@ -303,11 +295,11 @@
           [:code.token_secret @token-secret*]]
          [:p
           "The full token-secret is shown here once and only once. "
-          "Only the first 5 letters will be stored and shown as a identifier. " ]]
+          "Only the first 5 letters will be stored and shown as a identifier. "]]
         [:div.modal-footer
          [:button.btn.btn-primary
           {:on-click #(accountant/navigate!
-                        (path :api-tokens {:user-id @user-id*}))}
+                       (path :api-tokens {:user-id @user-id*}))}
           " Continue "]]]]]
      [:div.modal-backdrop {:style {:opacity "0.5"}}]]))
 
@@ -318,21 +310,20 @@
     {:did-mount (fn [] (reset-api-token-form-data))
      :will-unmount #(reset! api-token-data* nil)}]
    (breadcrumbs/nav-component
-     [(breadcrumbs/leihs-li)
-      (my-breadcrumbs/user-li)
-      (api-tokens-breadcrumbs/api-tokens-li)
-      (api-tokens-breadcrumbs/api-token-add-li)]
-     [])
+    [(breadcrumbs/leihs-li)
+     (my-breadcrumbs/user-li)
+     (api-tokens-breadcrumbs/api-tokens-li)
+     (api-tokens-breadcrumbs/api-token-add-li)]
+    [])
    [:div
     (if @me?*
       [:h1 "Add My API-Token "]
       (let [id (-> @routing/state* :route-params :user-id)]
         [:div
          [:h1 "Add User's API-Token"]
-         [:p "user-id: " [:code id ]]]))
+         [:p "user-id: " [:code id]]]))
     [form-component]
     [debug-component]]])
-
 
 ;;; show page ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -363,13 +354,12 @@
                    (js/console.log (with-out-str (pprint  diff)))
                    (fetch-token))}]
    (breadcrumbs/nav-component
-     [(breadcrumbs/leihs-li)
-      (my-breadcrumbs/user-li)
-      (api-tokens-breadcrumbs/api-tokens-li)
-      (api-tokens-breadcrumbs/api-token-li)]
-     [(api-tokens-breadcrumbs/api-token-delete-li)
-      (api-tokens-breadcrumbs/api-token-edit-li)
-      ])
+    [(breadcrumbs/leihs-li)
+     (my-breadcrumbs/user-li)
+     (api-tokens-breadcrumbs/api-tokens-li)
+     (api-tokens-breadcrumbs/api-token-li)]
+    [(api-tokens-breadcrumbs/api-token-delete-li)
+     (api-tokens-breadcrumbs/api-token-edit-li)])
    [:div
     (let [part (:token_part @api-token-data*)]
       (if @me?*
@@ -377,14 +367,12 @@
         (let [id (-> @routing/state* :route-params :user-id)]
           [:div
            [:h1 "User's API-Token" [:code part]]
-           [:p "user-id: " [:code id ]]])))]
+           [:p "user-id: " [:code id]]])))]
    (if @api-token-data*
      [form-component]
      [:div.text-center
       [:i.fas.fa-spinner.fa-spin.fa-5x]])
-   [debug-component]
-   ])
-
+   [debug-component]])
 
 ;;; edit ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -403,8 +391,8 @@
     (go (let [resp (<! resp-chan)]
           (when (= (:status resp) 204)
             (accountant/navigate!
-              (path :api-token {:api-token-id @api-token-id*
-                                :user-id @user-id*})))))))
+             (path :api-token {:api-token-id @api-token-id*
+                               :user-id @user-id*})))))))
 
 (defn edit-button-component []
   [:button.btn.btn-warning
@@ -417,12 +405,12 @@
    [routing/hidden-state-component
     {:did-change fetch-token}]
    (breadcrumbs/nav-component
-     [(breadcrumbs/leihs-li)
-      (my-breadcrumbs/user-li)
-      (api-tokens-breadcrumbs/api-tokens-li)
-      (api-tokens-breadcrumbs/api-token-li)
-      (api-tokens-breadcrumbs/api-token-edit-li)]
-     [])
+    [(breadcrumbs/leihs-li)
+     (my-breadcrumbs/user-li)
+     (api-tokens-breadcrumbs/api-tokens-li)
+     (api-tokens-breadcrumbs/api-token-li)
+     (api-tokens-breadcrumbs/api-token-edit-li)]
+    [])
    [:div
     (let [part (:token_part @api-token-data*)]
       (if @me?*
@@ -430,13 +418,12 @@
         (let [id (-> @routing/state* :route-params :user-id)]
           [:div
            [:h1 "Edit User's API-Token" [:code part]]
-           [:p "user-id: " [:code id ]]])))]
+           [:p "user-id: " [:code id]]])))]
    (if @api-token-data*
      [form-component]
      [:div.text-center
       [:i.fas.fa-spinner.fa-spin.fa-5x]])
    [debug-component]])
-
 
 ;;; delete ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -454,8 +441,7 @@
     (go (let [resp (<! resp-chan)]
           (when (= (:status resp) 204)
             (accountant/navigate!
-              (path :api-tokens {:user-id @user-id*}
-                    )))))))
+             (path :api-tokens {:user-id @user-id*})))))))
 
 (defn delete-button-component []
   [:button.btn.btn-danger
@@ -471,19 +457,19 @@
                   (fetch-token))
      :did-change fetch-token}]
    (breadcrumbs/nav-component
-     [(breadcrumbs/leihs-li)
-      (my-breadcrumbs/user-li)
-      (api-tokens-breadcrumbs/api-tokens-li)
-      (api-tokens-breadcrumbs/api-token-li)
-      (api-tokens-breadcrumbs/api-token-delete-li)]
-     [])
+    [(breadcrumbs/leihs-li)
+     (my-breadcrumbs/user-li)
+     (api-tokens-breadcrumbs/api-tokens-li)
+     (api-tokens-breadcrumbs/api-token-li)
+     (api-tokens-breadcrumbs/api-token-delete-li)]
+    [])
    (let [part (:token_part @api-token-data*)]
      (if @me?*
        [:h1 "Delete My API-Token " [:code part]]
        (let [id (-> @routing/state* :route-params :user-id)]
          [:div
           [:h1 "Delete User's API-Token" [:code part]]
-          [:p "user-id: " [:code id ]]])))
+          [:p "user-id: " [:code id]]])))
    (if @api-token-data*
      [form-component]
      [:div.text-center

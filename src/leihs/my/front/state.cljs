@@ -1,23 +1,21 @@
 (ns leihs.my.front.state
   (:refer-clojure :exclude [str keyword])
   (:require-macros
-    [reagent.ratom :as ratom :refer [reaction]])
+   [reagent.ratom :as ratom :refer [reaction]])
   (:require
-    [clojure.pprint :refer [pprint]]
-    [leihs.core.core :refer [keyword str presence]]
-    [leihs.core.dom :as dom]
-    [leihs.core.routing.front :as routing]
-    [leihs.core.user.front :as user]
-    [reagent.core :as reagent]
-    ))
-
+   [clojure.pprint :refer [pprint]]
+   [leihs.core.core :refer [keyword str presence]]
+   [leihs.core.dom :as dom]
+   [leihs.core.routing.front :as routing]
+   [leihs.core.user.front :as user]
+   [reagent.core :as reagent]))
 
 (defonce global-state* (reagent/atom {:debug false
                                       :users-query-params {}
                                       :timestamp (js/Date.)}))
 
 (js/setInterval #(swap! global-state*
-                       (fn [s] (merge s {:timestamp (js/Date.)}))) 1000)
+                        (fn [s] (merge s {:timestamp (js/Date.)}))) 1000)
 
 (def settings* (reagent/atom (dom/data-attribute "body" "settings")))
 

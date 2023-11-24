@@ -1,19 +1,19 @@
 (ns leihs.my.password-restore.back
   (:require
-    [clojure.spec.alpha :as spec]
-    [compojure.core :as cpj]
-    [honey.sql :refer [format] :rename {format sql-format}]
-    [honey.sql.helpers :as sql]
-    [leihs.core.anti-csrf.back :refer [anti-csrf-props]]
-    [leihs.core.core :refer [presence]]
-    [leihs.core.random :refer [base32-crockford-rand-str]]
-    [leihs.core.release :as release]
-    [leihs.core.remote-navbar.shared :refer [navbar-props]]
-    [leihs.my.back.html :refer [auth-page]]
-    [leihs.my.paths :refer [path]]
-    [leihs.my.user.shared :refer [set-password]]
-    [next.jdbc :as jdbc]
-    [tick.core :as tick]))
+   [clojure.spec.alpha :as spec]
+   [compojure.core :as cpj]
+   [honey.sql :refer [format] :rename {format sql-format}]
+   [honey.sql.helpers :as sql]
+   [leihs.core.anti-csrf.back :refer [anti-csrf-props]]
+   [leihs.core.core :refer [presence]]
+   [leihs.core.random :refer [base32-crockford-rand-str]]
+   [leihs.core.release :as release]
+   [leihs.core.remote-navbar.shared :refer [navbar-props]]
+   [leihs.my.back.html :refer [auth-page]]
+   [leihs.my.paths :refer [path]]
+   [leihs.my.user.shared :refer [set-password]]
+   [next.jdbc :as jdbc]
+   [tick.core :as tick]))
 
 (spec/def ::external-base-url presence)
 (spec/def ::smtp_default_from_address presence)
@@ -71,9 +71,9 @@
   {:level "error",
    :message
    (clojure.string/join
-     " \n"
-     ["Keine Email-Adresse vorhanden!"
-      "Das Passwort für dieses Benutzerkonto kann nicht zurückgesetzt werden,
+    " \n"
+    ["Keine Email-Adresse vorhanden!"
+     "Das Passwort für dieses Benutzerkonto kann nicht zurückgesetzt werden,
           weil keine Email-Adresse im System vorhanden ist.
           Bitte prüfen Sie den angegebenen Benutzernamen.
           Kontaktieren Sie den leihs-Support, falls das Problem weiterhin besteht."])})
@@ -161,7 +161,7 @@
                         :token)
         tx (:tx-next request)
         user-password-reset (some->> token-param
-                              (get-from-user-password-resets tx))]
+                                     (get-from-user-password-resets tx))]
     (if (and token-param (not user-password-reset))
       {:headers {"Content-Type" "text/html"},
        :status 422

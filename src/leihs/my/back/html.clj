@@ -1,16 +1,16 @@
 (ns leihs.my.back.html
   (:refer-clojure :exclude [keyword str])
   (:require
-    [hiccup.page :refer [html5]]
-    [honey.sql :refer [format] :rename {format sql-format}]
-    [honey.sql.helpers :as sql]
-    [leihs.core.http-cache-buster2 :as cache-buster]
-    [leihs.core.json :refer [to-json]]
-    [leihs.core.remote-navbar.shared :refer [navbar-props]]
-    [leihs.core.shared :refer [head]]
-    [leihs.core.url.core :as url]
-    [leihs.my.authorization :as auth]
-    [next.jdbc :as jdbc]))
+   [hiccup.page :refer [html5]]
+   [honey.sql :refer [format] :rename {format sql-format}]
+   [honey.sql.helpers :as sql]
+   [leihs.core.http-cache-buster2 :as cache-buster]
+   [leihs.core.json :refer [to-json]]
+   [leihs.core.remote-navbar.shared :refer [navbar-props]]
+   [leihs.core.shared :refer [head]]
+   [leihs.core.url.core :as url]
+   [leihs.my.authorization :as auth]
+   [next.jdbc :as jdbc]))
 
 (defn route-user [request]
   (let [user-id (-> request :route-params :user-id)
@@ -48,7 +48,7 @@
 ; renders layout for auth pages (sign-in, password-restore) and home
 (defn auth-page [props]
   (html5 (head
-           (hiccup.page/include-css (cache-buster/cache-busted-path "/my/ui/my-ui.css")))
+          (hiccup.page/include-css (cache-buster/cache-busted-path "/my/ui/my-ui.css")))
 
          [:body {:class "bg-paper"
                  :data-page-props (-> props to-json url/encode)}
@@ -64,8 +64,8 @@
   [request]
   {:headers {"Content-Type" "text/html"},
    :body (html5 (head
-                  (hiccup.page/include-css
-                    (cache-buster/cache-busted-path "/my/ui/my-ui.css")))
+                 (hiccup.page/include-css
+                  (cache-buster/cache-busted-path "/my/ui/my-ui.css")))
                 [:body (body-attributes request)
 
                  [:div
@@ -74,8 +74,7 @@
                     [:p "This application requires Javascript."]]]]
 
                  (hiccup.page/include-js (cache-buster/cache-busted-path
-                                           "/my/js/main.js"))])})
-
+                                          "/my/js/main.js"))])})
 
 ;#### debug ###################################################################
 ;(debug/debug-ns *ns*)

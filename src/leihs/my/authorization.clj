@@ -2,9 +2,9 @@
   (:refer-clojure :exclude [str keyword])
   (:require [leihs.core.core :refer [keyword str presence]])
   (:require
-    [clojure.tools.logging :as logging]
-    [logbug.debug :as debug]
-    [logbug.catcher :as catcher]))
+   [clojure.tools.logging :as logging]
+   [logbug.debug :as debug]
+   [logbug.catcher :as catcher]))
 
 (def HTTP-SAFE-VERBS #{:get :head :options :trace})
 
@@ -43,15 +43,15 @@
 
 (defn http-safe-and-system-admin-with-read-scope?  [request]
   (boolean
-    (and (http-safe? request)
-         (is-system-admin? request)
-         (scope-system-admin-read? request))))
+   (and (http-safe? request)
+        (is-system-admin? request)
+        (scope-system-admin-read? request))))
 
 (defn http-unsafe-and-system-admin-with-write-scope? [request]
   (boolean
-    (and (http-unsafe? request)
-         (is-system-admin? request)
-         (scope-system-admin-write? request))))
+   (and (http-unsafe? request)
+        (is-system-admin? request)
+        (scope-system-admin-write? request))))
 
 (defn me? [request]
   (or (= (-> request :route-params :user-id) "me")
@@ -60,43 +60,42 @@
 
 (defn http-safe-and-me-user-with-read-scope? [request]
   (boolean
-    (and (http-safe? request)
-         (me? request)
-         (scope-read? request))))
+   (and (http-safe? request)
+        (me? request)
+        (scope-read? request))))
 
 (defn http-unsafe-and-me-user-with-write-scope? [request]
   (boolean
-    (and (http-unsafe? request)
-         (me? request)
-         (scope-write? request))))
+   (and (http-unsafe? request)
+        (me? request)
+        (scope-write? request))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn wrap
-  ([handler skip-authorization-handler-keys ]
+  ([handler skip-authorization-handler-keys]
    (fn [request]
      (wrap request handler skip-authorization-handler-keys)))
   ([request handler skip-authorization-handler-keys]
    (cond
      (handler-is-ignored?
-       skip-authorization-handler-keys request) (handler request)
+      skip-authorization-handler-keys request) (handler request)
      (authenticated-entity-not-present?
-       request) {:status 401
-                 :body "Authentication required!"}
+      request) {:status 401
+                :body "Authentication required!"}
      ;;; me user ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      (http-safe-and-me-user-with-read-scope?
-       request) (handler request)
+      request) (handler request)
      (http-unsafe-and-me-user-with-write-scope?
-       request) (handler request)
+      request) (handler request)
      ;;; admin ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      (http-safe-and-system-admin-with-read-scope?
-       request) (handler request)
+      request) (handler request)
      (http-unsafe-and-system-admin-with-write-scope?
-       request) (handler request)
+      request) (handler request)
      ;;; other ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      :else {:status 403
             :body "Forbidden!"})))
-
 
 ;#### debug ###################################################################
 ;(debug/debug-ns *ns*)

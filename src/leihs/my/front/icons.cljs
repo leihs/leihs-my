@@ -1,11 +1,10 @@
 (ns leihs.my.front.icons
   (:refer-clojure :exclude [next])
   (:require
-    [leihs.core.icons :as core-icons]
-    ["@fortawesome/react-fontawesome" :as fa-react-fontawesome :refer [FontAwesomeIcon]]
-    ["@fortawesome/free-solid-svg-icons" :as solids]
-    ["@fortawesome/free-brands-svg-icons" :as brands]
-    ))
+   [leihs.core.icons :as core-icons]
+   ["@fortawesome/react-fontawesome" :as fa-react-fontawesome :refer [FontAwesomeIcon]]
+   ["@fortawesome/free-solid-svg-icons" :as solids]
+   ["@fortawesome/free-brands-svg-icons" :as brands]))
 
 (def delete core-icons/delete)
 

@@ -30,7 +30,6 @@
               props)))
          auth-page)))
 
-
 (def routes
   (cpj/routes
    (cpj/GET (path :home) [] #'home)

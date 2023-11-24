@@ -1,28 +1,26 @@
 (ns leihs.my.user.api-tokens.front
   (:refer-clojure :exclude [str keyword])
   (:require-macros
-    [reagent.ratom :as ratom :refer [reaction]]
-    [cljs.core.async.macros :refer [go]])
+   [reagent.ratom :as ratom :refer [reaction]]
+   [cljs.core.async.macros :refer [go]])
   (:require
-    [leihs.core.core :refer [keyword str presence]]
-    [leihs.core.requests.core :as requests]
-    [leihs.core.routing.front :as routing]
-    [leihs.core.breadcrumbs :as breadcrumbs]
+   [leihs.core.core :refer [keyword str presence]]
+   [leihs.core.requests.core :as requests]
+   [leihs.core.routing.front :as routing]
+   [leihs.core.breadcrumbs :as breadcrumbs]
 
-    [leihs.my.front.breadcrumbs :as my-breadcrumbs]
-    [leihs.my.front.shared :refer [humanize-datetime-component]]
-    [leihs.my.front.state :as state]
-    [leihs.my.paths :as paths :refer [path]]
-    [leihs.my.user.api-token.front :as api-token]
-    [leihs.my.user.api-tokens.breadcrumbs :as api-tokens-breadcrumbs]
-    [leihs.my.user.shared :refer [me?*]]
+   [leihs.my.front.breadcrumbs :as my-breadcrumbs]
+   [leihs.my.front.shared :refer [humanize-datetime-component]]
+   [leihs.my.front.state :as state]
+   [leihs.my.paths :as paths :refer [path]]
+   [leihs.my.user.api-token.front :as api-token]
+   [leihs.my.user.api-tokens.breadcrumbs :as api-tokens-breadcrumbs]
+   [leihs.my.user.shared :refer [me?*]]
 
-    [cljs.pprint :refer [pprint]]
-    [cljs.core.async :as async]
-    [cljs.core.async :refer [timeout]]
-    [reagent.core :as reagent]
-
-    ))
+   [cljs.pprint :refer [pprint]]
+   [cljs.core.async :as async]
+   [cljs.core.async :refer [timeout]]
+   [reagent.core :as reagent]))
 
 (defonce api-tokens* (reagent/atom nil))
 
@@ -56,8 +54,7 @@
     (for [scope scopes]
       [:th
        {:key scope}
-       [api-token/scope-text scope]]
-      )
+       [api-token/scope-text scope]])
     [:th
      {:key :created}
      "created"]
@@ -110,20 +107,19 @@
 (defn page []
   [:div.account
    (breadcrumbs/nav-component
-     [(breadcrumbs/leihs-li)
-      (my-breadcrumbs/user-li)
-      (api-tokens-breadcrumbs/api-tokens-li)]
-     [(api-tokens-breadcrumbs/api-token-add-li)])
+    [(breadcrumbs/leihs-li)
+     (my-breadcrumbs/user-li)
+     (api-tokens-breadcrumbs/api-tokens-li)]
+    [(api-tokens-breadcrumbs/api-token-add-li)])
    [:div
     [routing/hidden-state-component {:did-change fetch-tokens}]
     [:div
      (if @me?*
        [:h1 "My API-Tokens"]
        (let [id (-> @routing/state* :route-params :user-id)]
-         [:div 
+         [:div
           [:h1 "User's API-Tokens"]
-          [:p "user-id: " [:code id ]]]))]
+          [:p "user-id: " [:code id]]]))]
     [api-tokens-component]
-    [debug-component]
-    ]])
+    [debug-component]]])
 

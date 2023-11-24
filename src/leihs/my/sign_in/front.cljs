@@ -8,7 +8,6 @@
    [leihs.core.dom :as dom]
    ["/my-ui" :as UI]))
 
-
 (defn page []
   (let [page-props (dom/data-attribute "body" "page-props")]
     (fn []

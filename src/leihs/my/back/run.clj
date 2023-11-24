@@ -1,39 +1,38 @@
 (ns leihs.my.back.run
   (:refer-clojure :exclude [keyword str])
   (:require
-    [clojure.pprint :refer [pprint]]
-    [clojure.tools.cli :as cli]
-    [leihs.core.db :as db]
-    [leihs.core.http-server :as http-server]
-    [leihs.core.shutdown :as shutdown]
-    [leihs.core.sign-in.back :refer [use-sign-in-page-renderer]]
-    [leihs.core.status :as status]
-    [leihs.my.back.html :refer [auth-page]]
-    [leihs.my.paths]
-    [leihs.my.routes :as routes]
-    [logbug.catcher :as catcher]
-    [taoensso.timbre :refer [debug info warn error]]))
+   [clojure.pprint :refer [pprint]]
+   [clojure.tools.cli :as cli]
+   [leihs.core.db :as db]
+   [leihs.core.http-server :as http-server]
+   [leihs.core.shutdown :as shutdown]
+   [leihs.core.sign-in.back :refer [use-sign-in-page-renderer]]
+   [leihs.core.status :as status]
+   [leihs.my.back.html :refer [auth-page]]
+   [leihs.my.paths]
+   [leihs.my.routes :as routes]
+   [logbug.catcher :as catcher]
+   [taoensso.timbre :refer [debug info warn error]]))
 
 (defn run [options]
   (catcher/snatch
-    {:return-fn (fn [e] (System/exit -1))}
-    (info "Invoking run with options: " options)
-    (shutdown/init options)
-    (use-sign-in-page-renderer auth-page)
-    (let [status (status/init)]
-      (db/init options (:health-check-registry status)))
-    (let [http-handler (routes/init)]
-      (http-server/start options http-handler))))
+   {:return-fn (fn [e] (System/exit -1))}
+   (info "Invoking run with options: " options)
+   (shutdown/init options)
+   (use-sign-in-page-renderer auth-page)
+   (let [status (status/init)]
+     (db/init options (:health-check-registry status)))
+   (let [http-handler (routes/init)]
+     (http-server/start options http-handler))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
 (def cli-options
   (concat
-    [["-h" "--help"]
-     shutdown/pid-file-option]
-    db/cli-options
-    (http-server/cli-options :default-http-port 3240)))
+   [["-h" "--help"]
+    shutdown/pid-file-option]
+   db/cli-options
+   (http-server/cli-options :default-http-port 3240)))
 
 (defn main-usage [options-summary & more]
   (->> ["leihs-my"

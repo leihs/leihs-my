@@ -1,14 +1,13 @@
 (ns leihs.my.initial-admin.back
   (:refer-clojure :exclude [keyword str])
   (:require
-    [compojure.core :as cpj]
-    [honey.sql :refer [format] :rename {format sql-format}]
-    [honey.sql.helpers :as sql]
-    [leihs.my.paths :refer [path]]
-    [leihs.my.user.shared :refer [set-password]]
-    [next.jdbc :as jdbc]
-    [ring.util.response :refer [redirect]]))
-
+   [compojure.core :as cpj]
+   [honey.sql :refer [format] :rename {format sql-format}]
+   [honey.sql.helpers :as sql]
+   [leihs.my.paths :refer [path]]
+   [leihs.my.user.shared :refer [set-password]]
+   [next.jdbc :as jdbc]
+   [ring.util.response :refer [redirect]]))
 
 (defn some-admin? [tx]
   (->> ["SELECT true AS has_admin FROM users WHERE is_admin = true"]
@@ -58,7 +57,7 @@
 
 (def routes
   (cpj/routes
-    (cpj/POST (path :initial-admin) [] create-initial-admin)))
+   (cpj/POST (path :initial-admin) [] create-initial-admin)))
 
 (defn route
   ([handler request]

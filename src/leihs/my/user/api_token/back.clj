@@ -1,20 +1,19 @@
 (ns leihs.my.user.api-token.back
   (:refer-clojure :exclude [keyword str])
   (:require
-    [compojure.core :as cpj]
-    [crypto.random]
-    [honey.sql :refer [format] :rename {format sql-format}]
-    [honey.sql.helpers :as sql]
-    [leihs.core.core :refer [str]]
-    [leihs.my.paths :refer [path]]
-    [leihs.my.user.shared :refer [wrap-me-id]]
-    [next.jdbc :as jdbc]
-    [taoensso.timbre :refer [error]])
+   [compojure.core :as cpj]
+   [crypto.random]
+   [honey.sql :refer [format] :rename {format sql-format}]
+   [honey.sql.helpers :as sql]
+   [leihs.core.core :refer [str]]
+   [leihs.my.paths :refer [path]]
+   [leihs.my.user.shared :refer [wrap-me-id]]
+   [next.jdbc :as jdbc]
+   [taoensso.timbre :refer [error]])
   (:import
-    (com.google.common.io BaseEncoding)
-    (java.time OffsetDateTime)
-    (org.joda.time DateTime)))
-
+   (com.google.common.io BaseEncoding)
+   (java.time OffsetDateTime)
+   (org.joda.time DateTime)))
 
 (def api-token-selects
   [:created_at
@@ -42,7 +41,6 @@
    :scope_write])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 (def b32 (BaseEncoding/base32))
 
@@ -102,7 +100,6 @@
      {:status 200
       :body (assoc token :token_secret token-secret)})))
 
-
 ;;; patch ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn patch
@@ -127,7 +124,6 @@
              (->> (jdbc/execute-one! tx))))
        {:status 204}))))
 
-
 ;;; get ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn api-token-query [api-token-id user-id]
@@ -143,7 +139,6 @@
    (when-let [api-token (->> (api-token-query api-token-id user-id)
                              (jdbc/execute-one! tx))]
      {:body api-token})))
-
 
 ;;; delete ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -165,11 +160,11 @@
 
 (def routes
   (cpj/routes
-    (cpj/PATCH api-token-path [] (-> #'patch wrap-me-id))
-    (cpj/DELETE api-token-path [] (-> #'delete wrap-me-id))
-    (cpj/GET api-token-path [] (-> #'get-api-token wrap-me-id))
-    (cpj/POST (path :api-tokens {:user-id ":user-id"})
-              [] (-> #'create-api-token wrap-me-id))))
+   (cpj/PATCH api-token-path [] (-> #'patch wrap-me-id))
+   (cpj/DELETE api-token-path [] (-> #'delete wrap-me-id))
+   (cpj/GET api-token-path [] (-> #'get-api-token wrap-me-id))
+   (cpj/POST (path :api-tokens {:user-id ":user-id"})
+     [] (-> #'create-api-token wrap-me-id))))
 
 ;#### debug ###################################################################
 ;(debug/wrap-with-log-debug #'data-url-img->buffered-image)
