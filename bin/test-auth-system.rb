@@ -3,8 +3,13 @@ require 'addressable/uri'
 require 'haml'
 require 'json'
 require 'jwt'
+require 'logger'
 require 'pry'
 require 'sinatra'
+
+
+$logger = Logger.new($stdout)
+$logger.level = Logger::INFO
 
 # for now:
 # start with `bundle exec ruby ... -p PORT`
@@ -27,6 +32,8 @@ KEY
 ES256_priv_key = OpenSSL::PKey.read priv_key
 ES256_pub_key = OpenSSL::PKey.read pub_key
 
+EXT_SESSION_ID = 'ext_session_id_12345'
+
 
 ### intialize #################################################################
 
@@ -39,6 +46,8 @@ end
 ### Meta ######################################################################
 
 get '/status' do
+  $logger.info('/status')
+  $logger.info({params: params})
   'OK'
 end
 
@@ -47,22 +56,26 @@ end
 ### sign-in ###################################################################
 
 get '/sign-in' do
+  $logger.info('/sign-in')
+  $logger.info({params: params})
+
   sign_in_request_token = params[:token]
-  # TODO do verify, catch and redirect back with error
-  token_data = JWT.decode sign_in_request_token, ES256_pub_key, true, { algorithm: 'ES256' }
-  email = token_data.first["email"]
+  request_token_data = JWT.decode sign_in_request_token, ES256_pub_key, true, { algorithm: 'ES256' }
+  email = request_token_data.first["email"]
+
+  $logger.info({request_token_data: request_token_data})
 
   success_token = JWT.encode({
     sign_in_request_token: sign_in_request_token,
     email: email,
-    success: true}, ES256_priv_key,'ES256')
+    success: true,
+    external_session_id: EXT_SESSION_ID}, ES256_priv_key,'ES256')
 
   fail_token = JWT.encode({
     sign_in_request_token: sign_in_request_token,
     error_message: "The user did not authenticate successfully!"}, ES256_priv_key,'ES256')
 
-  url = (token_data.first["server_base_url"] || 'http://localhost:3240') + token_data.first['path']
-
+  url = (request_token_data.first["server_base_url"] || 'http://localhost:3240') + request_token_data.first['path']
 
   html =
     Haml::Engine.new(
@@ -88,6 +101,60 @@ get '/sign-in' do
                 %em
                   #{email}
       HAML
+    ).render
+
+  html
+end
+
+
+### sign-out ##################################################################
+
+get '/sign-out' do
+  sign_in_request_token = params[:token]
+  # TODO do verify, catch and redirect back with error
+  request_token_data = JWT.decode(sign_in_request_token, ES256_pub_key, true, { algorithm: 'ES256' }
+                         ).first.with_indifferent_access
+  $logger.info('/sign-out')
+  $logger.info({params: params})
+  $logger.info({request_token_data: request_token_data})
+
+  html =
+    Haml::Engine.new(
+      <<-HAML.strip_heredoc
+        %h1 SSO Sign-out To External Provider
+        %p The real authentication-adapter will redirect this request to the SSO sign-out URL.
+        %pre
+          = #{request_token_data}
+      HAML
+    ).render
+
+  html
+end
+
+
+### sso-external-sign-out #####################################################
+
+get '/sso-sign-out' do
+  $logger.info('/sso-sign-out')
+  $logger.info({params: params})
+
+  sid = params[:sid]
+
+  sign_out_token = JWT.encode({
+    external_session_id: sid}, ES256_priv_key,'ES256')
+
+  url = "http://localhost:#{ENV['LEIHS_MY_HTTP_PORT'].presence ||'3240'}" + \
+    "/sign-out/external-authentication/test/sso-sign-out"
+
+  html =
+    Haml::Engine.new(
+      <<-HAML.strip_heredoc
+        %h1 SSO Sign-out From External Provider
+        %p
+          %a{href: "#{url}?token=#{sign_out_token}"}
+            %span
+              Do sign out!
+  HAML
     ).render
 
   html

@@ -63,6 +63,16 @@
   environment_variables:
     FEATURE_NAME: "Sign in via an external authentication system 03"
     FEATURE: './spec/features/external-authentication-system_sign-up_spec.rb[1:1]'
+'./spec/features/external-authentication-system_sso_spec.rb[1:1]':
+  name: "SSO Sign-in and out via an external authentication system 01"
+  environment_variables:
+    FEATURE_NAME: "SSO Sign-in and out via an external authentication system 01"
+    FEATURE: './spec/features/external-authentication-system_sso_spec.rb[1:1]'
+'./spec/features/external-authentication-system_sso_spec.rb[1:2]':
+  name: "SSO Sign-in and out via an external authentication system 02"
+  environment_variables:
+    FEATURE_NAME: "SSO Sign-in and out via an external authentication system 02"
+    FEATURE: './spec/features/external-authentication-system_sso_spec.rb[1:2]'
 './spec/features/initial-admin_and_password-sign-in_spec.rb[1:1]':
   name: "Initial admin and password sign-in 01"
   environment_variables:
