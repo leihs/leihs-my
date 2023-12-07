@@ -3,18 +3,18 @@
   #_(:require-macros
      [reagent.ratom :as ratom :refer [reaction]])
   (:require
+   #_[leihs.my.paths :as paths :refer [path]]
    [leihs.core.breadcrumbs :as breadcrumbs]
    [leihs.core.core :refer [str]]
-   [leihs.my.front.icons :as icons]
    [leihs.core.routing.front :as routing]
    [leihs.core.user.front :as user]
    [leihs.core.user.shared :refer [user-name-html]]
 
    [leihs.my.front.breadcrumbs :as my-breadcrumbs]
-   [leihs.my.user.shared :refer [me?*]]
-   #_[leihs.my.paths :as paths :refer [path]]
+   [leihs.my.front.icons :as icons]
    [leihs.my.user.api-tokens.breadcrumbs :as api-tokens-breadcrumbs]
-   [leihs.my.user.password.breadcrumbs :as password-breadcrumbs]))
+   [leihs.my.user.password.breadcrumbs :as password-breadcrumbs]
+   [leihs.my.user.shared :refer [me?*]]))
 
 (defn user-name-component []
   (let [user-data @user/state*

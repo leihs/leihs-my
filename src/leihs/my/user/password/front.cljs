@@ -1,26 +1,26 @@
 (ns leihs.my.user.password.front
   (:refer-clojure :exclude [str keyword])
   (:require-macros
-   [reagent.ratom :as ratom :refer [reaction]]
-   [cljs.core.async.macros :refer [go]])
+   [cljs.core.async.macros :refer [go]]
+   [reagent.ratom :as ratom :refer [reaction]])
   (:require
+   [accountant.core :as accountant]
+   [cljs.core.async :as async]
+   [cljs.core.async :refer [timeout]]
+   [cljs.pprint :refer [pprint]]
+   [clojure.contrib.inflect :refer [pluralize-noun]]
+
+   [leihs.core.anti-csrf.front :as anti-csrf]
+   [leihs.core.breadcrumbs :as breadcrumbs]
    [leihs.core.core :refer [keyword str presence]]
    [leihs.core.requests.core :as requests]
    [leihs.core.routing.front :as routing]
-   [leihs.core.breadcrumbs :as breadcrumbs]
-   [leihs.core.anti-csrf.front :as anti-csrf]
 
    [leihs.my.front.breadcrumbs :as my-breadcrumbs]
    [leihs.my.front.state :as state]
    [leihs.my.paths :as paths :refer [path]]
    [leihs.my.user.password.breadcrumbs :as password-breadcrumbs]
    [leihs.my.user.shared :refer [me?*]]
-
-   [accountant.core :as accountant]
-   [cljs.core.async :as async]
-   [cljs.core.async :refer [timeout]]
-   [cljs.pprint :refer [pprint]]
-   [clojure.contrib.inflect :refer [pluralize-noun]]
    [reagent.core :as reagent]))
 
 (def user-id*

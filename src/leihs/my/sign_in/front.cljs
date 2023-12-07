@@ -4,9 +4,9 @@
    [reagent.ratom :as ratom :refer [reaction]])
 
   (:require
+   ["/my-ui" :as UI]
    [leihs.core.constants]
-   [leihs.core.dom :as dom]
-   ["/my-ui" :as UI]))
+   [leihs.core.dom :as dom]))
 
 (defn page []
   (let [page-props (dom/data-attribute "body" "page-props")]

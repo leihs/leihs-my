@@ -3,15 +3,15 @@
   (:require-macros
    [reagent.ratom :as ratom :refer [reaction]])
   (:require
+   ["/my-ui" :as UI]
    [accountant.core :as accountant]
+   [leihs.core.dom :as dom]
    [leihs.core.requests.core :as requests]
    [leihs.core.requests.modal]
    [leihs.core.routing.front :as routing]
    [leihs.my.front.state :as state]
    [leihs.my.paths :refer [path]]
-   [reagent.dom :as rdom]
-   [leihs.core.dom :as dom]
-   ["/my-ui" :as UI]))
+   [reagent.dom :as rdom]))
 
 (defn version-component []
   [:span.navbar-text "Version "

@@ -1,9 +1,9 @@
 (ns leihs.my.password-restore.front
   (:refer-clojure :exclude [str keyword])
   (:require
+   ["/my-ui" :as UI]
    [leihs.core.constants]
-   [leihs.core.dom :as dom]
-   ["/my-ui" :as UI]))
+   [leihs.core.dom :as dom]))
 
 (defn forgot-password []
   (let [page-props (dom/data-attribute "body" "page-props")]

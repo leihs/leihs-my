@@ -4,8 +4,8 @@
    [leihs.core.auth.core :as auth]
    [leihs.core.breadcrumbs :refer [li]]
    [leihs.core.core :refer [keyword str presence]]
-   [leihs.my.front.icons :as icons]
-   [leihs.core.routing.front :as routing]))
+   [leihs.core.routing.front :as routing]
+   [leihs.my.front.icons :as icons]))
 
 (defn auth-info-li [] (li :auth-info "Info"))
 (defn auth-li [] (li :auth "Authentication"))

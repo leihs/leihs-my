@@ -1,21 +1,21 @@
 (ns leihs.my.user.auth-info.front
   (:refer-clojure :exclude [str keyword])
   (:require-macros
-   [reagent.ratom :as ratom :refer [reaction]]
-   [cljs.core.async.macros :refer [go]])
+   [cljs.core.async.macros :refer [go]]
+   [reagent.ratom :as ratom :refer [reaction]])
   (:require
+   [accountant.core :as accountant]
+   [cljs.core.async :as async]
+   [cljs.pprint :refer [pprint]]
+   [leihs.core.breadcrumbs :as breadcrumbs]
+
    [leihs.core.core :refer [keyword str presence]]
    [leihs.core.requests.core :as requests]
    [leihs.core.routing.front :as routing]
-   [leihs.core.breadcrumbs :as breadcrumbs]
 
    [leihs.my.front.shared :refer [humanize-datetime-component]]
    [leihs.my.front.state :as state]
    [leihs.my.paths :as paths :refer [path]]
-
-   [accountant.core :as accountant]
-   [cljs.core.async :as async]
-   [cljs.pprint :refer [pprint]]
    [reagent.core :as reagent]))
 
 (def auth-info-data* (reagent/atom nil))

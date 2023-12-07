@@ -1,15 +1,15 @@
 (ns leihs.my.user.api-tokens.back
   (:refer-clojure :exclude [keyword str])
   (:require
+   [clojure.tools.logging :as logging]
    [compojure.core :as cpj]
    [honey.sql :refer [format] :rename {format sql-format}]
    [leihs.core.sql :as sql]
    [leihs.my.paths :refer [path]]
    [leihs.my.user.api-token.back :as api-token]
    [leihs.my.user.shared :refer [wrap-me-id]]
-   [next.jdbc :as jdbc]
-   [clojure.tools.logging :as logging]
-   [logbug.debug :as debug]))
+   [logbug.debug :as debug]
+   [next.jdbc :as jdbc]))
 
 (defn api-tokens-query [user-id]
   (-> (sql/select :id :token_part :scope_read :scope_write :scope_admin_read :scope_admin_write :expires_at :created_at)

@@ -1,15 +1,15 @@
 (ns leihs.my.resources.home.back
   (:refer-clojure :exclude [str keyword])
   (:require [compojure.core :as cpj]
-            [ring.util.response :refer [redirect]]
-            [leihs.my.paths :refer [path]]
-            [leihs.core.redirects :refer [redirect-target]]
-            [leihs.core.core :refer [presence]]
-            [leihs.core.release :as release]
             [leihs.core.anti-csrf.back :refer [anti-csrf-props]]
-            [leihs.core.settings :refer [settings!]]
+            [leihs.core.core :refer [presence]]
+            [leihs.core.redirects :refer [redirect-target]]
+            [leihs.core.release :as release]
             [leihs.core.remote-navbar.shared :refer [navbar-props]]
-            [leihs.my.back.html :refer [auth-page]]))
+            [leihs.core.settings :refer [settings!]]
+            [leihs.my.back.html :refer [auth-page]]
+            [leihs.my.paths :refer [path]]
+            [ring.util.response :refer [redirect]]))
 
 (defn home
   [request]

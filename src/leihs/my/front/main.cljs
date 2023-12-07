@@ -7,8 +7,8 @@
    [leihs.core.global :as global]
    [leihs.core.user.front :refer [load-user-data-from-dom]]
 
-   [leihs.my.paths]
    [leihs.my.front.html :as html]
+   [leihs.my.paths]
    [leihs.my.routes :as routes]))
 
 (defn init! []

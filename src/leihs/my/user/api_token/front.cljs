@@ -1,8 +1,8 @@
 (ns leihs.my.user.api-token.front
   (:refer-clojure :exclude [str keyword])
   (:require-macros
-   [reagent.ratom :as ratom :refer [reaction]]
-   [cljs.core.async.macros :refer [go]])
+   [cljs.core.async.macros :refer [go]]
+   [reagent.ratom :as ratom :refer [reaction]])
   (:require
    ["date-fns" :as date-fns]
    [accountant.core :as accountant]

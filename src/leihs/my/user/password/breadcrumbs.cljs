@@ -6,8 +6,8 @@
    [leihs.core.auth.core :as auth]
    [leihs.core.breadcrumbs :as breadcrumbs :refer [li]]
    [leihs.core.core :refer [keyword str presence]]
-   [leihs.my.front.icons :as icons]
-   [leihs.core.routing.front :as routing]))
+   [leihs.core.routing.front :as routing]
+   [leihs.my.front.icons :as icons]))
 
 (def route-params*
   (reaction

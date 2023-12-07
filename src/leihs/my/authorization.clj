@@ -3,8 +3,8 @@
   (:require [leihs.core.core :refer [keyword str presence]])
   (:require
    [clojure.tools.logging :as logging]
-   [logbug.debug :as debug]
-   [logbug.catcher :as catcher]))
+   [logbug.catcher :as catcher]
+   [logbug.debug :as debug]))
 
 (def HTTP-SAFE-VERBS #{:get :head :options :trace})
 
