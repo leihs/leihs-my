@@ -9,7 +9,7 @@
     "test-storybook": "test-storybook --url http://localhost:6007",
     "start": "webpack serve --mode=development",
     "watch": "webpack watch --mode=development",
-    "build": "rm -rf dist && webpack --mode=production",
+    "build": "rm -rf dist/* && webpack --mode=production",
     "lint": "eslint .",
     "prettier": "prettier --write ."
   },
