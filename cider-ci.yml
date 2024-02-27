@@ -77,3 +77,20 @@ jobs:
       and it will pass if and only if all dependencies have passed.
       Status of this job is **used by github's "branch protection"**!
     include: cider-ci/good-to-merge_job-context.yml
+
+  merged-to-master:
+    name: "Merged to master"
+    depends_on:
+      master branch matches:
+        type: branch
+        include_match: ^master$
+    run_when:
+      master branch matches:
+        type: branch
+        include_match: ^master$
+    context:
+      tasks:
+        merged-to-master:
+          scripts:
+            test:
+              body: "exit 0"
