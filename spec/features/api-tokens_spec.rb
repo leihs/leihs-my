@@ -65,32 +65,6 @@ feature 'API Tokens', type: :feature do
           }.status).to be== 200
       end
 
-      scenario 'the token can be used to ' \
-        ' authenticate via basic auth as the username ' do
-        http_client = Faraday.new(
-          url: http_base_url,
-          headers: { accept: 'application/json' }) do |conn|
-            conn.adapter Faraday.default_adapter
-            conn.response :json, content_type: /\bjson$/
-            conn.basic_auth(@token_secret,'')
-          end
-          resp = http_client.get('/my/user/me/auth-info')
-          expect(resp.status).to be== 200
-      end
-
-      scenario 'the token can be used to ' \
-        ' authenticate via basic auth as the password' do
-        http_client = Faraday.new(
-          url: http_base_url,
-          headers: { accept: 'application/json' }) do |conn|
-            conn.adapter Faraday.default_adapter
-            conn.response :json, content_type: /\bjson$/
-            conn.basic_auth('',@token_secret)
-          end
-          resp = http_client.get('/my/user/me/auth-info')
-          expect(resp.status).to be== 200
-      end
-
       scenario 'editing the description of the token' do
         click_on_first 'Edit'
         fill_in 'Description', with: "The updated description"

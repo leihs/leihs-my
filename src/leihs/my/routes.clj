@@ -6,6 +6,7 @@
    [compojure.core :as cpj]
    [leihs.core.anti-csrf.back :as anti-csrf]
    [leihs.core.auth.core :as auth]
+   [leihs.core.auth.session]
    [leihs.core.db :as db]
    [leihs.core.http-cache-buster2 :as cache-buster :refer [wrap-resource]]
    [leihs.core.locale :as locale]
@@ -96,7 +97,7 @@
    ring-audits/wrap
    anti-csrf/wrap
    locale/wrap
-   auth/wrap-authenticate
+   (auth/wrap-authenticate {:enable-auth-header-prefix-basic false})
    ring.middleware.cookies/wrap-cookies
    routing/wrap-empty
    settings/wrap
