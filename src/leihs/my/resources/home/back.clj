@@ -23,7 +23,7 @@
          (merge {:footer {:appVersion release/version}})
          (merge (anti-csrf-props request))
          ((fn [props]
-            (if-let [home-page-image-url (-> request :tx-next
+            (if-let [home-page-image-url (-> request :tx
                                              (settings! [:home_page_image_url])
                                              :home_page_image_url presence)]
               (assoc-in props [:splash :image] home-page-image-url)

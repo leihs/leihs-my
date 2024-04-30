@@ -50,7 +50,7 @@
       (->> (jdbc/execute! tx))))
 
 (defn insert-into-user-password-resets
-  [token {user-id :id} {{user-param :user} :params tx :tx-next}]
+  [token {user-id :id} {{user-param :user} :params tx :tx}]
   (-> (sql/insert-into :user_password_resets)
       (sql/values [{:user_id [:cast user-id :uuid],
                     :token token,
@@ -99,7 +99,7 @@
   (let [user-param (-> request
                        :params
                        :user)
-        tx (:tx-next request)
+        tx (:tx request)
         user (user-with-unique-id tx user-param)]
     (cond
       (-> request :settings :email_sending_enabled not)
@@ -129,7 +129,7 @@
                  (merge {:userParam user-param})
                  auth-page)})))
 
-(defn forgot-post [{{user-param :user} :params tx :tx-next :as request}]
+(defn forgot-post [{{user-param :user} :params tx :tx :as request}]
   (let [user (user-with-unique-id tx user-param)
         token (make-token 20)]
     (if user
@@ -159,7 +159,7 @@
   (let [token-param (-> request
                         :params
                         :token)
-        tx (:tx-next request)
+        tx (:tx request)
         user-password-reset (some->> token-param
                                      (get-from-user-password-resets tx))]
     (if (and token-param (not user-password-reset))
@@ -187,7 +187,7 @@
 
 (defn reset-post
   [request]
-  (let [tx (:tx-next request)
+  (let [tx (:tx request)
         token (-> request
                   :params
                   :token)

@@ -4,7 +4,7 @@
    [clojure.tools.logging :as logging]
    [compojure.core :as cpj]
    [honey.sql :refer [format] :rename {format sql-format}]
-   [leihs.core.sql :as sql]
+   [honey.sql.helpers :as sql]
    [leihs.my.paths :refer [path]]
    [leihs.my.user.api-token.back :as api-token]
    [leihs.my.user.shared :refer [wrap-me-id]]
@@ -19,7 +19,7 @@
       sql-format))
 
 (defn api-tokens
-  ([{tx :tx-next {user-id :user-id} :route-params}]
+  ([{tx :tx {user-id :user-id} :route-params}]
    (api-tokens user-id tx))
   ([user-id tx]
    {:body

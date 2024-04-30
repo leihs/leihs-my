@@ -85,7 +85,7 @@
        (into {})))
 
 (defn create-api-token
-  ([{body :body tx :tx-next {user-id :user-id} :route-params}]
+  ([{body :body tx :tx {user-id :user-id} :route-params}]
    (create-api-token user-id body tx))
   ([user-id body tx]
    (let [token-secret (secret 20)
@@ -103,8 +103,8 @@
 ;;; patch ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn patch
-  ([{tx :tx-next data :body {user-id :user-id
-                             api-token-id :api-token-id} :route-params}]
+  ([{tx :tx data :body {user-id :user-id
+                        api-token-id :api-token-id} :route-params}]
    (patch api-token-id user-id data tx))
   ([api-token-id user-id data tx]
    (let [user-token-condition [:and [:= :user_id [:cast user-id :uuid]]
@@ -133,7 +133,7 @@
       sql-format))
 
 (defn get-api-token
-  ([{tx :tx-next {user-id :user-id api-token-id :api-token-id} :route-params}]
+  ([{tx :tx {user-id :user-id api-token-id :api-token-id} :route-params}]
    (get-api-token api-token-id user-id tx))
   ([api-token-id user-id tx]
    (when-let [api-token (->> (api-token-query api-token-id user-id)
@@ -142,8 +142,8 @@
 
 ;;; delete ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn delete [{tx :tx-next {user-id :user-id
-                            api-token-id :api-token-id} :route-params}]
+(defn delete [{tx :tx {user-id :user-id
+                       api-token-id :api-token-id} :route-params}]
   (let [result (-> (sql/delete-from :api-tokens)
                    (sql/where [:and [:= :user_id [:cast user-id :uuid]] [:= :id [:cast api-token-id :uuid]]])
                    sql-format

@@ -40,7 +40,7 @@
       (->> (jdbc/execute-one! tx))))
 
 (defn create-initial-admin
-  ([{tx :tx-next form-params :form-params data :body}]
+  ([{tx :tx form-params :form-params data :body}]
    (create-initial-admin (if (empty? form-params)
                            data form-params) tx))
   ([data tx]
@@ -63,7 +63,7 @@
   ([handler request]
    (if (or (not= (-> request :accept :mime) :html)
            (= (:handler-key request) :initial-admin)
-           (some-admin? (:tx-next request)))
+           (some-admin? (:tx request)))
      (handler request)
      (redirect (path :initial-admin) :see-other))))
 

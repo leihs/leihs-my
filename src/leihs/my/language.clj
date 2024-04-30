@@ -9,7 +9,7 @@
    [ring.util.response :refer [redirect]]))
 
 (defn redirect-back-with-language-cookie
-  [{tx :tx-next
+  [{tx :tx
     {locale :locale} :form-params
     {referer "referer"} :headers}]
   (let [result (-> (sql/select :*)

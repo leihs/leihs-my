@@ -9,7 +9,7 @@
    [logbug.debug :as debug]))
 
 (defn reset-password-ring-handler
-  [{tx :tx-next
+  [{tx :tx
     {user-id :user-id} :route-params
     {password :password} :body}]
   (assert (set-password user-id password tx))

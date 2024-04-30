@@ -14,7 +14,7 @@
 
 (defn route-user [request]
   (let [user-id (-> request :route-params :user-id)
-        tx (:tx-next request)]
+        tx (:tx request)]
     (-> (sql/select :*)
         (sql/from :users)
         (sql/where [:= :id [:cast user-id :uuid]])
