@@ -264,6 +264,7 @@ export const NavbarLogin = ({ returnTo, formAction, requireUserInput = false, lo
           required={requireUserInput}
           autoCapitalize="off"
           autoCorrect="off"
+          onChange={e => (e.target.value = e.target.value.trim())}
         />
         <div className="input-group-append">
           <button className="btn btn-success" type="submit" id="button-addon2">

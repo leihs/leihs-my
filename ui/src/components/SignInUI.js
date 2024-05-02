@@ -32,6 +32,7 @@ export const SignInCard = ({ authFlow, authSystems, messages, locales, csrfToken
           autoFocus={autoFocusUserField}
           autoCapitalize="off"
           autoCorrect="off"
+          onChange={e => (e.target.value = e.target.value.trim())}
         />
 
         <CsrfTokenField {...csrfToken} />
