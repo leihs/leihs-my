@@ -26,8 +26,6 @@
    [leihs.my.password-restore.back :as password-restore]
    [leihs.my.paths :refer [path paths]]
    [leihs.my.resources.home.back :as home]
-   [leihs.my.user.api-token.back :as api-token]
-   [leihs.my.user.api-tokens.back :as api-tokens]
    [leihs.my.user.auth-info.back :as auth-info]
    [leihs.my.user.password.back :as password]
    [logbug.catcher :as catcher]
@@ -66,9 +64,7 @@
 
 (def resolve-table
   (merge core-routes/resolve-table
-         {:api-token api-token/routes
-          :api-tokens api-tokens/routes
-          :auth-info auth-info/ring-handler
+         {:auth-info auth-info/ring-handler
           :forgot-password password-restore/forgot-routes
           :home home/routes
           :initial-admin initial-admin/routes

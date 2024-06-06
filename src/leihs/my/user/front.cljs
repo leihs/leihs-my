@@ -1,9 +1,6 @@
 (ns leihs.my.user.front
   (:refer-clojure :exclude [str keyword])
-  #_(:require-macros
-     [reagent.ratom :as ratom :refer [reaction]])
   (:require
-   #_[leihs.my.paths :as paths :refer [path]]
    [leihs.core.breadcrumbs :as breadcrumbs]
    [leihs.core.core :refer [str]]
    [leihs.core.routing.front :as routing]
@@ -12,7 +9,6 @@
 
    [leihs.my.front.breadcrumbs :as my-breadcrumbs]
    [leihs.my.front.icons :as icons]
-   [leihs.my.user.api-tokens.breadcrumbs :as api-tokens-breadcrumbs]
    [leihs.my.user.password.breadcrumbs :as password-breadcrumbs]
    [leihs.my.user.shared :refer [me?*]]))
 
@@ -29,8 +25,7 @@
      (breadcrumbs/nav-component
       [(breadcrumbs/leihs-li)
        (my-breadcrumbs/user-li)]
-      [(api-tokens-breadcrumbs/api-tokens-li)
-       (password-breadcrumbs/password-li)
+      [(password-breadcrumbs/password-li)
        (when (:is_admin @user/state*)
          (breadcrumbs/li (str "/admin/users/" user-id)
                          [:span [icons/user-in-admin] " User in the admin interface"]))])

@@ -36,21 +36,11 @@
                           (leaf "/" :requests)
                           (branch "/" (param :id)
                                   (leaf "" :request))))))
-(def api-tokens-paths
-  (branch "/api-tokens/"
-          (leaf "" :api-tokens)
-          (leaf "add" :api-token-add)
-          (branch ""
-                  (param :api-token-id)
-                  (leaf "" :api-token)
-                  (leaf "/delete" :api-token-delete)
-                  (leaf "/edit" :api-token-edit))))
 
 (def user-paths
   (branch "/user/"
           (param [#"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})|(me)|(:user-id)" :user-id])
-          (leaf "/password" :password)
-          api-tokens-paths))
+          (leaf "/password" :password)))
 
 (def password-restore-paths
   (branch "/"
