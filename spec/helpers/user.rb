@@ -14,7 +14,7 @@ module Helpers
         click_button
       end
 
-      click_on 'Auth-Info'
+      visit '/my/auth-info'
       expect(page).to have_content user.email
     end
 

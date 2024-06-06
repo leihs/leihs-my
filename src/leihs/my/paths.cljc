@@ -1,12 +1,7 @@
 (ns leihs.my.paths
-  (:refer-clojure :exclude [str keyword])
   (:require
-   [bidi.bidi :refer [path-for match-route]]
-   [bidi.verbose :refer [branch param leaf]]
-   [clojure.pprint :refer [pprint]]
-   [leihs.core.core :refer [keyword str presence]]
-   [leihs.core.paths]
-   [taoensso.timbre :as logging]))
+   [bidi.verbose :refer [branch leaf param]]
+   [leihs.core.paths]))
 
 (def external-handlers
   #{:admin
@@ -31,16 +26,13 @@
   (branch ""
           (leaf "/status" :status)
           (leaf "/initial-admin" :initial-admin)
+          (leaf "/auth-info" :auth-info)
+          (leaf "/language" :language)
           (branch "/debug"
                   (branch "/requests"
                           (leaf "/" :requests)
                           (branch "/" (param :id)
                                   (leaf "" :request))))))
-
-(def user-paths
-  (branch "/user/"
-          (param [#"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})|(me)|(:user-id)" :user-id])
-          (leaf "/password" :password)))
 
 (def password-restore-paths
   (branch "/"
@@ -52,13 +44,8 @@
           leihs.core.paths/core-paths
           password-restore-paths
           (branch "/my"
-                  (leaf "/language" :language)
-                  my-service-paths
-                  user-paths)))
+                  my-service-paths)))
 
 (reset! leihs.core.paths/paths* paths)
 
 (def path leihs.core.paths/path)
-
-;(path :user {:user-id "me"}{})
-;(path :my-user {:user-id "me"}{})

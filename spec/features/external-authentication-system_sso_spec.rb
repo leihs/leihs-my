@@ -40,7 +40,7 @@ feature 'SSO Sign-in and out via an external authentication system', type: :feat
     end
     click_on @test_authentication_system.name
     click_on 'Yes, I am admin@example.com'
-    click_on 'Auth-Info'
+    visit '/my/auth-info'
     expect(page).to have_content 'admin@example.com'
     expect(page).to have_content 'ext_session_id_12345'
     find('.fa-user-circle').click
@@ -58,7 +58,7 @@ feature 'SSO Sign-in and out via an external authentication system', type: :feat
     end
     click_on @test_authentication_system.name
     click_on 'Yes, I am admin@example.com'
-    click_on 'Auth-Info'
+    visit '/my/auth-info'
     expect(page).to have_content 'admin@example.com'
     expect(page).to have_content 'ext_session_id_12345'
     auth_info_url = current_url

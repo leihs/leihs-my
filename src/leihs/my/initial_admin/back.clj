@@ -1,5 +1,4 @@
 (ns leihs.my.initial-admin.back
-  (:refer-clojure :exclude [keyword str])
   (:require
    [compojure.core :as cpj]
    [honey.sql :refer [format] :rename {format sql-format}]

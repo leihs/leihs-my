@@ -1,9 +1,6 @@
 (ns leihs.my.routes
-  (:refer-clojure :exclude [str keyword])
-  (:require [leihs.core.core :refer [keyword str presence]])
   (:require
-   [clojure.tools.logging :as logging]
-   [compojure.core :as cpj]
+   [clojure.set]
    [leihs.core.anti-csrf.back :as anti-csrf]
    [leihs.core.auth.core :as auth]
    [leihs.core.auth.session]
@@ -17,21 +14,13 @@
    [leihs.core.routing.dispatch-content-type :as dispatch-content-type]
    [leihs.core.settings :as settings]
    [leihs.core.status :as status]
-   [leihs.core.user.core :as user]
+   [leihs.my.auth-info.back :as auth-info]
    [leihs.my.authorization :as authorization]
    [leihs.my.back.html :as html]
-   [leihs.my.constants :as constants]
    [leihs.my.initial-admin.back :as initial-admin]
-   [leihs.my.language :as language]
    [leihs.my.password-restore.back :as password-restore]
    [leihs.my.paths :refer [path paths]]
    [leihs.my.resources.home.back :as home]
-   [leihs.my.user.auth-info.back :as auth-info]
-   [leihs.my.user.password.back :as password]
-   [logbug.catcher :as catcher]
-   [logbug.debug :as debug :refer [I>]]
-   [logbug.ring :refer [wrap-handler-with-logging]]
-   [logbug.thrown :as thrown]
    [ring.middleware.content-type :refer [wrap-content-type]]
    [ring.middleware.cookies]
    [ring.middleware.json]
@@ -46,7 +35,6 @@
    #{:forgot-password
      :home
      :initial-admin
-     :language
      :password-authentication
      :reset-password}))
 
@@ -57,21 +45,17 @@
    core-routes/no-spa-handler-keys
    #{:forgot-password
      :home
-     :language
      :not-found
      :redirect-to-root
      :reset-password}))
 
 (def resolve-table
   (merge core-routes/resolve-table
-         {:auth-info auth-info/ring-handler
+         {:auth-info auth-info/auth-info-handler
           :forgot-password password-restore/forgot-routes
           :home home/routes
           :initial-admin initial-admin/routes
-          :language language/routes
-          :my-user user/routes
           :not-found html/not-found-handler
-          :password password/routes
           :redirect-to-root redirect-to-root-handler
           :reset-password password-restore/reset-routes}))
 

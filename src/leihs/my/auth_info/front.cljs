@@ -1,20 +1,10 @@
-(ns leihs.my.user.auth-info.front
-  (:refer-clojure :exclude [str keyword])
-  (:require-macros
-   [cljs.core.async.macros :refer [go]]
-   [reagent.ratom :as ratom :refer [reaction]])
-  (:require
-   [accountant.core :as accountant]
-   [cljs.core.async :as async]
-   [cljs.pprint :refer [pprint]]
-   [leihs.core.breadcrumbs :as breadcrumbs]
+(ns leihs.my.auth-info.front
 
-   [leihs.core.core :refer [keyword str presence]]
+  (:require
+   [cljs.core.async :as async :refer [go <!]]
+   [cljs.pprint :refer [pprint]]
    [leihs.core.requests.core :as requests]
    [leihs.core.routing.front :as routing]
-
-   [leihs.my.front.shared :refer [humanize-datetime-component]]
-   [leihs.my.front.state :as state]
    [leihs.my.paths :as paths :refer [path]]
    [reagent.core :as reagent]))
 

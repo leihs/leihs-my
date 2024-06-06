@@ -1,6 +1,7 @@
 (ns leihs.my.password-restore.back
   (:require
    [clojure.spec.alpha :as spec]
+   [clojure.string]
    [compojure.core :as cpj]
    [honey.sql :refer [format] :rename {format sql-format}]
    [honey.sql.helpers :as sql]
@@ -66,17 +67,6 @@
       (sql/where [:= (normalize-token-str token-param) :token])
       sql-format
       (->> (jdbc/execute-one! tx))))
-
-(def error-flash-user-has-no-email
-  {:level "error",
-   :message
-   (clojure.string/join
-    " \n"
-    ["Keine Email-Adresse vorhanden!"
-     "Das Passwort für dieses Benutzerkonto kann nicht zurückgesetzt werden,
-          weil keine Email-Adresse im System vorhanden ist.
-          Bitte prüfen Sie den angegebenen Benutzernamen.
-          Kontaktieren Sie den leihs-Support, falls das Problem weiterhin besteht."])})
 
 (defn common-props [request]
   (as-> request <>
@@ -218,4 +208,3 @@
 (def reset-routes
   (cpj/routes (cpj/GET (path :reset-password) [] #'reset-get)
               (cpj/POST (path :reset-password) [] #'reset-post)))
-

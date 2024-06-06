@@ -1,5 +1,4 @@
 (ns leihs.my.password-restore.front
-  (:refer-clojure :exclude [str keyword])
   (:require
    ["/my-ui" :as UI]
    [leihs.core.constants]

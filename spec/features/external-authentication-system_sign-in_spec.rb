@@ -29,7 +29,7 @@ feature 'Sign in via an external authentication system', type: :feature do
     end
     click_on @test_authentication_system.name
     click_on 'Yes, I am admin@example.com'
-    click_on 'Auth-Info'
+    visit '/my/auth-info'
     expect(page).to have_content 'admin@example.com'
   end
 

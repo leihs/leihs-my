@@ -28,31 +28,6 @@
   environment_variables:
     FEATURE_NAME: "Initial admin and password sign-in 01"
     FEATURE: './spec/features/initial-admin_and_password-sign-in_spec.rb[1:1]'
-'./spec/features/password-reset_spec.rb[1:1:1]':
-  name: "Password-Reset an admin, system-amdin and two users 01"
-  environment_variables:
-    FEATURE_NAME: "Password-Reset an admin, system-amdin and two users 01"
-    FEATURE: './spec/features/password-reset_spec.rb[1:1:1]'
-'./spec/features/password-reset_spec.rb[1:1:2]':
-  name: "Password-Reset an admin, system-amdin and two users 02"
-  environment_variables:
-    FEATURE_NAME: "Password-Reset an admin, system-amdin and two users 02"
-    FEATURE: './spec/features/password-reset_spec.rb[1:1:2]'
-'./spec/features/password-reset_spec.rb[1:1:3]':
-  name: "Password-Reset an admin, system-amdin and two users 03"
-  environment_variables:
-    FEATURE_NAME: "Password-Reset an admin, system-amdin and two users 03"
-    FEATURE: './spec/features/password-reset_spec.rb[1:1:3]'
-'./spec/features/password-reset_spec.rb[1:1:4]':
-  name: "Password-Reset an admin, system-amdin and two users 04"
-  environment_variables:
-    FEATURE_NAME: "Password-Reset an admin, system-amdin and two users 04"
-    FEATURE: './spec/features/password-reset_spec.rb[1:1:4]'
-'./spec/features/password-reset_spec.rb[1:1:5]':
-  name: "Password-Reset an admin, system-amdin and two users 05"
-  environment_variables:
-    FEATURE_NAME: "Password-Reset an admin, system-amdin and two users 05"
-    FEATURE: './spec/features/password-reset_spec.rb[1:1:5]'
 './spec/features/password_sign-in_sign-out_spec.rb[1:1:1]':
   name: "Password, sign-in, sign-out and session  a user with password 01"
   environment_variables:
@@ -93,18 +68,3 @@
   environment_variables:
     FEATURE_NAME: "SuperAdmin 01"
     FEATURE: './spec/features/super-admin-factory_spec.rb[1:1]'
-'./spec/features/user-show_spec.rb[1:1]':
-  name: "User show 01"
-  environment_variables:
-    FEATURE_NAME: "User show 01"
-    FEATURE: './spec/features/user-show_spec.rb[1:1]'
-'./spec/features/user-show_spec.rb[1:2]':
-  name: "User show 02"
-  environment_variables:
-    FEATURE_NAME: "User show 02"
-    FEATURE: './spec/features/user-show_spec.rb[1:2]'
-'./spec/features/user-show_spec.rb[1:3]':
-  name: "User show 03"
-  environment_variables:
-    FEATURE_NAME: "User show 03"
-    FEATURE: './spec/features/user-show_spec.rb[1:3]'

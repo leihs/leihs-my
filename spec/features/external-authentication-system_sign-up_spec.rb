@@ -40,7 +40,7 @@ feature 'Sign in via an external authentication system', type: :feature do
       authentication_system_id: @test_authentication_system.id
 
     click_on 'Yes, I am unknown@example.com'
-    click_on 'Auth-Info'
+    visit '/my/auth-info'
     expect(page).to have_content 'unknown@example.com'
   end
 

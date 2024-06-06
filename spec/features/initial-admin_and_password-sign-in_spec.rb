@@ -28,7 +28,7 @@ feature 'Initial admin and password sign-in', type: :feature do
 
     # we are signed-in
     wait_until do
-      click_on 'Auth-Info'
+      visit '/my/auth-info'
       expect(page).to have_content  'admin@example.com'
     end
 

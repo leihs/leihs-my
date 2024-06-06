@@ -1,3 +1,0 @@
-(ns leihs.my.constants)
-
-

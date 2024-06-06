@@ -1,16 +1,14 @@
 (ns leihs.my.main
-  (:require
-   [clj-yaml.core :as yaml]
-   [clojure.pprint :refer [pprint]]
-   [clojure.tools.cli :as cli :refer [parse-opts]]
-   [environ.core :refer [env]]
-   [leihs.core.logging :as logging]
-   [leihs.core.repl :as repl]
-   [leihs.my.back.run :as run]
-   [logbug.catcher :as catcher]
-   [logbug.debug :as debug]
-   [logbug.thrown :as thrown]
-   [taoensso.timbre :refer [debug info warn error]])
+  (:require [clj-yaml.core :as yaml]
+            [clojure.pprint :refer [pprint]]
+            [clojure.string]
+            [clojure.tools.cli :as cli]
+            [environ.core :refer [env]]
+            [leihs.core.logging :as logging]
+            [leihs.core.repl :as repl]
+            [leihs.my.back.run :as run]
+            [logbug.thrown :as thrown]
+            [taoensso.timbre :refer [info]])
   (:gen-class))
 
 (thrown/reset-ns-filter-regex #"^(leihs)\..*")

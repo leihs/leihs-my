@@ -1,5 +1,4 @@
 (ns leihs.my.back.run
-  (:refer-clojure :exclude [keyword str])
   (:require
    [clojure.pprint :refer [pprint]]
    [clojure.tools.cli :as cli]
@@ -12,7 +11,7 @@
    [leihs.my.paths]
    [leihs.my.routes :as routes]
    [logbug.catcher :as catcher]
-   [taoensso.timbre :refer [debug info warn error]]))
+   [taoensso.timbre :refer [info]]))
 
 (defn run [options]
   (catcher/snatch
