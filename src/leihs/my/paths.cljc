@@ -25,7 +25,6 @@
 (def my-service-paths
   (branch ""
           (leaf "/status" :status)
-          (leaf "/initial-admin" :initial-admin)
           (leaf "/auth-info" :auth-info)
           (leaf "/language" :language)
           (branch "/debug"

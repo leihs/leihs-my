@@ -34,7 +34,6 @@
    core-routes/skip-authorization-handler-keys
    #{:forgot-password
      :home
-     :initial-admin
      :password-authentication
      :reset-password}))
 
@@ -54,7 +53,6 @@
          {:auth-info auth-info/auth-info-handler
           :forgot-password password-restore/forgot-routes
           :home home/routes
-          :initial-admin initial-admin/routes
           :not-found html/not-found-handler
           :redirect-to-root redirect-to-root-handler
           :reset-password password-restore/reset-routes}))
