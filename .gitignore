@@ -1,5 +1,6 @@
 **/.DS_Store
 *pem
+.cider-ci_private/
 .lein-env
 .lein-failures
 .lein-repl-history
