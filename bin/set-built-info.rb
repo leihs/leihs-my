@@ -7,7 +7,7 @@ tree_id = ENV['BUILD_TREE_ID']
 require 'bundler/inline'
 gemfile do
   source 'https://rubygems.org'
-  gem 'git', '= 1.9.1', require: false
+  gem 'git', '= 2.1.1', require: false
   gem 'pry', '= 0.14.1'
   gem 'activesupport', '= 5.2.4.5'
 end

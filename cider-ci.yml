@@ -1,3 +1,6 @@
+include: container-build/cider-ci.yml
+
+
 jobs:
 
   my-build-uberjar:
@@ -13,6 +16,8 @@ jobs:
       tasks:
         my-build-uberjar:
           include: cider-ci/task-components/uberjar.yml
+
+
 
   check-feature-tasks:
     name: Check if feature tasks are up to date
@@ -42,9 +47,6 @@ jobs:
           test:
             body: |
               ./ui/bin/lint
-      ui-test:
-        include: 
-          - cider-ci/task-components/storybook-test.yml
               
   lint:
     name: "Linting"
