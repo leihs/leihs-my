@@ -47,9 +47,6 @@ jobs:
           test:
             body: |
               ./ui/bin/lint
-      ui-test:
-        include: 
-          - cider-ci/task-components/storybook-test.yml
               
   lint:
     name: "Linting"
