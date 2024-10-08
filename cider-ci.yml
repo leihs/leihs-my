@@ -9,6 +9,7 @@ jobs:
       any branch has been updated:
         type: branch
         include_match: ^.*$
+        exclude_match: '^.*(no-ci|hotspot).*$'
     context:
       task_defaults:
         environment_variables:
@@ -58,6 +59,7 @@ jobs:
       any branch has been updated:
         type: branch
         include_match: ^.*$
+        exclude_match: '^.*(no-ci|hotspot).*$'
     context:
       task_defaults:
         git_options:
