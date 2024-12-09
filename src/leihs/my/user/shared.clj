@@ -7,7 +7,7 @@
 
 (defn password-hash
   ([password tx]
-   (-> (sql/select [[:crypt password [:gen_salt "bf"]] :pw_hash])
+   (-> (sql/select [[:crypt (str password) [:gen_salt "bf"]] :pw_hash])
        sql-format
        (->> (jdbc/execute-one! tx))
        :pw_hash)))
