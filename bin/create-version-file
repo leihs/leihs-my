@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PROJECT_DIR="$(cd -- "$(dirname "${BASH_SOURCE}")" ; cd .. > /dev/null 2>&1 && pwd -P)"
+cd $PROJECT_DIR
+
+VERSION_FILE="resources/LEIHS-VERSION"
+
+if [ ! -f "$VERSION_FILE" ]; then
+  rm -f "$VERSION_FILE" # remove symlink if it exists
+  touch "$VERSION_FILE" # create empty file
+  echo "Created empty LEIHS-VERSION file."
+else
+  echo "LEIHS-VERSION file already exists."
+fi

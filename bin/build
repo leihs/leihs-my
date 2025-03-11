@@ -22,6 +22,7 @@ source "${PROJECT_DIR}/shared-clj/bin/helpers/build.sh"
 function build_core {
   ./bin/cljs-release
   ./bin/set-built-info
+  ./bin/create-version-file
   ./bin/clj-uberjar
 }
 

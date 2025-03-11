@@ -26,7 +26,7 @@ const defaultProps = {
   footer: {
     appName: 'leihs',
     appVersion: 'dev',
-    appVersionLink: '/release'
+    appVersionLink: 'https://github.com/leihs/leihs'
   }
 }
 

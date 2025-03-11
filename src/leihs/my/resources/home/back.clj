@@ -20,7 +20,8 @@
     (->> request
          navbar-props
          (hash-map :navbar)
-         (merge {:footer {:appVersion release/version}})
+         (merge {:footer {:appVersion release/version
+                          :appVersionLink release/gh-link}})
          (merge (anti-csrf-props request))
          ((fn [props]
             (if-let [home-page-image-url (-> request :tx
