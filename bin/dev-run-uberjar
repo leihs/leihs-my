@@ -4,6 +4,8 @@ PROJECT_DIR="$(cd -- "$(dirname "${BASH_SOURCE}")" ; cd .. > /dev/null 2>&1 && p
 $PROJECT_DIR/bin/env/java-setup
 cd $PROJECT_DIR
 ./bin/build
+
+export LEIHS_VERSION=$(cat ../LEIHS-VERSION | tr -d '\n')
 java -jar target/leihs-my.jar --dev-mode true -r run "$@"
 
 # vi: ft=sh
