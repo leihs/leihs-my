@@ -1,17 +1,16 @@
-require 'active_support/all'
-require 'pry'
+require "active_support/all"
+require "pry"
 
-require_relative '../database/spec/config/database'
-require 'config/factories'
+require_relative "../database/spec/config/database"
+require "config/factories"
 
-require 'config/browser'
-require 'config/http_client'
+require "config/browser"
+require "config/http_client"
 
-require 'helpers/global'
-require 'helpers/user'
+require "helpers/global"
+require "helpers/user"
 
 RSpec.configure do |config|
-
   config.include Helpers::Global
   config.include Helpers::User
 
@@ -23,9 +22,9 @@ RSpec.configure do |config|
 
   config.after(:each) do |example|
     # auto-pry after failures, except in CI!
-    if not ENV['CIDER_CI_TRIAL_ID'].present? and ENV['PRY_ON_EXCEPTION'].present?
+    if !ENV["CIDER_CI_TRIAL_ID"].present? && ENV["PRY_ON_EXCEPTION"].present?
       unless example.exception.nil?
-        binding.pry if example.exception
+        binding.pry if example.exception # standard:disable Lint/Debugger
       end
     end
   end

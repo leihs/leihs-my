@@ -1,33 +1,30 @@
-require 'capybara/rspec'
-require 'selenium-webdriver'
+require "capybara/rspec"
+require "selenium-webdriver"
 
-
-BROWSER_DOWNLOAD_DIR= File.absolute_path(File.expand_path(__FILE__)  + "/../../../tmp")
+BROWSER_DOWNLOAD_DIR = File.absolute_path(File.expand_path(__FILE__) + "/../../../tmp")
 
 def http_port
-  @port ||= Integer(ENV['LEIHS_MY_HTTP_PORT'].presence || 3240)
+  @port ||= Integer(ENV["LEIHS_MY_HTTP_PORT"].presence || 3240)
 end
 
 def http_host
-  @host ||= ENV['LEIHS_MY_HTTP_HOST'].presence || 'localhost'
+  @host ||= ENV["LEIHS_MY_HTTP_HOST"].presence || "localhost"
 end
 
 def http_base_url
   @http_base_url ||= "http://#{http_host}:#{http_port}"
 end
 
-
 def set_capybara_values
   Capybara.app_host = http_base_url
   Capybara.server_port = http_port
 end
 
-
-firefox_bin_path = Pathname.new(`asdf where firefox`.strip).join('bin/firefox').expand_path.to_s
+firefox_bin_path = Pathname.new(`asdf where firefox`.strip).join("bin/firefox").expand_path.to_s
 Selenium::WebDriver::Firefox.path = firefox_bin_path
 
 Capybara.register_driver :firefox do |app|
-  capabilities = Selenium::WebDriver::Remote::Capabilities.firefox(
+  Selenium::WebDriver::Remote::Capabilities.firefox(
     # TODO: trust the cert used in container and remove this:
     acceptInsecureCerts: true
   )
@@ -37,20 +34,21 @@ Capybara.register_driver :firefox do |app|
   # profile["intl.accept_languages"] = "en"
   #
   profile_config = {
-    'browser.helperApps.neverAsk.saveToDisk' => 'image/jpeg,application/pdf,application/json',
-    'browser.download.folderList' => 2, # custom location
-    'browser.download.dir' => BROWSER_DOWNLOAD_DIR.to_s
+    "browser.helperApps.neverAsk.saveToDisk" => "image/jpeg,application/pdf,application/json",
+    "browser.download.folderList" => 2, # custom location
+    "browser.download.dir" => BROWSER_DOWNLOAD_DIR.to_s
   }
   profile_config.each { |k, v| profile[k] = v }
 
   opts = Selenium::WebDriver::Firefox::Options.new(
     binary: firefox_bin_path,
     profile: profile,
-    log_level: :trace)
+    log_level: :trace
+  )
 
   # NOTE: good for local dev
-  if ENV['LEIHS_TEST_HEADLESS'].present?
-    opts.args << '--headless'
+  if ENV["LEIHS_TEST_HEADLESS"].present?
+    opts.args << "--headless"
   end
   # opts.args << '--devtools' # NOTE: useful for local debug
 
@@ -63,14 +61,12 @@ Capybara.register_driver :firefox do |app|
   )
 end
 
-
 RSpec.configure do |config|
   set_capybara_values
 
   # Capybara.run_server = false
   Capybara.default_driver = :firefox
   Capybara.current_driver = :firefox
-
 
   config.before :all do
     set_capybara_values
@@ -92,15 +88,19 @@ RSpec.configure do |config|
   end
 
   def screenshot_dir
-    Pathname(BROWSER_DOWNLOAD_DIR).join('screenshots')
+    Pathname(BROWSER_DOWNLOAD_DIR).join("screenshots")
   end
 
   def take_screenshot(screenshot_dir = nil, name = nil)
-    name ||= "#{Time.now.iso8601.tr(':', '-')}.png"
+    name ||= "#{Time.now.iso8601.tr(":", "-")}.png"
     path = screenshot_dir.join(name)
     case Capybara.current_driver
     when :firefox
-      page.driver.browser.save_screenshot(path) rescue nil
+      begin
+        page.driver.browser.save_screenshot(path)
+      rescue
+        nil
+      end
     else
       Logger.warn "Taking screenshots is not implemented for \
               #{Capybara.current_driver}."

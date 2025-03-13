@@ -4,12 +4,12 @@ module Helpers
 
     def wait_until(wait_time = 5, &block)
       Timeout.timeout(wait_time) do
-        until value = yield
+        until (value = yield)
           sleep(0.2)
         end
         value
       end
-    rescue Timeout::Error => e
+    rescue Timeout::Error
       raise Timeout::Error.new(block.source)
     end
 
