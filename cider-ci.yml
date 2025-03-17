@@ -1,30 +1,26 @@
 include: container-build/cider-ci.yml
 
-
 jobs:
-
   my-build-uberjar:
     name: Build my uberjar
     run_when: &ON_BRANCH_UPDATE
       any branch has been updated:
         type: branch
         include_match: ^.*$
-        exclude_match: '^.*(no-ci|hotspot).*$'
+        exclude_match: "^.*(no-ci|hotspot).*$"
     context:
       task_defaults:
         environment_variables:
-          LEIHS_MY_DIR: '{{CIDER_CI_WORKING_DIR}}'
+          LEIHS_MY_DIR: "{{CIDER_CI_WORKING_DIR}}"
       tasks:
         my-build-uberjar:
           include: cider-ci/task-components/uberjar.yml
-
-
 
   check-feature-tasks:
     name: Check if feature tasks are up to date
     run_when: *ON_BRANCH_UPDATE
     context:
-      include: cider-ci/jobs/feature_tasks_check.yml 
+      include: cider-ci/jobs/feature_tasks_check.yml
 
   specs:
     name: Run specs
@@ -48,7 +44,14 @@ jobs:
           test:
             body: |
               ./ui/bin/lint
-              
+        ruby-lint:
+          scripts:
+            test:
+              body: |
+                #!/usr/bin/env bash
+                set -euo pipefail
+                ./bin/rblint
+
   lint:
     name: "Linting"
     description: |
@@ -59,7 +62,7 @@ jobs:
       any branch has been updated:
         type: branch
         include_match: ^.*$
-        exclude_match: '^.*(no-ci|hotspot).*$'
+        exclude_match: "^.*(no-ci|hotspot).*$"
     context:
       task_defaults:
         git_options:
