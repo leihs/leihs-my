@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'active_support/all'
 require 'addressable/uri'
 require 'haml'
@@ -33,14 +35,6 @@ ES256_priv_key = OpenSSL::PKey.read priv_key
 ES256_pub_key = OpenSSL::PKey.read pub_key
 
 EXT_SESSION_ID = 'ext_session_id_12345'
-
-
-### intialize #################################################################
-
-def initialize
-  super()
-  @hooks = []
-end
 
 
 ### Meta ######################################################################
