@@ -5,6 +5,7 @@
             [clojure.tools.cli :as cli]
             [environ.core :refer [env]]
             [leihs.core.logging :as logging]
+            [leihs.core.reload :as reload]
             [leihs.core.repl :as repl]
             [leihs.my.back.run :as run]
             [logbug.thrown :as thrown]
@@ -39,12 +40,9 @@
            "-------------------------------------------------------------------"])]
        flatten (clojure.string/join \newline)))
 
-(defonce args* (atom nil))
-
-(defn main []
+(defn main [args]
   (logging/init)
-  (let [args @args*
-        {:keys [options arguments errors summary]}
+  (let [{:keys [options arguments errors summary]}
         (cli/parse-opts args cli-options :in-order true)
         pass-on-args (->> [options (rest arguments)]
                           flatten (into []))
@@ -59,9 +57,9 @@
               :run (run/main options (rest arguments))
               (print-summary)))))
 
-; dynamic restart on require
-(when @args* (main))
-
 (defn -main [& args]
-  (reset! args* (or args []))
-  (main))
+  (reset! reload/args* (or args []))
+  (main args))
+
+; dynamic restart on require
+(when @reload/args* (main @reload/args*))
