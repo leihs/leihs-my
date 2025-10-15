@@ -6,7 +6,7 @@
             [leihs.core.redirects :refer [redirect-target]]
             [leihs.core.release :as release]
             [leihs.core.remote-navbar.shared :refer [navbar-props]]
-            [leihs.core.settings :refer [settings!]]
+            [leihs.core.settings :refer [settings]]
             [leihs.my.back.html :refer [auth-page]]
             [leihs.my.paths :refer [path]]
             [ring.util.response :refer [redirect]]))
@@ -25,7 +25,7 @@
          (merge (anti-csrf-props request))
          ((fn [props]
             (if-let [home-page-image-url (-> request :tx
-                                             (settings! [:home_page_image_url])
+                                             (settings [:home_page_image_url])
                                              :home_page_image_url presence)]
               (assoc-in props [:splash :image] home-page-image-url)
               props)))
