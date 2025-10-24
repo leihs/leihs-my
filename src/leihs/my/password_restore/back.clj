@@ -29,8 +29,7 @@
                         ""
                         (str "Or type the token: " token)
                         ""
-                        "If you did not request this, you can just ignore it."
-                        "Learn more: https://docs.leihs.app/passwort-reset"]))
+                        "If you did not request this, you can just ignore it."]))
 
 (defn make-token [n] (base32-crockford-rand-str n))
 
