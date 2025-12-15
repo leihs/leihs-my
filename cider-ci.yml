@@ -44,13 +44,6 @@ jobs:
           test:
             body: |
               ./ui/bin/lint
-        ruby-lint:
-          scripts:
-            test:
-              body: |
-                #!/usr/bin/env bash
-                set -euo pipefail
-                ./bin/rblint
 
   lint:
     name: "Linting"
@@ -69,6 +62,13 @@ jobs:
           submodules:
             include_match: ^.*$
       tasks:
+        ruby-lint:
+          scripts:
+            test:
+              body: |
+                #!/usr/bin/env bash
+                set -euo pipefail
+                ./bin/rblint
         cljc-lint:
           scripts:
             test:
