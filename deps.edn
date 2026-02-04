@@ -1,6 +1,5 @@
 {:paths [:cljc-paths :resource-paths "ui/dist"]
- :deps {
-        clj-http/clj-http {:mvn/version "3.12.3"}
+ :deps {clj-http/clj-http {:mvn/version "3.12.3"}
         cljs-http/cljs-http {:mvn/version "0.1.46"}
         clojure-humanize/clojure-humanize {:mvn/version "0.2.2"}
         com.github.mfornos/humanize-slim {:mvn/version "1.2.2"}
@@ -15,29 +14,24 @@
 
         org.clojure/clojure {:mvn/version "1.11.1"}
         org.clojure/clojurescript {:mvn/version "1.11.60"}
-        com.google.javascript/closure-compiler-unshaded {:mvn/version "v20230802"}
-        }
- :aliases {
+        com.google.javascript/closure-compiler-unshaded {:mvn/version "v20230802"}}
 
-           :build {:deps
-                   {io.github.leihs/tools.build 
+ :aliases {:build {:deps
+                   {io.github.leihs/tools.build
                     {:git/tag "v0.9.5-leihs"
                      :git/sha "94a26a9"}}
                    :ns-default scripts.build}
 
            :cljfmt {:extra-deps {io.github.weavejester/cljfmt
                                  {:git/tag "0.11.2"
-                                  :sha "fb26b22f569724b05c93eb2502592dfc2de898c3"
-                                  }}
+                                  :sha "fb26b22f569724b05c93eb2502592dfc2de898c3"}}
                     :main-opts ["-m" "cljfmt.main"]}
 
            :cljc-paths ["src" "shared-clj/src"]
 
            :cljs {:extra-deps {thheller/shadow-cljs {:mvn/version "2.25.3"}}}
 
-           :outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "2.5.1109"} }
+           :outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "2.5.1109"}}
                       :main-opts ["-m" "antq.core"]}
 
-           :resource-paths ["resources"]
-
-           }}
+           :resource-paths ["resources"]}}
