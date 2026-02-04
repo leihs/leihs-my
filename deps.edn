@@ -12,9 +12,8 @@
         timothypratley/patchin {:mvn/version "0.3.5"}
         venantius/accountant {:git/url "https://github.com/DrTom/accountant.git" :sha "db3d57ce78d3ec5ee17a9bee047ac43ac0e52b2b"}
 
-        org.clojure/clojure {:mvn/version "1.11.1"}
-        org.clojure/clojurescript {:mvn/version "1.11.60"}
-        com.google.javascript/closure-compiler-unshaded {:mvn/version "v20230802"}}
+        org.clojure/clojure {:mvn/version "1.11.4"}
+        org.clojure/clojurescript {:mvn/version "1.11.60"}}
 
  :aliases {:build {:deps
                    {io.github.leihs/tools.build
@@ -33,5 +32,10 @@
 
            :outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "2.5.1109"}}
                       :main-opts ["-m" "antq.core"]}
+
+           :clj-watson {:replace-deps
+                        {io.github.clj-holmes/clj-watson
+                         {:git/tag "v6.0.1" :git/sha "b520351"}}
+                        :main-opts ["-m" "clj-watson.cli"]}
 
            :resource-paths ["resources"]}}
