@@ -109,7 +109,7 @@ GEM
       activesupport (>= 5.0.0)
     faker (3.2.0)
       i18n (>= 1.8.11, < 2)
-    faraday (1.10.3)
+    faraday (1.10.5)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
       faraday-excon (~> 1.1)
@@ -122,12 +122,12 @@ GEM
       faraday-retry (~> 1.0)
       ruby2_keywords (>= 0.0.4)
     faraday-em_http (1.0.0)
-    faraday-em_synchrony (1.0.0)
+    faraday-em_synchrony (1.0.1)
     faraday-excon (1.1.0)
     faraday-httpclient (1.0.1)
-    faraday-multipart (1.0.4)
-      multipart-post (~> 2)
-    faraday-net_http (1.0.1)
+    faraday-multipart (1.2.0)
+      multipart-post (~> 2.0)
+    faraday-net_http (1.0.2)
     faraday-net_http_persistent (1.2.0)
     faraday-patron (1.0.0)
     faraday-rack (1.0.0)
@@ -182,8 +182,8 @@ GEM
       monetize (~> 1.9)
       money (~> 6.13)
       railties (>= 3.0)
-    multipart-post (2.3.0)
-    mustermann (3.0.0)
+    multipart-post (2.4.1)
+    mustermann (3.0.4)
       ruby2_keywords (~> 0.0.1)
     net-imap (0.5.10)
       date
@@ -215,8 +215,8 @@ GEM
     puma (6.6.1)
       nio4r (~> 2.0)
     racc (1.8.1)
-    rack (3.1.19)
-    rack-protection (4.1.1)
+    rack (3.1.20)
+    rack-protection (4.2.1)
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
       rack (>= 3.0.0, < 4)
@@ -301,11 +301,11 @@ GEM
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
     sequel (5.70.0)
-    sinatra (4.1.1)
+    sinatra (4.2.1)
       logger (>= 1.6.0)
       mustermann (~> 3.0)
       rack (>= 3.0.0, < 4)
-      rack-protection (= 4.1.1)
+      rack-protection (= 4.2.1)
       rack-session (>= 2.0.0, < 3)
       tilt (~> 2.0)
     standard (1.42.1)
@@ -322,7 +322,7 @@ GEM
       rubocop-performance (~> 1.23.0)
     temple (0.10.2)
     thor (1.4.0)
-    tilt (2.2.0)
+    tilt (2.7.0)
     timeout (0.4.3)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
@@ -347,7 +347,7 @@ DEPENDENCIES
   capybara (~> 3.8)
   factory_bot
   faker
-  faraday
+  faraday (>= 1.10.5)
   faraday_middleware
   git (= 2.1.1)
   haml (~> 5.0)
@@ -360,12 +360,13 @@ DEPENDENCIES
   pry
   psych (~> 3)
   puma (~> 6.0)
+  rack (>= 3.1.20)
   rails (~> 7.2.0)
   rexml
   rspec
   selenium-webdriver
   sequel
-  sinatra
+  sinatra (>= 4.2.0)
   standard
   uuidtools
 
