@@ -354,7 +354,7 @@ DEPENDENCIES
   jwt
   mimemagic
   money-rails
-  nokogiri (>= 1.19.1)
+  nokogiri (>= 1.18.9)
   pg
   pg_tasks!
   pry
