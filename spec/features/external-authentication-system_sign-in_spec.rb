@@ -27,7 +27,7 @@ feature "Sign in via an external authentication system", type: :feature do
       click_button
     end
     click_on @test_authentication_system.name
-    click_on "Yes, I am admin@example.com"
+    find("a", text: /Yes,\s*I am\s+admin@example\.com/).click
     visit "/my/auth-info"
     expect(page).to have_content "admin@example.com"
   end
@@ -39,7 +39,7 @@ feature "Sign in via an external authentication system", type: :feature do
       click_button
     end
     click_on @test_authentication_system.name
-    click_on "No, I am not admin@example.com"
+    find("a", text: /No,\s*I am not\s+admin@example\.com/).click
     wait_until do
       page.has_content? "The user did not authenticate successfully!"
     end

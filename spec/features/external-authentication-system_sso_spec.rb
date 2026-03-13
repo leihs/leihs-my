@@ -36,7 +36,7 @@ feature "SSO Sign-in and out via an external authentication system", type: :feat
       click_button
     end
     click_on @test_authentication_system.name
-    click_on "Yes, I am admin@example.com"
+    find("a", text: /Yes,\s*I am\s+admin@example\.com/).click
     visit "/my/auth-info"
     expect(page).to have_content "admin@example.com"
     expect(page).to have_content "ext_session_id_12345"
@@ -53,7 +53,7 @@ feature "SSO Sign-in and out via an external authentication system", type: :feat
       click_button
     end
     click_on @test_authentication_system.name
-    click_on "Yes, I am admin@example.com"
+    find("a", text: /Yes,\s*I am\s+admin@example\.com/).click
     visit "/my/auth-info"
     expect(page).to have_content "admin@example.com"
     expect(page).to have_content "ext_session_id_12345"
