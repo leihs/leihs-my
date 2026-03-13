@@ -72,7 +72,7 @@ get '/sign-in' do
   url = (request_token_data.first["server_base_url"] || 'http://localhost:3240') + request_token_data.first['path']
 
   html =
-    Haml::Engine.new(
+    Haml::Template.new do
       <<-HAML.strip_heredoc
         %h1 The Super Secure Test Authentication System
 
@@ -95,7 +95,7 @@ get '/sign-in' do
                 %em
                   #{email}
       HAML
-    ).render
+    end.render
 
   html
 end
@@ -113,14 +113,14 @@ get '/sign-out' do
   $logger.info({request_token_data: request_token_data})
 
   html =
-    Haml::Engine.new(
+    Haml::Template.new do
       <<-HAML.strip_heredoc
         %h1 SSO Sign-out To External Provider
         %p The real authentication-adapter will redirect this request to the SSO sign-out URL.
         %pre
           = #{request_token_data}
       HAML
-    ).render
+    end.render
 
   html
 end
@@ -141,7 +141,7 @@ get '/sso-sign-out' do
     "/sign-out/external-authentication/test/sso-sign-out"
 
   html =
-    Haml::Engine.new(
+    Haml::Template.new do
       <<-HAML.strip_heredoc
         %h1 SSO Sign-out From External Provider
         %p
@@ -149,7 +149,7 @@ get '/sso-sign-out' do
             %span
               Do sign out!
   HAML
-    ).render
+    end.render
 
   html
 end
