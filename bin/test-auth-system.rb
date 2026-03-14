@@ -2,7 +2,7 @@
 
 require 'active_support/all'
 require 'addressable/uri'
-require 'haml'
+require 'erb'
 require 'json'
 require 'jwt'
 require 'logger'
@@ -71,31 +71,14 @@ get '/sign-in' do
 
   url = (request_token_data.first["server_base_url"] || 'http://localhost:3240') + request_token_data.first['path']
 
-  html =
-    Haml::Engine.new(
-      <<-HAML.strip_heredoc
-        %h1 The Super Secure Test Authentication System
-
-        %p
-          Answer truthfully! Are you
-          %em
-            #{email}
-          ?
-        %ul
-          %li
-            %a{href: "#{url}?token=#{success_token}"}
-              %span
-                Yes, I am
-                %em
-                  #{email}
-          %li
-            %a{href: "#{url}?token=#{fail_token}"}
-              %span
-                No, I am not
-                %em
-                  #{email}
-      HAML
-    ).render
+  html = ERB.new(<<~HTML).result(binding)
+    <h1>The Super Secure Test Authentication System</h1>
+    <p>Answer truthfully! Are you <em><%= email %></em>?</p>
+    <ul>
+      <li><a href="<%= url %>?token=<%= success_token %>"><span>Yes, I am <em><%= email %></em></span></a></li>
+      <li><a href="<%= url %>?token=<%= fail_token %>"><span>No, I am not <em><%= email %></em></span></a></li>
+    </ul>
+  HTML
 
   html
 end
@@ -112,15 +95,11 @@ get '/sign-out' do
   $logger.info({params: params})
   $logger.info({request_token_data: request_token_data})
 
-  html =
-    Haml::Engine.new(
-      <<-HAML.strip_heredoc
-        %h1 SSO Sign-out To External Provider
-        %p The real authentication-adapter will redirect this request to the SSO sign-out URL.
-        %pre
-          = #{request_token_data}
-      HAML
-    ).render
+  html = ERB.new(<<~HTML).result(binding)
+    <h1>SSO Sign-out To External Provider</h1>
+    <p>The real authentication-adapter will redirect this request to the SSO sign-out URL.</p>
+    <pre><%= request_token_data %></pre>
+  HTML
 
   html
 end
@@ -140,16 +119,10 @@ get '/sso-sign-out' do
   url = "http://localhost:#{ENV['LEIHS_MY_HTTP_PORT'].presence ||'3240'}" + \
     "/sign-out/external-authentication/test/sso-sign-out"
 
-  html =
-    Haml::Engine.new(
-      <<-HAML.strip_heredoc
-        %h1 SSO Sign-out From External Provider
-        %p
-          %a{href: "#{url}?token=#{sign_out_token}"}
-            %span
-              Do sign out!
-  HAML
-    ).render
+  html = ERB.new(<<~HTML).result(binding)
+    <h1>SSO Sign-out From External Provider</h1>
+    <p><a href="<%= url %>?token=<%= sign_out_token %>"><span>Do sign out!</span></a></p>
+  HTML
 
   html
 end
