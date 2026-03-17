@@ -5,9 +5,6 @@
 
 @import '~@fortawesome/fontawesome-svg-core/styles.css';
 
-@import '~@leihs/calendar/dist/styles.css'; // main css file
-@import '~@leihs/calendar/dist/theme/default.css'; // theme css file
-
 @import './custom/globals';
 @import './custom/typography';
 @import './custom/pages';
@@ -16,7 +13,6 @@
 
 // styling of react components
 @import './custom/navbar';
-@import './custom/datepicker';
 
 // pure CSS components
 @import './custom/hr-text';

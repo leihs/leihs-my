@@ -31,8 +31,6 @@ Modes of development:
 
 Note that Storybook has its own build chain and is not affected by `webpack.config.js`.
 
-If there is a problem with the library build while everything is fine in Storybook: use `test-app` to debug in a standalone/runnable environment (see below).
-
 ### Storybook
 
 - `npm run storybook`: Start storybook (http://localhost:6007)
@@ -49,4 +47,3 @@ Note that currently only Prettier's rule definitions are configured in ESLint.
 
 - `npm run watch`: Start theme and lib in watch/dev mode (use along with watch mode in My app)
 - `npm run build`: Build theme and lib for production
-- `npm run start`: Start dev server for `test-app` (http://localhost:8081/test-app.html). Enable `test-app` in `webpack.config.js` for this to work

@@ -40,7 +40,7 @@ feature "SSO Sign-in and out via an external authentication system", type: :feat
     visit "/my/auth-info"
     expect(page).to have_content "admin@example.com"
     expect(page).to have_content "ext_session_id_12345"
-    find(".fa-user-circle").click
+    find(".fa-circle-user").click
     click_on "Logout"
     expect(page).to have_content "SSO Sign-out"
     expect(page).to have_content "The real authentication-adapter will redirect this request to the SSO sign-out URL"

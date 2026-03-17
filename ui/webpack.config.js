@@ -7,6 +7,11 @@ const baseConfig = {
     libraryTarget: 'umd'
   },
   devtool: 'source-map',
+  resolve: {
+    fallback: {
+      assert: require.resolve('assert/')
+    }
+  },
   module: {
     rules: [
       {
@@ -70,18 +75,4 @@ module.exports = [
     },
     target: 'web'
   }
-  // Build "test app" (uncomment to debug the build with a standalone runnable app)
-  /* {
-    ...baseConfig,
-    entry: {
-      'test-app': './src/test-app.js'
-    },
-    plugins: [
-      ...baseConfig.plugins,
-      new HtmlWebpackPlugin({
-        template: './src/test-app.html',
-        filename: './test-app.html'
-      })
-    ]
-  } */
 ]

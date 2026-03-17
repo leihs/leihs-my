@@ -20,7 +20,7 @@ module Helpers
 
     def sign_out
       within "nav.navbar-leihs" do
-        find(".fa-user-circle").click
+        find(".fa-circle-user").click
         within ".dropdown-menu.show" do
           click_on "Logout"
         end

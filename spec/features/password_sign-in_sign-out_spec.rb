@@ -17,7 +17,7 @@ feature "Password, sign-in, sign-out and session " do
       click_on "Login"
       fill_in "password", with: user.password
       click_on "Continue"
-      find(".fa-user-circle").click
+      find(".fa-circle-user").click
       expect(page).to have_content user.lastname
     end
 
@@ -36,7 +36,7 @@ feature "Password, sign-in, sign-out and session " do
       click_on "Login"
       fill_in "password", with: user.password
       click_on "Continue"
-      find(".fa-user-circle").click
+      find(".fa-circle-user").click
       expect(page).to have_content user.lastname
       click_on "Logout"
       expect(page).to have_content "Login"
@@ -48,7 +48,7 @@ feature "Password, sign-in, sign-out and session " do
       click_on "Login"
       fill_in "password", with: user.password
       click_on "Continue"
-      find(".fa-user-circle").click
+      find(".fa-circle-user").click
       expect(page).to have_content user.lastname
       database[:users].where(id: user.id).update(account_enabled: false)
       # indirect proofe that we are not logged in anymore
@@ -62,12 +62,12 @@ feature "Password, sign-in, sign-out and session " do
       click_on "Login"
       fill_in "password", with: user.password
       click_on "Continue"
-      find(".fa-user-circle").click
+      find(".fa-circle-user").click
       expect(page).to have_content user.lastname
       database[:users].where(id: user.id).update(password_sign_in_enabled: false)
       # indirect proofe that we are still signed in
       visit "/"
-      find(".fa-user-circle").click
+      find(".fa-circle-user").click
       expect(page).to have_content user.lastname
     end
   end
