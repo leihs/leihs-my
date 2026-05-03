@@ -1,5 +1,4 @@
 import '../src/styles/styles.scss'
-import './fake-time'
 
 /** @type { import('@storybook/react').Preview } */
 const preview = {
