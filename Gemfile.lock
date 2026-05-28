@@ -155,7 +155,8 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.6.3)
-    jwt (2.7.1)
+    jwt (3.2.0)
+      base64
     language_server-protocol (3.17.0.4)
     lint_roller (1.1.0)
     logger (1.7.0)
@@ -364,7 +365,7 @@ DEPENDENCIES
   faraday_middleware
   git (= 2.1.1)
   haml (~> 5.0)
-  jwt
+  jwt (~> 3.2)
   mimemagic
   money-rails
   nokogiri (>= 1.18.9)

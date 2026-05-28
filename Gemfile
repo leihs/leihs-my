@@ -5,7 +5,7 @@ gem "faraday", ">= 1.10.5"
 gem "faraday_middleware"
 gem "git", "= 2.1.1", require: false
 gem "haml", "~> 5.0"
-gem "jwt"
+gem "jwt", "~> 3.2"
 gem "puma", "~> 6.0"
 gem "rexml"
 gem "selenium-webdriver"
