@@ -12,8 +12,7 @@
         timothypratley/patchin {:mvn/version "0.3.5"}
         venantius/accountant {:git/url "https://github.com/DrTom/accountant.git" :sha "db3d57ce78d3ec5ee17a9bee047ac43ac0e52b2b"}
 
-        org.clojure/clojure {:mvn/version "1.11.4"}
-        org.clojure/clojurescript {:mvn/version "1.11.60"}}
+        org.clojure/clojurescript {:mvn/version "1.12.145"}}
 
  :aliases {:build {:deps
                    {io.github.leihs/tools.build
@@ -28,7 +27,7 @@
 
            :cljc-paths ["src" "shared-clj/src"]
 
-           :cljs {:extra-deps {thheller/shadow-cljs {:mvn/version "2.28.23"}}}
+           :cljs {:extra-deps {thheller/shadow-cljs {:mvn/version "3.4.11"}}}
 
            :outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "2.5.1109"}}
                       :main-opts ["-m" "antq.core"]}
