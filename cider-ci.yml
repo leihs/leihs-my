@@ -22,14 +22,23 @@ jobs:
     context:
       include: cider-ci/jobs/feature_tasks_check.yml
 
-  specs:
-    name: Run specs
-    depends_on: &SPEC_DEPENDENTS
+  feature-specs:
+    name: Feature specs
+    description: |
+      Browser-backed full-service specs (Firefox via Selenium against the
+      running uberjar). The task list is generated into
+      cider-ci/generators/feature-tasks.yml; check-feature-tasks verifies it
+      is current, so this job depends on it.
+    depends_on: &FEATURE_SPEC_DEPENDENTS
       uberjar passed:
         type: job
         job_key: my-build-uberjar
         states: [passed]
-    run_when: *SPEC_DEPENDENTS
+      feature tasks are up to date:
+        type: job
+        job_key: check-feature-tasks
+        states: [passed]
+    run_when: *FEATURE_SPEC_DEPENDENTS
     context: { include: cider-ci/specs_job-context.yml }
 
   ui-checks:
