@@ -19,12 +19,20 @@ scripts:
       incus launch --ephemeral ${CONTAINER_BASE_IMAGE} ${CONTAINER_NAME}
       incus list
 
+      # Wait for the container to finish booting: systemd-tmpfiles-setup
+      # wipes /tmp during boot, which raced with the file push below
+      # ("Error: file does not exist" / files missing in the container).
+      until incus exec ${CONTAINER_NAME} -- systemctl is-system-running --wait > /dev/null 2>&1 \
+        || [ "$(incus exec ${CONTAINER_NAME} -- systemctl is-system-running 2>/dev/null)" = "degraded" ]; do
+        sleep 1
+      done
+
       git repack -a
       git submodule foreach --recursive 'git repack -a'
 
-      incus file push --recursive ${CIDER_CI_WORKING_DIR} ${CONTAINER_NAME}/tmp/
+      incus file push --recursive ${CIDER_CI_WORKING_DIR} ${CONTAINER_NAME}/root/
 
-      incus exec ${CONTAINER_NAME} -- mv /tmp/${CIDER_CI_TRIAL_ID} /leihs-my
+      incus exec ${CONTAINER_NAME} -- mv /root/${CIDER_CI_TRIAL_ID} /leihs-my
       incus exec ${CONTAINER_NAME} -- chown -R root:root /leihs-my
       incus exec ${CONTAINER_NAME} -- touch /leihs-my/test.txt
       incus exec ${CONTAINER_NAME} -- ls -l /leihs-my
