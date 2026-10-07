@@ -1,6 +1,11 @@
 scripts:
 
   run_test-auth-system:
+    # a service: it is killed by shutdown_test-auth-system once the test is
+    # terminal and must not fail the task by its exit status (puma 7 dies with
+    # "No live threads left. Deadlock?" on SIGINT now and then); liveness is
+    # checked by test-auth-system_is-serving
+    ignore_state: true
     start_when:
       bundled:
         script_key: my-ruby-bundle
