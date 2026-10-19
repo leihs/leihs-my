@@ -5,7 +5,9 @@
   "main": "src/my-ui.js",
   "// update notes": [
     "react: pinned at v17 — cljs reagent is incompatible with react 18. Unblock by upgrading reagent first.",
-    "storybook: pinned at ^8.x — v9 officially dropped react 17. Unblock by upgrading react/reagent first."
+    "storybook: pinned at ^8.x — v9 officially dropped react 17. Unblock by upgrading react/reagent first.",
+    "sockjs, @storybook/addon-actions > uuid: overridden to 11 (GHSA-w5hq-g745-h8pq); uuid 12+ is ESM-only and breaks their require. Remove once webpack-dev-server drops sockjs (v6) and storybook is upgraded.",
+    "@storybook/builder-webpack5 > webpack-dev-middleware: overridden to 7.4.6 (GHSA-g84c-rxfj-3j2c); storybook 8 pins ^6, which has no fix. Remove once storybook is upgraded."
   ],
   "scripts": {
     "storybook": "storybook dev -p 6007 --no-open",
@@ -66,7 +68,16 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "tar": ">=7.5.8",
-    "esbuild": ">=0.28.1"
+    "esbuild": ">=0.28.1",
+    "sockjs": {
+      "uuid": "^11.1.1"
+    },
+    "@storybook/addon-actions": {
+      "uuid": "^11.1.1"
+    },
+    "@storybook/builder-webpack5": {
+      "webpack-dev-middleware": "^7.4.6"
+    }
   },
   "browserslist": {
     "production": [
