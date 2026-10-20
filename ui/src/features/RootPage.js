@@ -58,7 +58,7 @@ const RootPage = props => {
         </div>
 
         <div className="container">
-          <footer className="pt-4 my-md-5 pt-md-5 border-top">
+          <footer className="mt-4 pt-3 pb-3 border-top">
             <div className="row">
               <div className="col-6 col-md">
                 <h5>
